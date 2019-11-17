@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Persistance/Persistance.iml" filepath="$PROJECT_DIR$/Persistance/Persistance.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RegretfulTry.iml" filepath="$PROJECT_DIR$/RegretfulTry.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Teir2/Teir2.iml" filepath="$PROJECT_DIR$/Teir2/Teir2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Tier3/Tier3.iml" filepath="$PROJECT_DIR$/Tier3/Tier3.iml" />
+    </modules>
+  </component>
+</project>
