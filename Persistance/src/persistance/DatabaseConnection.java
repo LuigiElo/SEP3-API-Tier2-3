@@ -1,9 +1,10 @@
+/*
 package persistance;
 
-import com.google.gson.Gson;
+
 import models.Package;
 import models.Party;
-import utility.persistence.MyDatabase;
+
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -23,6 +24,7 @@ public class DatabaseConnection implements Runnable {
     private static final String PASSWORD = "08191";
 
     private MyDatabase db;
+
     private BufferedReader in;
     private PrintWriter out;
 
@@ -91,3 +93,4 @@ public class DatabaseConnection implements Runnable {
 
 
 }
+*/

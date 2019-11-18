@@ -1,0 +1,25 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Teir2:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/Teir2_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="Teir2/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="Teir2" />
+          <element id="module-output" name="RegretfulTry" />
+          <element id="module-output" name="Persistance" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="javax.servlet.jsp-api" />
+          <element id="library" level="project" name="JAX-RS" />
+          <element id="library" level="project" name="JAX-WS-Glassfish / JAX-WS 2.2 RI / Metro 1.X / JWSDP 2.2" />
+        </element>
+      </element>
+      <element id="library" level="project" name="MyDatabase" />
+      <element id="library" level="project" name="javax.ws.rs-api-2.1.1" />
+      <element id="library" level="project" name="gson-2.8.5" />
+      <element id="library" level="project" name="jackson-core-2.2.3" />
+      <element id="library" level="project" name="jackson-databind-2.10.1" />
+    </root>
+  </artifact>
+</component>

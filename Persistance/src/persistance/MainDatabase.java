@@ -1,3 +1,4 @@
+/*
 package persistance;
 
 import java.io.IOException;
@@ -21,3 +22,4 @@ public class MainDatabase {
 //        DatabaseInterface db = new DatabaseConnection();
     }
 }
+*/
