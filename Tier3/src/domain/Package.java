@@ -8,7 +8,6 @@ import java.util.Objects;
  * shell and the intention behind their use. The objects can encapsulate a variant number of objects too.
  */
 public class Package {
-
     /**
      * The command of the package.
      * Provides information regarding what should be executated with the objects passed through the package
