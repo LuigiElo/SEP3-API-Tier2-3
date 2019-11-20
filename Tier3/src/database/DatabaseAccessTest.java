@@ -19,6 +19,7 @@ public class DatabaseAccessTest {
 
     @org.junit.Test
     public void close() {
+
     }
 
     @org.junit.Test
