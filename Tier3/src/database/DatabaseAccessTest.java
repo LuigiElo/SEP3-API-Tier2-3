@@ -1,8 +1,11 @@
 package database;
 
+import domain.Party;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -18,12 +21,16 @@ public class DatabaseAccessTest {
     }
 
     @org.junit.Test
-    public void close() {
-
+    public void close() throws SQLException {
+        DatabaseCon database = new DatabaseAccess();
+        Connection connection1 = database.connect();
+        connection1.close();
+        assertNull(connection1);
     }
 
     @org.junit.Test
-    public void getPartiesBySomething() {
+    public List<Party> getPartiesBySomething() {
+
     }
 
     @org.junit.Test

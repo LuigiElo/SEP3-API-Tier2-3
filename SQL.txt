@@ -1,0 +1,158 @@
+DROP SCHEMA sep3 CASCADE ;
+CREATE SCHEMA Sep3;
+SET SCHEMA 'sep3';
+
+create table item_table
+(
+    itemid varchar not null
+        constraint item_table_pk
+            primary key,
+    price  real,
+    name   varchar
+);
+
+create unique index item_table_itemid_uindex
+    on item_table (itemid);
+
+create unique index item_table_name_uindex
+    on item_table (name);
+
+create unique index item_table_price_uindex
+    on item_table (price);
+
+create table person_table
+(
+    personid varchar not null
+        constraint person_table_pk
+            primary key,
+    name     varchar not null,
+    email    varchar not null,
+    password varchar not null
+);
+
+create unique index person_table_personid_uindex
+    on person_table (personid);
+
+create unique index person_table_email_uindex
+    on person_table (email);
+
+create table party_table
+(
+    partyid     serial not null
+        constraint party_table_pk
+            primary key,
+    description varchar,
+    address     varchar,
+    date        varchar,
+    partytitle  varchar,
+    time        varchar
+);
+
+create unique index party_table_partyid_uindex
+    on party_table (partyid);
+
+create table party_has_items
+(
+    partyid integer not null
+        constraint party_has_items_party_table_partyid_fk
+            references party_table,
+    itemid  varchar not null
+        constraint party_has_items_item_table_itemid_fk
+            references item_table,
+    constraint party_has_items_pk
+        primary key (partyid, itemid)
+);
+
+create table participates_in_party
+(
+    partyid  integer not null
+        constraint participates_in_party_party_table_partyid_fk
+            references party_table,
+    personid varchar not null
+        constraint participates_in_party_person_table_personid_fk
+            references person_table,
+    ishost   boolean,
+    constraint participates_in_party_pk
+        primary key (partyid, personid)
+);
+
+
+DROP SCHEMA sep3 CASCADE ;
+CREATE SCHEMA Sep3;
+SET SCHEMA 'sep3';
+
+create table item_table
+(
+    itemid varchar not null
+        constraint item_table_pk
+            primary key,
+    price  real,
+    name   varchar
+);
+
+create unique index item_table_itemid_uindex
+    on item_table (itemid);
+
+create unique index item_table_name_uindex
+    on item_table (name);
+
+create unique index item_table_price_uindex
+    on item_table (price);
+
+create table person_table
+(
+    personid varchar not null
+        constraint person_table_pk
+            primary key,
+    name     varchar not null,
+    email    varchar not null,
+    password varchar not null
+);
+
+create unique index person_table_personid_uindex
+    on person_table (personid);
+
+create unique index person_table_email_uindex
+    on person_table (email);
+
+create table party_table
+(
+    partyid     serial not null
+        constraint party_table_pk
+            primary key,
+    description varchar,
+    address     varchar,
+    date        varchar,
+    partytitle  varchar,
+    time        varchar
+);
+
+create unique index party_table_partyid_uindex
+    on party_table (partyid);
+
+create table party_has_items
+(
+    partyid integer not null
+        constraint party_has_items_party_table_partyid_fk
+            references party_table,
+    itemid  varchar not null
+        constraint party_has_items_item_table_itemid_fk
+            references item_table,
+    constraint party_has_items_pk
+        primary key (partyid, itemid)
+);
+
+create table participates_in_party
+(
+    partyid  integer not null
+        constraint participates_in_party_party_table_partyid_fk
+            references party_table,
+    personid varchar not null
+        constraint participates_in_party_person_table_personid_fk
+            references person_table,
+    ishost   boolean,
+    constraint participates_in_party_pk
+        primary key (partyid, personid)
+);
+
+

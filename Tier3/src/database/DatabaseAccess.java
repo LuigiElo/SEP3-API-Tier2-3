@@ -36,6 +36,7 @@ public class DatabaseAccess implements DatabaseCon {
             connection = DriverManager.getConnection(url, user, password);
             System.out.println("Connected to the PostgreSQL server successfully.");
         } catch (SQLException e) {
+
             System.out.println(e.getMessage());
         }
 
@@ -50,9 +51,10 @@ public class DatabaseAccess implements DatabaseCon {
     public void close() {
         try {
             connection.close();
+            connection = null;
 
         } catch (SQLException e) {
-            System.out.println("No closing this one");
+            System.out.println("No closing this one bitch");
             e.printStackTrace();
         }
     }
