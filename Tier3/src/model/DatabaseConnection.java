@@ -1,8 +1,4 @@
-
 package model;
-
-
-
 
 
 import database.DatabaseAccess;
@@ -135,14 +131,12 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
             switch (packageR.getCommand())
             {
                 case "createParty":
-                    {
-
-                        Object[]  objects = packageR.getObjects();
-                        Party party = (Party) objects[0];
-                        Party returnParty = createParty(party);
-                        out2.writeObject(returnParty);
-                        break;
-                    }
+                {
+                    Party party = packageR.getParties().get(0);
+                    Party returnParty = createParty(party);
+                    out2.writeObject(returnParty);
+                    break;
+                }
 
                 case "getPeopleByName":
                 {
@@ -209,5 +203,3 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
 
 
 }
-
-

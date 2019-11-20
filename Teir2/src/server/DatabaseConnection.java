@@ -1,9 +1,8 @@
 package server;
 
-import models.Package;
-import models.Party;
+import model.Package;
+import model.Party;
 
-import javax.ws.rs.POST;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

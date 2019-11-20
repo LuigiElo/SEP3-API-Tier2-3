@@ -13,7 +13,7 @@ public class DatabaseAccessTest {
         DatabaseCon database = new DatabaseAccess();
         Connection connection1 = database.connect();
         Connection connection2 = DriverManager.getConnection
-                ("jdbc:postgresql://localhost:5432/postgres", "postgres","postgres")
+                ("jdbc:postgresql://localhost:5432/postgres", "postgres","postgres");
         assertEquals(connection1,connection2);
     }
 

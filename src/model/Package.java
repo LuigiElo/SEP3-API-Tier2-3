@@ -1,7 +1,7 @@
-package domain;
+package model;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * java class used in the communication between tier 2 and tier 3 of the application
@@ -10,6 +10,7 @@ import java.util.Objects;
  * the database
  */
 public class Package {
+
     /**
      * The command of the package.
      * Provides information regarding what should be executated with the objects passed through the package
@@ -33,7 +34,10 @@ public class Package {
      */
     public Package()
     {
-
+        this.command ="";
+        this.parties = new ArrayList<Party>();
+        this.people = new ArrayList<Person>();
+        this.items = new ArrayList<Item>();
     }
 
 

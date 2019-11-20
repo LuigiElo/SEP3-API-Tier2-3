@@ -1,6 +1,6 @@
 package server;
 
-import models.Party;
+import model.Party;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
