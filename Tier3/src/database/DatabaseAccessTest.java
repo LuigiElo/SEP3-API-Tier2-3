@@ -31,6 +31,7 @@ public class DatabaseAccessTest {
     @org.junit.Test
     public List<Party> getPartiesBySomething() {
 
+        return null;
     }
 
     @org.junit.Test

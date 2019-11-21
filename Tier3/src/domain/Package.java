@@ -1,7 +1,8 @@
 package domain;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * java class used in the communication between tier 2 and tier 3 of the application
@@ -9,7 +10,8 @@ import java.util.Objects;
  * for addressing one request of the client that will have to be resolved and registered in
  * the database
  */
-public class Package {
+public class Package implements Serializable {
+
     /**
      * The command of the package.
      * Provides information regarding what should be executated with the objects passed through the package
@@ -24,6 +26,7 @@ public class Package {
     private List<Party> parties;
     private List<Person> people;
     private List<Item> items;
+    private List<String> strings;
 
 
     /**
@@ -33,7 +36,11 @@ public class Package {
      */
     public Package()
     {
-
+        this.command ="";
+        this.parties = new ArrayList<Party>();
+        this.people = new ArrayList<Person>();
+        this.items = new ArrayList<Item>();
+        this.strings = new ArrayList<String>();
     }
 
 
@@ -50,12 +57,13 @@ public class Package {
      *  the party to be created
      */
 
-    public Package(String command, List<Party> parties, List<Person> people, List<Item> items)
+    public Package(String command, List<Party> parties, List<Person> people, List<Item> items, List<String> strings)
     {
         this.command = command;
         this.parties = parties;
         this.people = people;
         this.items = items;
+        this.strings = strings;
 
     }
 
@@ -179,5 +187,22 @@ public class Package {
     }
 
 
+    public List<String> getStrings() {
+        return strings;
+    }
 
+    public void setStrings(List<String> strings)
+    {
+        this.strings = strings;
+    }
+
+    public void addString(String string)
+    {
+        strings.add(string);
+    }
+
+    public void removeString(String string)
+    {
+        strings.remove(string);
+    }
 }

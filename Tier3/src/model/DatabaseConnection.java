@@ -3,33 +3,22 @@ package model;
 
 import database.DatabaseAccess;
 import database.DatabaseCon;
-import domain.*;
+import domain.Item;
 import domain.Package;
+import domain.Party;
+import domain.Person;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.Socket;
-import java.rmi.Naming;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+
 public class DatabaseConnection implements Runnable,DatabaseCon {
 
-    //shouldn't be needed
-    /*private static final String DRIVER = "org.postgresql.Driver";
-    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "postgres";
-    */
-    private DatabaseCon database;
 
-    private BufferedReader in;
-    private PrintWriter out;
+    private DatabaseCon database;
 
     private ObjectOutputStream out2;
     private ObjectInputStream in2;
@@ -170,8 +159,19 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
                 {
 
                 }
-                case "addParticipant":
+                case "addPerson":
                 {
+                    Person person = packageR.getPeople().get(0);
+                    Party party = packageR.getParties().get(0);
+
+                   try {
+                       addParticipant(person, party);
+                       out2.writeObject("success");
+                   }
+                   catch (Exception e)
+                   {
+                       out2.writeObject("fail");
+                   }
 
                 }
                 case "updateParty":
@@ -186,7 +186,9 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
                 {
 
                 }
-                default: return;
+                default:{
+                    System.out.println("glueeeee");
+                    return;}
             }
 
 

@@ -1,4 +1,4 @@
-package model;
+package domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,8 +13,10 @@ public class Party implements Serializable {
     private String description;
     private String date;
     private String time;
+
     private List<Item> items;
     private List<Person> people;
+    private Person host;
 
     public Party() {
 

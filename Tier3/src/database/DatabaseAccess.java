@@ -1,7 +1,6 @@
 package database;
 
 
-
 import domain.Item;
 import domain.Party;
 import domain.Person;
@@ -18,7 +17,7 @@ public class DatabaseAccess implements DatabaseCon {
     private static final String DRIVER = "org.postgres.Driver";
     private final String url = "jdbc:postgresql://localhost:5432/postgres";
     private final String user = "postgres";
-    private final String password = "postgres";
+    private final String password = "08191";
 
 
     public DatabaseAccess() {
@@ -31,7 +30,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public Connection connect() throws  SQLException {
+    public Connection connect() throws SQLException {
         try {
             connection = DriverManager.getConnection(url, user, password);
             System.out.println("Connected to the PostgreSQL server successfully.");
@@ -69,22 +68,22 @@ public class DatabaseAccess implements DatabaseCon {
 
         PreparedStatement statement1 = connection.prepareStatement
                 ("SELECT * FROM sep3.party_table WHERE description = "
-                        + something+" OR address = " + something + " OR date = "
+                        + something + " OR address = " + something + " OR date = "
                         + something + " OR partytitle = " + something + " OR time = "
                         + something + ";");
         rs = statement1.executeQuery();
 
         close();
 
-        while (rs.next()){
-            String partyID = rs.getInt(1)+"";
+        while (rs.next()) {
+            String partyID = rs.getInt(1) + "";
             String description = rs.getString(2);
             String address = rs.getString(3);
             String date = rs.getString(4);
             String partyTitle = rs.getString(5);
             String time = rs.getString(6);
 
-            Party party1 = new Party(partyTitle,description,address,partyID,date,time);
+            Party party1 = new Party(partyTitle, description, address, partyID, date, time);
             partyList.add(party1);
         }
         return partyList;
@@ -92,7 +91,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public Party getParty(String partyID) throws  SQLException {
+    public Party getParty(String partyID) throws SQLException {
 
         connect();
         ResultSet rs;
@@ -100,20 +99,20 @@ public class DatabaseAccess implements DatabaseCon {
                 ("SELECT * FROM sep3.party_table WHERE partyID = " + partyID + ";");
         rs = statement.executeQuery();
 
-        String partyid = rs.getInt(1)+"";
+        String partyid = rs.getInt(1) + "";
         String description = rs.getString(2);
         String address = rs.getString(3);
         String date = rs.getString(4);
         String partyTitle = rs.getString(5);
         String time = rs.getString(6);
 
-        Party party = new Party(partyTitle,description,address,partyID,date,time);
+        Party party = new Party(partyTitle, description, address, partyID, date, time);
 
         return party;
     }
 
     @Override
-    public List<Person> getParticipants(String partyID) throws  SQLException {
+    public List<Person> getParticipants(String partyID) throws SQLException {
 
         connect();
         ResultSet rs;
@@ -155,7 +154,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public List<Item> getItems(Party party) throws  SQLException {
+    public List<Item> getItems(Party party) throws SQLException {
 
         connect();
         ResultSet rs;
@@ -196,14 +195,14 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public List<Person> getPeopleByName(String name) throws  SQLException {
+    public List<Person> getPeopleByName(String name) throws SQLException {
         PreparedStatement statement = connection.prepareStatement
                 ("SELECT * FROM sep3.person_table");
         return null;
     }
 
     @Override
-    public void addParticipant(Person person, Party party) throws  SQLException {
+    public void addParticipant(Person person, Party party) throws SQLException {
         PreparedStatement statement = connection.prepareStatement
                 ("INSERT INTO sep3.participates_in_party VALUES (?,?,?);");
         statement.setString(1, party.getPartyID());
@@ -213,7 +212,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void addItem(Item item, Party party) throws  SQLException {
+    public void addItem(Item item, Party party) throws SQLException {
         PreparedStatement statement = connection.prepareStatement
                 ("INSERT INTO sep3.party_has_items VALUES (?,?);");
         statement.setString(1, party.getPartyID());
@@ -222,7 +221,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void createPerson(Person person) throws  SQLException {
+    public void createPerson(Person person) throws SQLException {
         /*
         The block below might need an if() check to make sure
         there isn't one just like it already in the database.
@@ -239,7 +238,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void createItem(Item item) throws  SQLException {
+    public void createItem(Item item) throws SQLException {
         /*
         The block below might need an if() check to make sure
         there isn't one just like it already in the database.
@@ -255,12 +254,12 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void updateParty(Party party) throws  SQLException {
+    public void updateParty(Party party) throws SQLException {
 
     }
 
     @Override
-    public void removeParticipant(Party party, Person person) throws  SQLException {
+    public void removeParticipant(Party party, Person person) throws SQLException {
 
         PreparedStatement statement = connection.prepareStatement
                 ("DELETE FROM sep3.participates_in_party WHERE personID = ? AND partyID = ?;");
@@ -270,7 +269,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void removeItem(Party party, Item item) throws  SQLException {
+    public void removeItem(Party party, Item item) throws SQLException {
 
         PreparedStatement statement = connection.prepareStatement
                 ("DELETE FROM sep3.party_has_items WHERE partyID = ? AND itemID = ?;");
@@ -280,10 +279,11 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public Party createParty(Party party) throws  SQLException {
+    public Party createParty(Party party) throws SQLException {
         connect();
         PreparedStatement statement = connection.prepareStatement
-                ("INSERT INTO sep3.party_table VALUES (?,?,?,?,?,?)");
+                ("INSERT INTO sep3.party_table(description, address, date, partytitle, time) VALUES (?,?,?,?,?,?)");
+
         statement.setString(2, party.getDescription());
         statement.setString(3, party.getLocation()); //address
         statement.setString(4, party.getDate());
@@ -297,12 +297,12 @@ public class DatabaseAccess implements DatabaseCon {
 
         PreparedStatement statement1 = connection.prepareStatement
                 ("SELECT * FROM sep3.party_table WHERE description = "
-                        + party.getDescription()+" AND address = " + party.getLocation() + " AND date = "
+                        + party.getDescription() + " AND address = " + party.getLocation() + " AND date = "
                         + party.getDate() + " AND partytitle = " + party.getPartyTitle() + " AND time = "
                         + party.getTime() + ";");
         rs = statement1.executeQuery();
 
-        String partyID = rs.getInt(1)+"";
+        String partyID = rs.getInt(1) + "";
         String description = rs.getString(2);
         String address = rs.getString(3);
         String date = rs.getString(4);
@@ -310,7 +310,7 @@ public class DatabaseAccess implements DatabaseCon {
         String time = rs.getString(6);
         close();
 
-        Party party1 = new Party(partyTitle,description,address,partyID,date,time);
+        Party party1 = new Party(partyTitle, description, address, partyID, date, time);
 
         return party1;
     }
