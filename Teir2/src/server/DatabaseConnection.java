@@ -2,6 +2,7 @@ package server;
 
 import domain.Package;
 import domain.Party;
+import domain.Person;
 
 import javax.net.ssl.HostnameVerifier;
 import java.io.IOException;
@@ -77,5 +78,18 @@ public class DatabaseConnection {
         }
         return "fail";
 
+    }
+
+    public Person searchPersonBySmth(Package packageT) {
+
+        createSocket();
+        try{
+            out.writeObject(packageT);
+            Person person = (Person) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        ///////not finished implemented
+        return null;
     }
 }

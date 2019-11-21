@@ -36,6 +36,15 @@ public class ModelManager {
         Package packageT = new Package();
         packageT.setCommand("searchPBySmth");
         packageT.addString(smth);
+        try{
+            Person person1 = db.searchPersonBySmth(packageT);
+        }
+        catch (Exception e)
+        {
+            System.out.println("The person could not be found");
+            return null;
+
+        }
 
 
         return person;
