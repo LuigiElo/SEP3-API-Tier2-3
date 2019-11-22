@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 public class DatabaseConnection {
 
@@ -41,8 +42,6 @@ public class DatabaseConnection {
 
     public Party createParty(Package packageT) throws IOException {
 
-
-
         createSocket();
         out.writeObject(packageT);
 
@@ -51,12 +50,14 @@ public class DatabaseConnection {
             socket.close();
             return party;
         } catch (Exception e) {
+            e.getMessage();
             e.printStackTrace();
             System.out.println("Something fucked uppppp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+            socket.close();
+            return null;
         }
 
-        socket.close();
-        return null;
     }
 
     public String addPerson(Package packageT) {
@@ -67,29 +68,104 @@ public class DatabaseConnection {
             String result = in.readUTF();
             socket.close();
             return result;
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.getMessage();
             e.printStackTrace();
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return "fail";
         }
 
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "fail";
+
 
     }
 
-    public Person searchPersonBySmth(Package packageT) {
+    public List<Person> searchPersonBySmth(Package packageT) {
 
         createSocket();
         try{
             out.writeObject(packageT);
-            Person person = (Person) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
+            List<Person> list = (List<Person>) in.readObject();
+            socket.close();
+            return list;
+        } catch (Exception e) {
+            e.getMessage();
             e.printStackTrace();
+            System.out.println("The list is emphy or smth is wrong");
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
         }
-        ///////not finished implemented
-        return null;
+
+    }
+
+    public Person registerPerson(Package packageT) {
+
+        createSocket();
+        try {
+            out.writeObject(packageT);
+            Person person = (Person) in.readObject();
+            socket.close();
+            return person;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
+
+
+
+    }
+
+    public Person login(Package packageT) {
+        createSocket();
+        try {
+            out.writeObject(packageT);
+            Person person = (Person) in.readObject();
+            socket.close();
+            return person;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+
+    }
+
+    public List<Party> getPartiesForPerson(Package packageT) {
+        createSocket();
+        try {
+            out.writeObject(packageT);
+            List<Party> list = (List<Party>) in.readObject();
+            socket.close();
+            return list;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
     }
 }

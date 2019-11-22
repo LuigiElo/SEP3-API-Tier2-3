@@ -16,7 +16,6 @@ public class Party implements Serializable {
 
     private List<Item> items;
     private List<Person> people;
-    private Person host;
 
     public Party() {
 

@@ -80,8 +80,9 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
     }
 
     @Override
-    public void createPerson(Person person) throws SQLException {
+    public Person createPerson(Person person) throws SQLException {
         database.createPerson(person);
+        return person;
     }
 
     @Override
@@ -111,6 +112,12 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
     }
 
     @Override
+    public Person login(Person person) {
+        ///needs to be implemented
+        return null;
+    }
+
+    @Override
     public void run() {
 
         try {
@@ -127,9 +134,13 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
                     break;
                 }
 
-                case "getPeopleByName":
+                case "searchPBySmth":
                 {
 
+                    String smth = packageR.getStrings().get(0);
+                    List<Person> list = getPeopleByName(smth);
+                    out2.writeObject(list);
+                    break;
                 }
                 case "getItems":
                 {
@@ -151,8 +162,11 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
                 {
 
                 }
-                case "createPerson":
+                case "registerPerson":
                 {
+                    Person person = packageR.getPeople().get(0);
+                    Person person1 = createPerson(person);
+                    out2.writeObject(person1);
 
                 }
                 case "addItem":
@@ -164,14 +178,8 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
                     Person person = packageR.getPeople().get(0);
                     Party party = packageR.getParties().get(0);
 
-                   try {
                        addParticipant(person, party);
                        out2.writeObject("success");
-                   }
-                   catch (Exception e)
-                   {
-                       out2.writeObject("fail");
-                   }
 
                 }
                 case "updateParty":
@@ -185,6 +193,18 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
                 case "removeItem":
                 {
 
+                }
+                case "login":
+                {
+                    Person person = packageR.getPeople().get(0);
+                    Person person1 = login(person);
+                    out2.writeObject(person1);
+                }
+                case "getPartiesForPerson":
+                {
+                    Person person = packageR.getPeople().get(0);
+                    List<Party> parties = getPartiesForPerson(person);
+                    out2.writeObject(parties);
                 }
                 default:{
                     System.out.println("glueeeee");
@@ -201,6 +221,11 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
             System.out.println("Hellllllllllllllo");
         }
 
+    }
+
+    private List<Party> getPartiesForPerson(Person person) {
+        ///needs to be implemented
+        return null;
     }
 
 

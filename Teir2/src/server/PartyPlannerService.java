@@ -3,12 +3,11 @@ package server;
 import domain.Party;
 import domain.Person;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.annotation.PostConstruct;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.util.List;
 
 @Path("/partyservice")
 public class PartyPlannerService{
@@ -30,6 +29,37 @@ public class PartyPlannerService{
         System.out.println("bug1");
        return party1;
 
+   }
+
+   @POST
+   @Path("/register")
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+    public Person registerPerson(Person person)
+   {
+       Person person1 = manager.registerPerson(person);
+       return person1;
+   }
+
+   @GET
+   @Path("/login")
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+    public Person loginPerson(Person person)
+   {
+       Person person1 = manager.login(person);
+       return person1;
+
+   }
+
+   @GET
+   @Path("/getPartiesForPerson")
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+    public List<Party> getParties(Person person)
+   {
+       List<Party> parties = manager.getParties(person);
+       return parties;
    }
 
 //   @POST

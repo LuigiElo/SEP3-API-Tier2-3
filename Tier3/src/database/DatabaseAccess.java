@@ -58,6 +58,12 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
+
+    @Override
+    public Person login(Person person) {
+        return null;
+    }
+
     @Override
     public List<Party> getPartiesBySomething(String something) throws SQLException {
 
@@ -198,7 +204,7 @@ public class DatabaseAccess implements DatabaseCon {
     public List<Person> getPeopleByName(String name) throws SQLException {
         PreparedStatement statement = connection.prepareStatement
                 ("SELECT * FROM sep3.person_table");
-        return null;
+
     }
 
     @Override
@@ -221,7 +227,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void createPerson(Person person) throws SQLException {
+    public Person createPerson(Person person) throws SQLException {
         /*
         The block below might need an if() check to make sure
         there isn't one just like it already in the database.
@@ -235,6 +241,13 @@ public class DatabaseAccess implements DatabaseCon {
         statement2.setString(3, person.getEmail());
         statement2.setString(4, person.getPassword());
         statement2.executeQuery();
+
+        ///the registration is more then this.
+        ///first there is a check to see if the person already exist
+        //then an add
+        //and a get to get the Person with his unique id after the introduction in the Database
+        ///need to add getPerson
+        return person;
     }
 
     @Override
@@ -283,7 +296,7 @@ public class DatabaseAccess implements DatabaseCon {
         connect();
         PreparedStatement statement = connection.prepareStatement
                 ("INSERT INTO sep3.party_table(description, address, date, partytitle, time) VALUES (?,?,?,?,?,?)");
-
+//not working because of the first parameter
         statement.setString(2, party.getDescription());
         statement.setString(3, party.getLocation()); //address
         statement.setString(4, party.getDate());
@@ -314,5 +327,6 @@ public class DatabaseAccess implements DatabaseCon {
 
         return party1;
     }
+
 
 }
