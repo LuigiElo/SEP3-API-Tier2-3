@@ -112,7 +112,7 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
     }
 
     @Override
-    public Person login(Person person) {
+    public List<String> login(Person person) {
         ///needs to be implemented
         return null;
     }

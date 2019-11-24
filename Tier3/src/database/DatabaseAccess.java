@@ -14,7 +14,6 @@ public class DatabaseAccess implements DatabaseCon {
 
     Connection connection;
 
-    private static final String DRIVER = "org.postgres.Driver";
     private final String url = "jdbc:postgresql://localhost:5432/postgres";
     private final String user = "postgres";
     private final String password = "08191";
@@ -60,8 +59,41 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public Person login(Person person) {
-        return null;
+    public List<String> login(Person person) throws SQLException {
+        //Probably should return the parties ¯\_(ツ)_/¯‍...
+
+        ResultSet rs;
+
+        PreparedStatement statement = connection.prepareStatement
+                ("SELECT * FROM sep3.person_table WHERE email = "
+                        + person.getEmail() + " AND password = " + person.getPassword() + ";");
+
+        rs = statement.executeQuery();
+        close();
+
+        if (rs.next()) {
+
+            String personID = rs.getString("personID");
+
+            List<String> parties = new ArrayList<>(100);
+            ResultSet rs2;
+            PreparedStatement statement2 = connection.prepareStatement
+                    ("SELECT * FROM sep3.participates_in_party " +
+                            "WHERE personid = " + personID + ";");
+            rs2 = statement.executeQuery();
+            close();
+
+            while (rs2.next()) {
+                parties.add(rs.getString("partyID"));
+            }
+
+        }
+
+        else {
+            System.out.println("No parties for you my friend... Yet?");
+            return null;
+        }
+
     }
 
     @Override
