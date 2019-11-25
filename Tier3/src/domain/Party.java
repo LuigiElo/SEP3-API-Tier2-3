@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Party implements Serializable {
 
-    private String partyID;
+    private int partyID;
     private String partyTitle;
     private String location;
     private String description;
@@ -20,7 +20,7 @@ public class Party implements Serializable {
 
     }
 
-    public Party(String partyTitle, String description, String location, String partyID, String date, String time) {
+    public Party(String partyTitle, String description, String location, int partyID, String date, String time) {
         this.partyTitle = partyTitle;
         this.description = description;
         this.location = location;
@@ -79,8 +79,8 @@ public class Party implements Serializable {
         this.time = time;
     }
 
-    public String getPartyID() {
-        return partyTitle;
+    public int getPartyID() {
+        return partyID;
     }
 
     public void setPartyID(String partyID) {

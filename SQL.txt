@@ -22,7 +22,7 @@ create unique index item_table_price_uindex
 
 create table person_table
 (
-    personid varchar not null
+    personid serial not null
         constraint person_table_pk
             primary key,
     name     varchar not null,
@@ -68,7 +68,7 @@ create table participates_in_party
     partyid  integer not null
         constraint participates_in_party_party_table_partyid_fk
             references party_table,
-    personid varchar not null
+    personid integer not null
         constraint participates_in_party_person_table_personid_fk
             references person_table,
     ishost   boolean,
@@ -101,7 +101,7 @@ create unique index item_table_price_uindex
 
 create table person_table
 (
-    personid varchar not null
+    personid serial not null
         constraint person_table_pk
             primary key,
     name     varchar not null,
@@ -147,7 +147,7 @@ create table participates_in_party
     partyid  integer not null
         constraint participates_in_party_party_table_partyid_fk
             references party_table,
-    personid varchar not null
+    personid integer not null
         constraint participates_in_party_person_table_personid_fk
             references person_table,
     ishost   boolean,

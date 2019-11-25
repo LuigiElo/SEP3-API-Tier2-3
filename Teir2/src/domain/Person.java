@@ -9,6 +9,8 @@ public class Person implements Serializable {
     private String email;
     private String password;
     private boolean isHost;
+    private String username;
+
 
     public Person(String personID, String name, String email, String password, boolean isHost) {
         this.personID = personID;
@@ -56,5 +58,13 @@ public class Person implements Serializable {
 
     public void setHost(boolean host) {
         isHost = host;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
