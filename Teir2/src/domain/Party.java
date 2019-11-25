@@ -60,6 +60,8 @@ public class Party implements Serializable {
         return people.get(index);
     }
 
+    public List<Person> getPeople(){return people;}
+
     public void setPeople(Person person, int index) {
         this.people.add(index, person);
     }
@@ -84,8 +86,8 @@ public class Party implements Serializable {
         return partyID;
     }
 
-    public void setPartyID(String partyID) {
-        this.partyTitle = partyID;
+    public void setPartyID(int partyID) {
+        this.partyID = partyID;
     }
 
     public String getDescription() {

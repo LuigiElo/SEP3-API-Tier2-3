@@ -11,9 +11,10 @@ public class Person implements Serializable {
     private boolean isHost;
     private String username;
 
-    public Person(int personID, String name, String email, String password, boolean isHost) {
+    public Person(int personID, String name, String username, String email, String password, boolean isHost) {
         this.personID = personID;
         this.name = name;
+        this.username = username;
         this.email = email;
         this.password = password;
         this.isHost = isHost;

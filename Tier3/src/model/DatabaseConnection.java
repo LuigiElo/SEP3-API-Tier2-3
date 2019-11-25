@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-public class DatabaseConnection implements Runnable,DatabaseCon {
+public class DatabaseConnection implements Runnable, DatabaseCon {
 
 
     private DatabaseCon database;
@@ -50,7 +50,7 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
     }
 
     @Override
-    public Party getParty(String partyID) throws SQLException {
+    public Party getParty(int partyID) throws SQLException {
         return database.getParty(partyID);
     }
 
@@ -66,12 +66,13 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
 
     @Override
     public List<Person> getPeopleByName(String name) throws SQLException {
-        return database.getPeopleByName(name);
+        return database.getPeopleByName(name);  ///it's just by smth
     }
 
     @Override
-    public void addParticipant(Person person, Party party) throws SQLException {
-        database.addParticipant(person,party);
+    public String addParticipant(Person person, Party party) throws SQLException {
+       String string = database.addParticipant(person,party);
+       return string;
     }
 
     @Override
@@ -113,10 +114,16 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
     }
 
     @Override
-    public List<Party> login(Person person) {
-        ///needs to be implemented
-        return null;
+    public Person login(Person person) throws SQLException {
+        Person person1 = database.login(person);
+        return person1;
     }
+
+    public List<Party> getPartiesForPerson(Person person) {
+        List<Party> parties = database.getPartiesForPerson(person);
+        return parties;
+    }
+
 
     @Override
     public void run() {
@@ -179,8 +186,8 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
                     Person person = packageR.getPeople().get(0);
                     Party party = packageR.getParties().get(0);
 
-                       addParticipant(person, party);
-                       out2.writeObject("success");
+                     String result = addParticipant(person, party);
+                     out2.writeObject(result);
 
                 }
                 case "updateParty":
@@ -197,15 +204,22 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
                 }
                 case "login":
                 {
-                    /*Person person = packageR.getPeople().get(0);
+                    Person person = packageR.getPeople().get(0);
                     Person person1 = login(person);
-                    out2.writeObject(person1);*/
+                    out2.writeObject(person1);
                 }
                 case "getPartiesForPerson":
                 {
                     Person person = packageR.getPeople().get(0);
                     List<Party> parties = getPartiesForPerson(person);
                     out2.writeObject(parties);
+                }
+                case "addLastPersonToParty":
+                {
+                    Party party = packageR.getParties().get(0);
+                    Person person = party.getPerson(party.getPeople().size()-1);
+                    String result = addParticipant(person, party);
+                    out2.writeObject(result);
                 }
                 default:{
                     System.out.println("glueeeee");
@@ -224,10 +238,6 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
 
     }
 
-    private List<Party> getPartiesForPerson(Person person) {
-        ///needs to be implemented
-        return null;
-    }
 
 
 }

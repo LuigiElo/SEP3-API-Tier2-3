@@ -1,11 +1,10 @@
 package server;
 
+
 import domain.Party;
 import domain.Person;
 
-import javax.annotation.PostConstruct;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -22,12 +21,11 @@ public class PartyPlannerService{
 
    @POST
    @Path("/createparty")
-   @Produces(MediaType.APPLICATION_JSON)
-   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(PageAttributes.MediaType.APPLICATION_JSON)
+   @Consumes(PageAttributes.MediaType.APPLICATION_JSON)
     public Party createParty(Party party) throws IOException {
         Party party1 = manager.createParty(party);
-        System.out.println("bug1");
-       return party1;
+        return party1;
 
    }
 
@@ -62,10 +60,25 @@ public class PartyPlannerService{
        return parties;
    }
 
-//   @POST
-//    @Path("/addPerson")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public String addPerson(Person person, Party party) throws IOException
-//       {}
+   @POST
+    @Path("/addPerson")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String addPerson(Party party) throws IOException
+       {
+
+           String result = manager.addPerson(party);
+           return result;
+       }
+
+    @GET
+    @Path("/searchPerson")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<Person> searchPerson(String smth)
+    {
+        List<Person> people = manager.searchPersonBySomething(smth);
+        return people;
+    }
+
 }

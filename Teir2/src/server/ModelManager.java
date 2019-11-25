@@ -17,20 +17,7 @@ public class ModelManager {
         this.db = new DatabaseConnection();
     }
 
-    public String addPerson(String personID, Party party)
-    {
-        String result ="";
 
-
-        return result;
-    }
-
-    public String addPerson(Person person, String partyID)
-    {
-        String result ="";
-
-        return result;
-    }
 
     public List<Person> searchPersonBySomething(String smth)
     {
@@ -53,11 +40,10 @@ public class ModelManager {
         return list;
     }
 
-    public String addPerson(Person person, Party party)
+    public String addPerson(Party party)
     {
         Package packageT = new Package();
-        packageT.setCommand("addPerson");
-        packageT.addPerson(person);
+        packageT.setCommand("addLastPersonToParty");
         packageT.addParty(party);
         String result = db.addPerson(packageT);
         return result;

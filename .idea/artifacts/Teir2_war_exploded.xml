@@ -16,10 +16,10 @@
         </element>
       </element>
       <element id="library" level="project" name="MyDatabase" />
-      <element id="library" level="project" name="javax.ws.rs-api-2.1.1" />
       <element id="library" level="project" name="gson-2.8.5" />
       <element id="library" level="project" name="jackson-core-2.2.3" />
       <element id="library" level="project" name="jackson-databind-2.10.1" />
+      <element id="library" level="application" name="javax.ws.rs-api-2.1.1" />
     </root>
   </artifact>
 </component>

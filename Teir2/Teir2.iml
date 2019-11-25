@@ -27,7 +27,7 @@
     <orderEntry type="library" name="gson-2.8.5" level="project" />
     <orderEntry type="module" module-name="RegretfulTry" />
     <orderEntry type="module" module-name="Persistance" />
-    <orderEntry type="library" name="javax.ws.rs-api-2.1.1" level="project" />
+    <orderEntry type="library" name="javax.ws.rs-api-2.1.1" level="application" />
     <orderEntry type="library" name="javax.servlet.jsp-api" level="project" />
     <orderEntry type="library" name="JAX-RS" level="project" />
     <orderEntry type="library" name="JAX-WS-Glassfish / JAX-WS 2.2 RI / Metro 1.X / JWSDP 2.2" level="project" />
