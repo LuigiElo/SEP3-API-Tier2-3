@@ -97,6 +97,11 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     }
 
     @Override
+    public void updatePerson(Person person) throws SQLException {
+        database.updatePerson(person);
+    }
+
+    @Override
     public void removeParticipant(Party party, Person person) throws SQLException {
         database.removeParticipant(party,person);
     }

@@ -29,5 +29,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="postgresql-42.2.8" level="project" />
+    <orderEntry type="library" name="javax.ws.rs-api-2.1.1" level="project" />
+    <orderEntry type="library" name="postgresql-42.2.82" level="project" />
   </component>
 </module>

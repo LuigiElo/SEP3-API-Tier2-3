@@ -6,7 +6,6 @@ public class Person implements Serializable {
 
     private int personID;
     private String name;
-    private String username;
     private String email;
     private String password;
     private boolean isHost;

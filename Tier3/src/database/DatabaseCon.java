@@ -20,6 +20,8 @@ public interface DatabaseCon extends Remote {
     public List<Party> getPartiesBySomething(String something) throws SQLException;
 
 
+    List<Party> getPartiesForPerson(Person person);
+
     Party getParty(int partyID) throws SQLException;
 
     public List<Person> getParticipants(String partyID) throws SQLException;
@@ -29,7 +31,7 @@ public interface DatabaseCon extends Remote {
     public List<Person> getPeopleByName(String name) throws SQLException;
 
 
-    void addParticipant(Person person, Party party) throws  SQLException;
+    String addParticipant(Person person, Party party) throws  SQLException;
     void addItem(Item item, Party party) throws  SQLException;
     Person createPerson(Person person) throws  SQLException; //register
     void createItem(Item item) throws  SQLException;

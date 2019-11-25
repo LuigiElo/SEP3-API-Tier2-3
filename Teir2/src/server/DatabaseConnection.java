@@ -65,7 +65,7 @@ public class DatabaseConnection {
         createSocket();
         try {
             out.writeObject(packageT);
-            String result = in.readUTF();
+            String result = (String) in.readObject();
             socket.close();
             return result;
         } catch (Exception e) {

@@ -4,6 +4,8 @@ package server;
 import domain.Party;
 import domain.Person;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
@@ -21,8 +23,8 @@ public class PartyPlannerService{
 
    @POST
    @Path("/createparty")
-   @Produces(PageAttributes.MediaType.APPLICATION_JSON)
-   @Consumes(PageAttributes.MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
     public Party createParty(Party party) throws IOException {
         Party party1 = manager.createParty(party);
         return party1;

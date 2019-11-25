@@ -16,7 +16,7 @@ public class DatabaseAccess implements DatabaseCon {
 
     private final String url = "jdbc:postgresql://localhost:5432/postgres";
     private final String user = "postgres";
-    private final String password = "postgres";
+    private final String password = "08191";
 
 
     public DatabaseAccess() {
@@ -139,7 +139,7 @@ public class DatabaseAccess implements DatabaseCon {
         {
             System.out.println("The person could not be added");
             e.printStackTrace();
-            return null;
+            return "fail";
         }
     }
 
@@ -147,7 +147,9 @@ public class DatabaseAccess implements DatabaseCon {
 
     @Override
     public List<Party> getPartiesForPerson(Person person) {
+///exception for getPartiesForPerson
 
+/// fail the unit test
         ResultSet rs;
         List<Party> parties = null;
 
@@ -222,6 +224,7 @@ public class DatabaseAccess implements DatabaseCon {
     @Override
     public List<Person> getPeopleByName(String smth) throws SQLException {
 
+        ///failed the test
         ResultSet rs;
         List<Person> people = null;
 
@@ -264,10 +267,8 @@ public class DatabaseAccess implements DatabaseCon {
 
 
 
-
     @Override
-    public Person login(Person person) throws SQLException {
-        //Probably should return the parties ¯\_(ツ)_/¯‍...
+
     public Person login(Person person) throws SQLException {
         //Roxy is usually right... (Except when it comes to Anne Hathaway vs Scarlett Johansson)
 
@@ -293,7 +294,7 @@ public class DatabaseAccess implements DatabaseCon {
                 String password = rs.getString("password");
                 String username = rs.getString("username");
 
-                person2 = new Person(personID,name,email,password,false);
+                person2 = new Person(personID,name,username, email,password,false);
             }
 
             return person2;
