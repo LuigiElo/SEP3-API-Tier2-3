@@ -39,5 +39,5 @@ public interface DatabaseCon extends Remote {
     public Party createParty(Party party)throws  SQLException;
 
 
-    List<String> login(Person person) throws SQLException;
+    List<Party> login(Person person) throws SQLException;
 }

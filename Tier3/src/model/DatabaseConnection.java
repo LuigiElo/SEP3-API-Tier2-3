@@ -107,12 +107,13 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
 
     public Party createParty(Party party) throws SQLException {
 
-        database.createParty(party);
-        return party;
+        Party party1 = database.createParty(party);
+
+        return party1;
     }
 
     @Override
-    public List<String> login(Person person) {
+    public List<Party> login(Person person) {
         ///needs to be implemented
         return null;
     }
@@ -196,9 +197,9 @@ public class DatabaseConnection implements Runnable,DatabaseCon {
                 }
                 case "login":
                 {
-                    Person person = packageR.getPeople().get(0);
+                    /*Person person = packageR.getPeople().get(0);
                     Person person1 = login(person);
-                    out2.writeObject(person1);
+                    out2.writeObject(person1);*/
                 }
                 case "getPartiesForPerson":
                 {

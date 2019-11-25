@@ -101,4 +101,19 @@ public class Party implements Serializable {
     public void setAddress(String address) {
         this.location= location;
     }
+
+    @Override
+    public String toString() {
+        return "Party{" +
+                "partyID='" + partyID + '\'' +
+                ", partyTitle='" + partyTitle + '\'' +
+                ", location='" + location + '\'' +
+                ", description='" + description + '\'' +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                ", items=" + items +
+                ", people=" + people +
+                '}';
+    }
 }
+

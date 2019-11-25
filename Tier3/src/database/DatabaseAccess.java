@@ -16,7 +16,7 @@ public class DatabaseAccess implements DatabaseCon {
 
     private final String url = "jdbc:postgresql://localhost:5432/postgres";
     private final String user = "postgres";
-    private final String password = "08191";
+    private final String password = "postgres";
 
 
     public DatabaseAccess() {
@@ -59,10 +59,12 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public List<String> login(Person person) throws SQLException {
+    public List<Party> login(Person person) throws SQLException {
         //Probably should return the parties ¯\_(ツ)_/¯‍...
 
         ResultSet rs;
+        connect();
+        List<Party> partyList = null;
 
         PreparedStatement statement = connection.prepareStatement
                 ("SELECT * FROM sep3.person_table WHERE email = "
@@ -70,13 +72,13 @@ public class DatabaseAccess implements DatabaseCon {
 
         rs = statement.executeQuery();
         close();
-
         if (rs.next()) {
 
             String personID = rs.getString("personID");
 
-            List<String> parties = new ArrayList<>(100);
+            List<String> partiesIDs = new ArrayList<>(100);
             ResultSet rs2;
+            connect();
             PreparedStatement statement2 = connection.prepareStatement
                     ("SELECT * FROM sep3.participates_in_party " +
                             "WHERE personid = " + personID + ";");
@@ -84,17 +86,26 @@ public class DatabaseAccess implements DatabaseCon {
             close();
 
             while (rs2.next()) {
-                parties.add(rs.getString("partyID"));
+                partiesIDs.add(rs.getString("partyID"));
             }
 
+            partyList = new ArrayList<>(100);
+
+            for (int i = 0; i < partiesIDs.size(); i++) {
+                partyList.add(getParty(partiesIDs.get(i)));
+            }
+            return partyList;
         }
 
         else {
+            System.out.println("User doesn't exist");
             System.out.println("No parties for you my friend... Yet?");
             return null;
         }
-
     }
+
+
+
 
     @Override
     public List<Party> getPartiesBySomething(String something) throws SQLException {
@@ -236,7 +247,7 @@ public class DatabaseAccess implements DatabaseCon {
     public List<Person> getPeopleByName(String name) throws SQLException {
         PreparedStatement statement = connection.prepareStatement
                 ("SELECT * FROM sep3.person_table");
-
+        return null;
     }
 
     @Override
@@ -327,13 +338,13 @@ public class DatabaseAccess implements DatabaseCon {
     public Party createParty(Party party) throws SQLException {
         connect();
         PreparedStatement statement = connection.prepareStatement
-                ("INSERT INTO sep3.party_table(description, address, date, partytitle, time) VALUES (?,?,?,?,?,?)");
+                ("INSERT INTO sep3.party_table(description, address, date, partytitle, time) VALUES (?,?,?,?,?)");
 //not working because of the first parameter
-        statement.setString(2, party.getDescription());
-        statement.setString(3, party.getLocation()); //address
-        statement.setString(4, party.getDate());
-        statement.setString(5, party.getPartyTitle());
-        statement.setString(6, party.getTime());
+        statement.setString(1, party.getDescription());
+        statement.setString(2, party.getLocation()); //address
+        statement.setString(3, party.getDate());
+        statement.setString(4, party.getPartyTitle());
+        statement.setString(5, party.getTime());
         statement.execute();
         close();
 
@@ -341,23 +352,31 @@ public class DatabaseAccess implements DatabaseCon {
         ResultSet rs;
 
         PreparedStatement statement1 = connection.prepareStatement
-                ("SELECT * FROM sep3.party_table WHERE description = "
-                        + party.getDescription() + " AND address = " + party.getLocation() + " AND date = "
-                        + party.getDate() + " AND partytitle = " + party.getPartyTitle() + " AND time = "
-                        + party.getTime() + ";");
+                ("SELECT * FROM sep3.party_table WHERE description = ? AND address = ? AND date = ? AND partytitle = ? AND time = ?;");
+        statement1.setString(1, party.getDescription());
+        statement1.setString(2, party.getLocation());
+        statement1.setString(3, party.getDate());
+        statement1.setString(4, party.getPartyTitle());
+        statement1.setString(5, party.getTime());
         rs = statement1.executeQuery();
-
-        String partyID = rs.getInt(1) + "";
-        String description = rs.getString(2);
-        String address = rs.getString(3);
-        String date = rs.getString(4);
-        String partyTitle = rs.getString(5);
-        String time = rs.getString(6);
         close();
 
-        Party party1 = new Party(partyTitle, description, address, partyID, date, time);
+        Party party1 = null;
+
+        while (rs.next()){
+
+            String partyID = rs.getInt(1) + "";
+            String description = rs.getString(2);
+            String address = rs.getString(3);
+            String date = rs.getString(4);
+            String partyTitle = rs.getString(5);
+            String time = rs.getString(6);
+            party1 = new Party(partyTitle, description, address, partyID, date, time);
+        }
+
 
         return party1;
+
     }
 
 
