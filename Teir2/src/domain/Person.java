@@ -4,25 +4,27 @@ import java.io.Serializable;
 
 public class Person implements Serializable {
 
-    private String personID;
+    private int personID;
     private String name;
+    private String username;
     private String email;
     private String password;
     private boolean isHost;
 
-    public Person(String personID, String name, String email, String password, boolean isHost) {
+    public Person(int personID, String name, String username, String email, String password, boolean isHost) {
         this.personID = personID;
         this.name = name;
+        this.username = username;
         this.email = email;
         this.password = password;
         this.isHost = isHost;
     }
 
-    public String getPersonID() {
+    public int getPersonID() {
         return personID;
     }
 
-    public void setPersonID(String personID) {
+    public void setPersonID(int personID) {
         this.personID = personID;
     }
 
@@ -56,5 +58,13 @@ public class Person implements Serializable {
 
     public void setHost(boolean host) {
         isHost = host;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

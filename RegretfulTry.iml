@@ -29,7 +29,7 @@
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 4.1.2" level="application_server_libraries" />
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 4.1.2 - RESTful Web Service" level="application_server_libraries" />
     <orderEntry type="library" name="MyDatabase" level="project" />
-    <orderEntry type="library" name="javax.ws.rs-api-2.1.1" level="project" />
+    <orderEntry type="library" name="javax.ws.rs-api-2.1.1" level="application" />
     <orderEntry type="module" module-name="Persistance" />
     <orderEntry type="library" name="gson-2.8.5" level="project" />
     <orderEntry type="library" name="jackson-core-2.2.3" level="project" />
