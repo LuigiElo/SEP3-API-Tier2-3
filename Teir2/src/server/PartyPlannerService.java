@@ -6,7 +6,6 @@ import domain.Person;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 

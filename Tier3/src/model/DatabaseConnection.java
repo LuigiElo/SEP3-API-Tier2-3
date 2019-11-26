@@ -180,6 +180,7 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                     Person person = packageR.getPeople().get(0);
                     Person person1 = createPerson(person);
                     out2.writeObject(person1);
+                    break;
 
                 }
                 case "addItem":
@@ -193,6 +194,7 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
 
                      String result = addParticipant(person, party);
                      out2.writeObject(result);
+                     break;
 
                 }
                 case "updateParty":
@@ -218,6 +220,7 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                     Person person = packageR.getPeople().get(0);
                     List<Party> parties = getPartiesForPerson(person);
                     out2.writeObject(parties);
+                    break;
                 }
                 case "addLastPersonToParty":
                 {
@@ -225,6 +228,7 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                     Person person = party.getPerson(party.getPeople().size()-1);
                     String result = addParticipant(person, party);
                     out2.writeObject(result);
+                    break;
                 }
                 default:{
                     System.out.println("glueeeee");

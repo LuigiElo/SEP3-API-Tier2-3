@@ -60,65 +60,59 @@ public class DatabaseAccess implements DatabaseCon {
 
     @Override
     public Person createPerson(Person person) throws SQLException {
-      ResultSet rs;
-      Person person1 = null;
-      try {
-          connect();
-          PreparedStatement statement = connection.prepareStatement("INSERT INTO sep3.person_table(name, email, password, username) VALUES(?,?,?,?)");
-          statement.setString(1, person.getName());
-          statement.setString(2, person.getEmail());
-          statement.setString(3, person.getPassword());
-          statement.setString(4, person.getUsername());
+        ResultSet rs;
+        Person person1 = null;
+        try {
+            connect();
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO sep3.person_table(name, email, password, username) VALUES(?,?,?,?)");
+            statement.setString(1, person.getName());
+            statement.setString(2, person.getEmail());
+            statement.setString(3, person.getPassword());
+            statement.setString(4, person.getUsername());
 
-          statement.executeUpdate();
-          close();
-      }
-      catch (SQLException e)
-      {
-          System.out.println("The person did not get created");
-          e.printStackTrace();
-          return null;
-      }
+            statement.executeUpdate();
+            close();
+        } catch (SQLException e) {
+            System.out.println("The person did not get created");
+            e.printStackTrace();
+            return null;
+        }
 
-      try {
-          connect();
-          PreparedStatement statement = connection.prepareStatement("SELECT * FROM sep3.person_table WHERE name =? AND email = ? AND password = ? AND username =?");
-          statement.setString(1, person.getName());
-          statement.setString(2, person.getEmail());
-          statement.setString(3, person.getPassword());
-          statement.setString(4, person.getUsername());
+        try {
+            connect();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM sep3.person_table WHERE name =? AND email = ? AND password = ? AND username =?");
+            statement.setString(1, person.getName());
+            statement.setString(2, person.getEmail());
+            statement.setString(3, person.getPassword());
+            statement.setString(4, person.getUsername());
 
-          rs = statement.executeQuery();
-          close();
+            rs = statement.executeQuery();
+            close();
 
-          do {
-              int personID = rs.getInt(1);
-              String name = rs.getString(2);
-              String email = rs.getString(3);
-              String password = rs.getString(4);
-              String username = rs.getString(5);
-              person1 = new Person(personID,name, username, email, password, false);
+            do {
+                int personID = rs.getInt(1);
+                String name = rs.getString(2);
+                String email = rs.getString(3);
+                String password = rs.getString(4);
+                String username = rs.getString(5);
+                person1 = new Person(personID, name, username, email, password, false);
 
-          }
-          while (rs.next());
-          return person1;
-      }
-      catch (SQLException e)
-      {
-          System.out.println("The person could not be retrieved");
-          e.printStackTrace();
-          return null;
-      }
+            }
+            while (rs.next());
+            return person1;
+        } catch (SQLException e) {
+            System.out.println("The person could not be retrieved");
+            e.printStackTrace();
+            return null;
+        }
     }
-
-
 
 
     @Override
     public String addParticipant(Person person, Party party) throws SQLException {
 
         ResultSet rs;
-        String result ="";
+        String result = "";
 
         int personID = person.getPersonID();
         int partyID = party.getPartyID();
@@ -134,9 +128,7 @@ public class DatabaseAccess implements DatabaseCon {
 
             statement.executeUpdate();
             return "success";
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println("The person could not be added");
             e.printStackTrace();
             return "fail";
@@ -144,44 +136,34 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
 
-
     @Override
     public List<Party> getPartiesForPerson(Person person) {
-///exception for getPartiesForPerson
-
-/// fail the unit test
         ResultSet rs;
-        List<Party> parties = null;
+        List<Party> parties = new ArrayList<Party>();
 
         int personID = person.getPersonID();
 
-        try{
+        try {
             connect();
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM sep3.participates_in_party WHERE personid =?");
+            PreparedStatement statement = connection.prepareStatement("SELECT partyid FROM sep3.participates_in_party WHERE personid =?");
             statement.setInt(1, personID);
             rs = statement.executeQuery();
             close();
 
-            int[] ids = new int[rs.getFetchSize()];
-            int index = 0;
-
-            while (rs.next())
-            {
-                int partyID = rs.getInt(1);
-                ids[index] = partyID;
-                index++;
+            ArrayList<Integer> ids = new ArrayList();
+            while (rs.next()) {
+                int partyID = rs.getInt("partyid");
+                ids.add(partyID);
 
             }
 
-            for (int id: ids)
-            {
+
+            for (int id : ids) {
                 Party party = getParty(id);
                 parties.add(party);
             }
             return parties;
-        }
-        catch (SQLException e)
-        {
+        } catch (Exception e) {
             System.out.println("The list of parties could not be retrieved");
             e.printStackTrace();
             return null;
@@ -194,25 +176,28 @@ public class DatabaseAccess implements DatabaseCon {
 
         connect();
         ResultSet rs;
-        try
-        {
+        try {
             PreparedStatement statement = connection.prepareStatement
                     ("SELECT * FROM sep3.party_table WHERE partyID = ?;");
             statement.setInt(1, partyID);
             rs = statement.executeQuery();
 
-            int partyid = rs.getInt(1);
-            String description = rs.getString(2);
-            String address = rs.getString(3);
-            String date = rs.getString(4);
-            String partyTitle = rs.getString(5);
-            String time = rs.getString(6);
+            Party party = null;
+            if(rs.next()) {
 
-            Party party = new Party(partyTitle,description,address,partyid,date,time);
+
+                int partyid = rs.getInt(1);
+                String description = rs.getString(2);
+                String address = rs.getString(3);
+                String date = rs.getString(4);
+                String partyTitle = rs.getString(5);
+                String time = rs.getString(6);
+
+                party = new Party(partyTitle, description, address, partyid, date, time);
+            }
+
             return party;
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println("The party could not be retrieved");
             e.printStackTrace();
             return null;
@@ -224,36 +209,33 @@ public class DatabaseAccess implements DatabaseCon {
     @Override
     public List<Person> getPeopleByName(String smth) throws SQLException {
 
-        ///failed the test
         ResultSet rs;
-        List<Person> people = null;
+        List<Person> people = new ArrayList<Person>();
 
-        try
-        {
+        try {
             connect();
             PreparedStatement statement = connection.prepareStatement("SELECT * from sep3.person_table WHERE name =? OR email = ? OR username = ? ;");
             statement.setString(1, smth);
-            statement.setString(2,smth);
+            statement.setString(2, smth);
             statement.setString(3, smth);
 
             rs = statement.executeQuery();
             close();
 
-            while (rs.next())
-            {
+            while (rs.next()) {
                 int personId = rs.getInt(1);
                 String name = rs.getString(2);
                 String email = rs.getString(3);
                 String username = rs.getString(5);
 
-                people.add(new Person(personId, name, username, email, null, false));
+                Person person = new Person(personId, name, username, email, null, false);
+                System.out.println(person.getUsername() +" " + person.getEmail());
+                people.add(person);
             }
 
             return people;
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println("The search could not be executed");
             e.printStackTrace();
             return null;
@@ -261,10 +243,6 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     }
-
-
-
-
 
 
     @Override
@@ -286,7 +264,7 @@ public class DatabaseAccess implements DatabaseCon {
 
         if (rs.next()) {
             if (rs.getString("username").equals(person.getUsername())
-                && rs.getString("password").equals(person.getPassword())) {
+                    && rs.getString("password").equals(person.getPassword())) {
 
                 int personID = rs.getInt("personid");
                 String name = rs.getString("name");
@@ -294,20 +272,16 @@ public class DatabaseAccess implements DatabaseCon {
                 String password = rs.getString("password");
                 String username = rs.getString("username");
 
-                person2 = new Person(personID,name,username, email,password,false);
+                person2 = new Person(personID, name, username, email, password, false);
             }
 
             return person2;
-        }
-
-        else {
+        } else {
             System.out.println("User doesn't exist");
             System.out.println("No parties for you my friend... Yet?");
             return null;
         }
     }
-
-
 
 
     @Override
@@ -328,7 +302,7 @@ public class DatabaseAccess implements DatabaseCon {
         close();
 
         while (rs.next()) {
-            int partyID = rs.getInt(1) ;
+            int partyID = rs.getInt(1);
             String description = rs.getString(2);
             String address = rs.getString(3);
             String date = rs.getString(4);
@@ -340,8 +314,6 @@ public class DatabaseAccess implements DatabaseCon {
         }
         return partyList;
     }
-
-
 
 
     @Override
@@ -380,7 +352,7 @@ public class DatabaseAccess implements DatabaseCon {
                 String password = rs.getString(4);
                 String username = rs.getString(5);
 
-                Person person = new Person(personID, name, email, password, username,false);
+                Person person = new Person(personID, name, email, password, username, false);
                 people.add(person);
             }
         }
@@ -429,7 +401,6 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
 
-
     @Override
     public void addItem(Item item, Party party) throws SQLException {
         PreparedStatement statement = connection.prepareStatement
@@ -438,7 +409,6 @@ public class DatabaseAccess implements DatabaseCon {
         statement.setString(2, item.getItemID());
         statement.executeQuery();
     }
-
 
 
     @Override
@@ -525,7 +495,7 @@ public class DatabaseAccess implements DatabaseCon {
 
         Party party1 = null;
 
-        while (rs.next()){
+        while (rs.next()) {
 
             int partyID = rs.getInt(1);
             String description = rs.getString(2);
