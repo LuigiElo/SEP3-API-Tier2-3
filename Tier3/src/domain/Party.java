@@ -13,6 +13,7 @@ public class Party implements Serializable {
     private String description;
     private String date;
     private String time;
+    private boolean isPrivate;
 
     private List<Item> items;
     private List<Person> people;
@@ -21,13 +22,14 @@ public class Party implements Serializable {
 
     }
 
-    public Party(String partyTitle, String description, String location, int partyID, String date, String time) {
+    public Party(String partyTitle, String description, String location, int partyID, String date, String time, boolean isPrivate) {
         this.partyTitle = partyTitle;
         this.description = description;
         this.location = location;
         this.partyID = partyID;
         this.date = date;
         this.time = time;
+        this.isPrivate = isPrivate;
         items = new ArrayList<>(100);
         people = new ArrayList<>(100);
     }
@@ -98,7 +100,13 @@ public class Party implements Serializable {
         this.description = description;
     }
 
+    public boolean isPrivate() {
+        return isPrivate;
+    }
 
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
 
     public void setAddress(String address) {
         this.location= location;

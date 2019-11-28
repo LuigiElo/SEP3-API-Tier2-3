@@ -193,7 +193,7 @@ public class DatabaseAccess implements DatabaseCon {
                 String partyTitle = rs.getString(5);
                 String time = rs.getString(6);
 
-                party = new Party(partyTitle, description, address, partyid, date, time);
+                party = new Party(partyTitle, description, address, partyid, date, time, false);
             }
 
             return party;
@@ -309,7 +309,7 @@ public class DatabaseAccess implements DatabaseCon {
             String partyTitle = rs.getString(5);
             String time = rs.getString(6);
 
-            Party party1 = new Party(partyTitle, description, address, partyID, date, time);
+            Party party1 = new Party(partyTitle, description, address, partyID, date, time, false);
             partyList.add(party1);
         }
         return partyList;
@@ -503,7 +503,7 @@ public class DatabaseAccess implements DatabaseCon {
             String date = rs.getString(4);
             String partyTitle = rs.getString(5);
             String time = rs.getString(6);
-            party1 = new Party(partyTitle, description, address, partyID, date, time);
+            party1 = new Party(partyTitle, description, address, partyID, date, time, false);
         }
 
 
