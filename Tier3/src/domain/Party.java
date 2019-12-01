@@ -14,6 +14,7 @@ public class Party implements Serializable {
     private String date;
     private String time;
 
+
     private List<Item> items;
     private List<Person> people;
 
@@ -103,6 +104,15 @@ public class Party implements Serializable {
     public void setAddress(String address) {
         this.location= location;
     }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
 
     @Override
     public String toString() {

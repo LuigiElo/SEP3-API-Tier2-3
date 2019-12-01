@@ -168,4 +168,22 @@ public class DatabaseConnection {
             return null;
         }
     }
+
+    public String addItems(Package packageT) {
+        createSocket();
+        try{
+            out.writeObject(packageT);
+            String result = (String) in.readObject();
+            socket.close();
+            return result;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+            }
+            return "fail";
+        }
+    }
 }

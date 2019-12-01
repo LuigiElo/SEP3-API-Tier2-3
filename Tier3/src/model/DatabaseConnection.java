@@ -33,6 +33,11 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
 
     }
 
+    @Override
+    public String addItems(Party party) throws SQLException
+    {
+        return database.addItems(party);
+    }
 
     @Override
     public Connection connect() throws SQLException {
@@ -76,8 +81,8 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     }
 
     @Override
-    public void addItem(Item item, Party party) throws SQLException {
-        database.addItem(item,party);
+    public String addItem(Item item, Party party) throws SQLException {
+        return database.addItem(item,party);
     }
 
     @Override
@@ -87,8 +92,8 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     }
 
     @Override
-    public void createItem(Item item) throws SQLException {
-        database.createItem(item);
+    public Item createItem(Item item) throws SQLException {
+        return database.createItem(item);
     }
 
     @Override
@@ -185,6 +190,11 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                 }
                 case "addItem":
                 {
+                    Party party = packageR.getParties().get(0);
+                    Item item = party.getItems().get(party.getItems().size()-1);
+                    String result = addItem(item, party);
+                    out2.writeObject(result);
+                    break;
 
                 }
                 case "addPerson":
@@ -227,6 +237,13 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                     Party party = packageR.getParties().get(0);
                     Person person = party.getPerson(party.getPeople().size()-1);
                     String result = addParticipant(person, party);
+                    out2.writeObject(result);
+                    break;
+                }
+                case "addItems":
+                {
+                    Party party = packageR.getParties().get(0);
+                    String result = addItems(party);
                     out2.writeObject(result);
                     break;
                 }

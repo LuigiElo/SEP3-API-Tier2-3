@@ -86,7 +86,7 @@ create table item_table
     itemid varchar not null
         constraint item_table_pk
             primary key,
-    price  real,
+    price  float,
     name   varchar
 );
 

@@ -89,16 +89,17 @@ public class DatabaseAccess implements DatabaseCon {
             rs = statement.executeQuery();
             close();
 
-            do {
+            while (rs.next()){
                 int personID = rs.getInt(1);
                 String name = rs.getString(2);
                 String email = rs.getString(3);
                 String password = rs.getString(4);
                 String username = rs.getString(5);
                 person1 = new Person(personID, name, username, email, password, false);
+                System.out.println(personID);
 
             }
-            while (rs.next());
+
             return person1;
         } catch (SQLException e) {
             System.out.println("The person could not be retrieved");
@@ -283,6 +284,52 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
+    @Override
+    public String addItems(Party party) throws SQLException {
+        try {
+            ResultSet rs;
+            connect();
+            PreparedStatement statement = connection.prepareStatement("SELECT count(partyid) from sep3.party_has_items where partyid = ?");
+            statement.setInt(1,party.getPartyID());
+            rs = statement.executeQuery();
+            close();
+
+            int count = 0;
+            while (rs.next())
+            {
+                count = rs.getInt(1);
+            }
+
+            System.out.println(count +" !!!!!!!!!!!!!!!!!!!!!!");
+            try {
+
+                for (int i = count; i < party.getItems().size(); i++)
+                {
+                    String s = addItem(party.getItem(i), party);
+                    if (s.equals("fail"))
+                    {
+                        return "fail";
+                    }
+                    System.out.println(s);
+                }
+
+            }
+            catch (Exception e)
+            {
+                System.out.println("The index doesn't match");
+                e.printStackTrace();
+                return "fail";
+            }
+
+            return "success";
+        }catch (Exception e)
+        {
+            System.out.println("Could not add the items");
+            e.printStackTrace();
+            return "fail";
+        }
+    }
+
 
     @Override
     public List<Party> getPartiesBySomething(String something) throws SQLException {
@@ -389,7 +436,7 @@ public class DatabaseAccess implements DatabaseCon {
 
             while (rs.next()) {
 
-                String itemID = rs.getString(1);
+                int itemID = rs.getInt(1);
                 Double price = rs.getDouble(2);
                 String name = rs.getString(3);
 
@@ -402,29 +449,111 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public void addItem(Item item, Party party) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement
-                ("INSERT INTO sep3.party_has_items VALUES (?,?);");
-        statement.setInt(1, party.getPartyID());
-        statement.setString(2, item.getItemID());
-        statement.executeQuery();
+    public String addItem(Item item, Party party) throws SQLException {
+        try {
+
+            Item item1 = createItem(item);
+
+            connect();
+            PreparedStatement statement = connection.prepareStatement
+                    ("INSERT INTO sep3.party_has_items(partyid, itemid) VALUES (?,?);");
+            statement.setInt(1, party.getPartyID());
+            statement.setInt(2, item1.getItemID());
+            statement.execute();
+            close();
+            return "success";
+        }catch (Exception e)
+        {
+            System.out.println("Could not add item");
+            e.printStackTrace();
+            return "fail";
+        }
+
     }
 
+    private Item getItem(Item item) throws SQLException {
+        try {
+            System.out.println("2");
+            ResultSet resultSet;
+            connect();
+            PreparedStatement statement = connection.prepareStatement("SELECT * from sep3.item_table WHERE price = ? AND name = ?");
+            statement.setDouble(1, item.getPrice());
+            statement.setString(2, item.getName());
+            resultSet = statement.executeQuery();
+            close();
+
+            System.out.println("3");
+            Item item1 = null;
+            while (resultSet.next())
+            {
+                System.out.println("4");
+                int id = resultSet.getInt(1);
+                System.out.println("5");
+                double price=  resultSet.getDouble(2);
+                System.out.println("6");
+                String name = resultSet.getString(3);
+                System.out.println("7");
+
+                item1 = new Item(id, price, name);
+                System.out.println("8");
+
+            }
+            System.out.println("9");
+            if (item1==null)
+            {
+                System.out.println("10");
+                throw  new SQLException("The item could not be retrieved");
+            }
+            else return item1;
+
+        }
+        catch (Exception e)
+        {
+            System.out.println("11");
+            System.out.println("The item could not be retrieved");
+            e.printStackTrace();
+            throw new SQLException("The item could not be retrieved");
+
+        }
+    }
 
     @Override
-    public void createItem(Item item) throws SQLException {
-        /*
-        The block below might need an if() check to make sure
-        there isn't one just like it already in the database.
-        However all the values are set to 'unique'
-        so it shouldn't be able to happen anyway.
-        */
-        PreparedStatement statement2 = connection.prepareStatement
-                ("INSERT INTO sep3.item_table VALUES (?,?,?);");
-        statement2.setString(1, item.getItemID());
-        statement2.setDouble(1, item.getPrice());
-        statement2.setString(1, item.getName());
-        statement2.executeQuery();
+    public Item createItem(Item item) throws SQLException {
+
+        Item item1 = null;
+        try {
+            System.out.println("1");
+             item1 = getItem(item);
+            System.out.println("1'a");
+             return item1;
+        }catch (SQLException e)
+        {
+            try {
+                connect();
+                System.out.println("12");
+                PreparedStatement statement2 = connection.prepareStatement
+                        ("INSERT INTO sep3.item_table(price, name) VALUES (?,?);");
+                statement2.setDouble(1, item.getPrice());
+                statement2.setString(2, item.getName());
+                System.out.println("13");
+                statement2.execute();
+                System.out.println("hello");
+                close();
+                System.out.println("14");
+                item1 = getItem(item);
+                System.out.println("15");
+                return item1;
+            }
+            catch (Exception ex)
+            {
+                System.out.println("16");
+                System.out.println("The important exception");
+                e.printStackTrace();
+                System.out.println("The item could not be created either");
+                return null;
+            }
+        }
+
     }
 
     @Override
@@ -462,7 +591,7 @@ public class DatabaseAccess implements DatabaseCon {
         PreparedStatement statement = connection.prepareStatement
                 ("DELETE FROM sep3.party_has_items WHERE partyID = ? AND itemID = ?;");
         statement.setInt(1, party.getPartyID());
-        statement.setString(2, item.getItemID());
+        statement.setInt(2, item.getItemID());
         statement.executeQuery();
     }
 
@@ -506,6 +635,7 @@ public class DatabaseAccess implements DatabaseCon {
             party1 = new Party(partyTitle, description, address, partyID, date, time);
         }
 
+        System.out.println(party1.toString());
 
         return party1;
 

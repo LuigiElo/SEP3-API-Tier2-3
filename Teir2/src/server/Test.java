@@ -1,5 +1,6 @@
 package server;
 
+import domain.Item;
 import domain.Party;
 import domain.Person;
 
@@ -35,11 +36,24 @@ public class Test {
 //        }
 
 
-        List<Person> people = service.searchPerson("rizer@spiri.com");
-        for (Person person:people)
-        {
-            System.out.println(person.getUsername());
-        }
-        System.out.println("sssssssss");
+//        List<Person> people = service.searchPerson("rizer@spiri.com");
+//        for (Person person:people)
+//        {
+//            System.out.println(person.getUsername());
+//        }
+//        System.out.println("sssssssss");
+
+
+        Item item1 = new Item(23, "Chips");
+        newParty.getItems().add(item1);
+        Item item113 = new Item(7.9, "Faxe Kondi");
+        newParty.getItems().add(item113);
+
+        Item item11 = new Item(8.899999618530273, "Coca Cola");
+        newParty.getItems().add(item11);
+        String sr =service.addItems(newParty);
+        System.out.println(sr);
+
+
     }
 }

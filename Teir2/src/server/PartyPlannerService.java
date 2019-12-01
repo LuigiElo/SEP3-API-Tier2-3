@@ -1,6 +1,7 @@
 package server;
 
 
+
 import domain.Party;
 import domain.Person;
 
@@ -25,6 +26,8 @@ public class PartyPlannerService{
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
     public Party createParty(Party party) throws IOException {
+
+
         Party party1 = manager.createParty(party);
         return party1;
 
@@ -40,7 +43,7 @@ public class PartyPlannerService{
        return person1;
    }
 
-   @GET
+   @POST
    @Path("/login")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
@@ -61,6 +64,7 @@ public class PartyPlannerService{
        return parties;
    }
 
+   ///make a new one for all the list of people
    @POST
     @Path("/addPerson")
     @Produces(MediaType.APPLICATION_JSON)
@@ -81,5 +85,29 @@ public class PartyPlannerService{
         List<Person> people = manager.searchPersonBySomething(smth);
         return people;
     }
+
+    @POST
+    @Path("/addPeople")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String addPeople(Party party)
+    {
+        String s ="fail";
+        return s;
+    }
+
+    @POST
+    @Path("/addItems")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+
+    public String addItems(Party party)
+    {
+        String s = "fail";
+        s = manager.addItems(party);
+        return s;
+    }
+
+
 
 }
