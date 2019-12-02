@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="javax.servlet.jsp-api">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/OneDrive/Desktop/javax.servlet.jsp-api.jar!/" />
+      <root url="jar://$USER_HOME$/OneDrive/Desktop/javax.ws.rs-api.jar!/" />
+      <root url="jar://$USER_HOME$/OneDrive/Desktop/javax.servlet-api.jar!/" />
+      <root url="jar://$USER_HOME$/OneDrive/Desktop/javax.ejb-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
