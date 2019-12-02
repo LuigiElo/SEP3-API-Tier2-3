@@ -14,7 +14,7 @@ public class Test {
         PartyPlannerService service = new PartyPlannerService();
 
         System.out.println("ssss");
-        Party newParty = new Party("PartyTitle", "TestForDatabase", "VIAUniversity", 1, "24-11-2019", "9:34", isPrivate);
+        Party newParty = new Party("PartyTitle", "TestForDatabase", "VIAUniversity", 1, "24-11-2019", "9:34", false);
 //        Party s = service.createParty(newParty);
 //        System.out.println(s.toString());
 

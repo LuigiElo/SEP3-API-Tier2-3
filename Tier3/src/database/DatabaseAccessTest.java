@@ -15,6 +15,8 @@ import static org.junit.Assert.*;
 public class DatabaseAccessTest {
 
     DatabaseCon database = new DatabaseAccess();
+    Person person = new Person(0,"Name", "Username", "user@FU.com", "password", false);
+    Party party = new Party();
 
     @org.junit.Test
     public void connect() throws SQLException {
@@ -41,8 +43,6 @@ public class DatabaseAccessTest {
     @org.junit.Test
     public void getParty() {
 
-        Party party = new Party();
-
         try {
             database.connect();
             database.createParty(party);
@@ -64,11 +64,23 @@ public class DatabaseAccessTest {
 
     @org.junit.Test
     public void getPeopleByName() {
-        
+        try {
+            String name = "Jim";
+            Person person = new Person(0,name,"Username","mail@mail.mail", "password", false);
+            database.createPerson(person);
+
+            assertEquals(database.getPeopleByName(name),name);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("doesn't work");
+        }
     }
 
     @org.junit.Test
     public void addParticipant() {
+
+
     }
 
     @org.junit.Test
@@ -78,7 +90,6 @@ public class DatabaseAccessTest {
     @org.junit.Test
     public void createPerson() {
         try {
-            Person person = new Person(0,"Name", "Username", "user@FU.com", "password", false);
             database.createPerson(person);
             assertEquals(database.getPeopleByName("Name").get(0), person);
         }
@@ -90,7 +101,6 @@ public class DatabaseAccessTest {
     @org.junit.Test
     public void createItem() {
         try {
-            Party party = new Party();
             database.createParty(party);
 
             Item testItem = new Item("1",1.0,"name");
@@ -121,8 +131,6 @@ public class DatabaseAccessTest {
 
     @org.junit.Test
     public void createParty() {
-
-        Party party = new Party();
 
         try {
             database.connect();
