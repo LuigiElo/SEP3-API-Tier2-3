@@ -4,10 +4,10 @@ SET SCHEMA 'sep3';
 
 create table item_table
 (
-    itemid varchar not null
+    itemid serial not null
         constraint item_table_pk
             primary key,
-    price  real,
+    price  float,
     name   varchar
 );
 
@@ -63,7 +63,7 @@ create table party_has_items
     partyid integer not null
         constraint party_has_items_party_table_partyid_fk
             references party_table,
-    itemid  varchar not null
+    itemid  integer not null
         constraint party_has_items_item_table_itemid_fk
             references item_table,
     constraint party_has_items_pk
