@@ -1,6 +1,9 @@
 package database;
 
+import domain.Item;
 import domain.Party;
+import domain.Person;
+import org.junit.internal.runners.statements.Fail;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,6 +13,10 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class DatabaseAccessTest {
+
+    DatabaseCon database = new DatabaseAccess();
+    Person person = new Person(0,"Name", "Username", "user@FU.com", "password", false);
+    Party party = new Party();
 
     @org.junit.Test
     public void connect() throws SQLException {
@@ -30,12 +37,21 @@ public class DatabaseAccessTest {
 
     @org.junit.Test
     public List<Party> getPartiesBySomething() {
-
         return null;
     }
 
     @org.junit.Test
     public void getParty() {
+
+        try {
+            database.connect();
+            database.createParty(party);
+            assertEquals(database.getParty(1).getPartyID(), 1);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("dunno, doesn't work");
+        }
     }
 
     @org.junit.Test
@@ -48,10 +64,23 @@ public class DatabaseAccessTest {
 
     @org.junit.Test
     public void getPeopleByName() {
+        try {
+            String name = "Jim";
+            Person person = new Person(0,name,"Username","mail@mail.mail", "password", false);
+            database.createPerson(person);
+
+            assertEquals(database.getPeopleByName(name),name);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("doesn't work");
+        }
     }
 
     @org.junit.Test
     public void addParticipant() {
+
+
     }
 
     @org.junit.Test
@@ -60,10 +89,31 @@ public class DatabaseAccessTest {
 
     @org.junit.Test
     public void createPerson() {
+        try {
+            database.createPerson(person);
+            assertEquals(database.getPeopleByName("Name").get(0), person);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @org.junit.Test
     public void createItem() {
+        try {
+            database.createParty(party);
+
+            Item testItem = new Item("1",1.0,"name");
+            Item item = new Item(null,1.0, "name");
+
+            database.createItem(item);
+            database.addItem(item,party);
+            assertEquals(database.getItems(party).get(0),testItem);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("doesn't work");
+        }
     }
 
     @org.junit.Test
@@ -81,5 +131,15 @@ public class DatabaseAccessTest {
 
     @org.junit.Test
     public void createParty() {
+
+        try {
+            database.connect();
+            database.createParty(party);
+            assertEquals(database.getParty(1).getPartyID(), 1);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("dunno, doesn't work");
+        }
     }
 }
