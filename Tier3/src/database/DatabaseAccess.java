@@ -599,13 +599,13 @@ public class DatabaseAccess implements DatabaseCon {
     public Party createParty(Party party) throws SQLException {
         connect();
         PreparedStatement statement = connection.prepareStatement
-                ("INSERT INTO sep3.party_table(description, address, date, partytitle, time) VALUES (?,?,?,?,?)");
-//not working because of the first parameter
+                ("INSERT INTO sep3.party_table(description, address, date, partytitle, time, isprivate ) VALUES (?,?,?,?,?,?)");
         statement.setString(1, party.getDescription());
         statement.setString(2, party.getLocation()); //address
         statement.setString(3, party.getDate());
         statement.setString(4, party.getPartyTitle());
         statement.setString(5, party.getTime());
+        statement.setBoolean(6, party.isPrivate());
         statement.execute();
         close();
 
@@ -613,12 +613,13 @@ public class DatabaseAccess implements DatabaseCon {
         ResultSet rs;
 
         PreparedStatement statement1 = connection.prepareStatement
-                ("SELECT * FROM sep3.party_table WHERE description = ? AND address = ? AND date = ? AND partytitle = ? AND time = ?;");
+                ("SELECT * FROM sep3.party_table WHERE description = ? AND address = ? AND date = ? AND partytitle = ? AND time = ? AND isprivate = ?;");
         statement1.setString(1, party.getDescription());
         statement1.setString(2, party.getLocation());
         statement1.setString(3, party.getDate());
         statement1.setString(4, party.getPartyTitle());
         statement1.setString(5, party.getTime());
+        statement1.setBoolean(6, party.isPrivate());
         rs = statement1.executeQuery();
         close();
 
@@ -632,7 +633,8 @@ public class DatabaseAccess implements DatabaseCon {
             String date = rs.getString(4);
             String partyTitle = rs.getString(5);
             String time = rs.getString(6);
-            party1 = new Party(partyTitle, description, address, partyID, date, time, false);
+            Boolean isPrivate = rs.getBoolean(7);
+            party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate);
         }
 
         System.out.println(party1.toString());

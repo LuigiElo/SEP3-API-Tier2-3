@@ -131,6 +131,7 @@ public class Party implements Serializable {
                 ", description='" + description + '\'' +
                 ", date='" + date + '\'' +
                 ", time='" + time + '\'' +
+                ", isPrivate='" + isPrivate +'\''+
                 ", items=" + items +
                 ", people=" + people +
                 '}';

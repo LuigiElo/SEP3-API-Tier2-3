@@ -27,6 +27,8 @@ public class PartyPlannerService{
    @Consumes(MediaType.APPLICATION_JSON)
     public Party createParty(Party party) throws IOException {
 
+       System.out.println("This is the party i got from the user");
+       System.out.println(party.toString());
 
         Party party1 = manager.createParty(party);
         return party1;
@@ -39,6 +41,8 @@ public class PartyPlannerService{
    @Consumes(MediaType.APPLICATION_JSON)
     public Person registerPerson(Person person)
    {
+       System.out.println("This is the person i got from the client");
+       System.out.println(person.toString());
        Person person1 = manager.registerPerson(person);
        return person1;
    }

@@ -14,6 +14,8 @@ public class Party implements Serializable {
     private String date;
     private String time;
     private boolean isPrivate;
+
+
     private List<Item> items;
     private List<Person> people;
 
@@ -129,6 +131,7 @@ public class Party implements Serializable {
                 ", description='" + description + '\'' +
                 ", date='" + date + '\'' +
                 ", time='" + time + '\'' +
+                ", isPrivate='" + isPrivate +'\''+
                 ", items=" + items +
                 ", people=" + people +
                 '}';

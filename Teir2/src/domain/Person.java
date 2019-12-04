@@ -72,4 +72,17 @@ public class Person implements Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
+
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "personID=" + personID +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", isHost=" + isHost +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }

@@ -146,8 +146,13 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
             {
                 case "createParty":
                 {
+
                     Party party = packageR.getParties().get(0);
                     Party returnParty = createParty(party);
+
+                    System.out.println("This is the party i got through sockets");
+                    System.out.println(party.toString());
+
                     out2.writeObject(returnParty);
                     break;
                 }
@@ -183,6 +188,10 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                 case "registerPerson":
                 {
                     Person person = packageR.getPeople().get(0);
+
+                    System.out.println("This is the person i got through sockets");
+                    System.out.println(person.toString());
+
                     Person person1 = createPerson(person);
                     out2.writeObject(person1);
                     break;

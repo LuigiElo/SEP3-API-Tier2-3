@@ -32,9 +32,9 @@ public interface DatabaseCon extends Remote {
 
 
     String addParticipant(Person person, Party party) throws  SQLException;
-    void addItem(Item item, Party party) throws  SQLException;
+    String addItem(Item item, Party party) throws  SQLException;
     Person createPerson(Person person) throws  SQLException; //register
-    void createItem(Item item) throws  SQLException;
+    Item createItem(Item item) throws  SQLException;
 
     void updateParty(Party party) throws  SQLException;
     void updatePerson(Person person) throws SQLException;
@@ -47,4 +47,6 @@ public interface DatabaseCon extends Remote {
 
 
     Person login(Person person) throws SQLException;
+
+    String addItems(Party party) throws SQLException;
 }

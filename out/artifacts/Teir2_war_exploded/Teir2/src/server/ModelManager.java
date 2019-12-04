@@ -125,4 +125,23 @@ public class ModelManager {
 
 
     }
+
+    public String addItems(Party party) {
+
+        Package packageT = new Package();
+        packageT.setCommand("addItems");
+        packageT.addParty(party);
+
+        try {
+
+            String result = db.addItems(packageT);
+            return result;
+        }
+        catch (Exception e)
+        {
+            System.out.println("We couldn't add the items");
+            e.printStackTrace();
+            return "fail";
+        }
+    }
 }

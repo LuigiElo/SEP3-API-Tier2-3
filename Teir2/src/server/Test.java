@@ -44,16 +44,23 @@ public class Test {
 //        System.out.println("sssssssss");
 
 
-        Item item1 = new Item(23, "Chips");
-        newParty.getItems().add(item1);
-        Item item113 = new Item(7.9, "Faxe Kondi");
-        newParty.getItems().add(item113);
+//        Item item1 = new Item(23, "Chips");
+//        newParty.getItems().add(item1);
+//        Item item113 = new Item(7.9, "Faxe Kondi");
+//        newParty.getItems().add(item113);
+//
+//        Item item11 = new Item(8.899999618530273, "Coca Cola");
+//        newParty.getItems().add(item11);
+//        String sr =service.addItems(newParty);
+//        System.out.println(sr);
 
-        Item item11 = new Item(8.899999618530273, "Coca Cola");
-        newParty.getItems().add(item11);
-        String sr =service.addItems(newParty);
-        System.out.println(sr);
 
+        //-------Privacy of party added
+
+        Party partyP = new Party("TestParty", "TestForDatabase2", "VIA UNI", 10,"29/11/2019", "12:00", true );
+        Party p = service.createParty(partyP);
+
+        System.out.println(p.toString());
 
     }
 }

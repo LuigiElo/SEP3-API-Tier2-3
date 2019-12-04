@@ -103,8 +103,8 @@ public class DatabaseAccessTest {
         try {
             database.createParty(party);
 
-            Item testItem = new Item("1",1.0,"name");
-            Item item = new Item(null,1.0, "name");
+            Item testItem = new Item(1,1.0,"name");
+            Item item = new Item(0,1.0, "name");
 
             database.createItem(item);
             database.addItem(item,party);
