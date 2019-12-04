@@ -112,6 +112,13 @@ public class PartyPlannerService{
         return s;
     }
 
+    @POST
+    @Path("/changePrivacy")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 
+    public boolean setPartyPrivacy(boolean privacy, Party party) {
+        return false; //todo
+    }
 
 }

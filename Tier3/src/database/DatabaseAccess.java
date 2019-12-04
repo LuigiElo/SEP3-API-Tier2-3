@@ -362,9 +362,20 @@ public class DatabaseAccess implements DatabaseCon {
         return partyList;
     }
 
+    @Override
+    public void setPartyPrivacy(boolean privacy, Party party) throws SQLException {
+
+        connect();
+        PreparedStatement statement = connection.prepareStatement("UPDATE sep3.party_table SET isprivate = ? WHERE partyid = ?;");
+        statement.setBoolean(1, privacy);
+        statement.setInt(2, party.getPartyID());
+        statement.executeUpdate();
+        close();
+    }
+
 
     @Override
-    public List<Person> getParticipants(String partyID) throws SQLException {
+    public List<Person> getParticipants(int partyID) throws SQLException {
 
         connect();
         ResultSet rs;
@@ -621,7 +632,6 @@ public class DatabaseAccess implements DatabaseCon {
         statement1.setString(5, party.getTime());
         statement1.setBoolean(6, party.isPrivate());
         rs = statement1.executeQuery();
-        close();
 
         Party party1 = null;
 
@@ -636,7 +646,9 @@ public class DatabaseAccess implements DatabaseCon {
             Boolean isPrivate = rs.getBoolean(7);
             party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate);
         }
+        close();
 
+        //only for testing
         System.out.println(party1.toString());
 
         return party1;

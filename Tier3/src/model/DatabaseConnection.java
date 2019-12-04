@@ -55,12 +55,17 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     }
 
     @Override
+    public void setPartyPrivacy(boolean privacy, Party party) throws SQLException {
+        database.setPartyPrivacy(privacy,party);
+    }
+
+    @Override
     public Party getParty(int partyID) throws SQLException {
         return database.getParty(partyID);
     }
 
     @Override
-    public List<Person> getParticipants(String partyID) throws SQLException {
+    public List<Person> getParticipants(int partyID) throws SQLException {
         return database.getParticipants(partyID);
     }
 
