@@ -162,6 +162,7 @@ public class DatabaseAccess implements DatabaseCon {
             for (int id : ids) {
                 Party party = getParty(id);
                 parties.add(party);
+                System.out.println(party.getPartyTitle());
             }
             return parties;
         } catch (Exception e) {

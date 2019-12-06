@@ -1,11 +1,9 @@
 package server;
 
-import domain.Item;
 import domain.Party;
 import domain.Person;
 
 import java.io.IOException;
-import java.util.List;
 
 public class Test {
 
@@ -57,10 +55,10 @@ public class Test {
 
         //-------Privacy of party added
 
-        Party partyP = new Party("TestParty", "TestForDatabase2", "VIA UNI", 10,"29/11/2019", "12:00", true );
-        Party p = service.createParty(partyP);
+        Party partyP = new Party("TestParty", "TestForDatabase2", "VIA UNI", 10,"29/11/2019", "12:00", true);
+//        Party p = service.createParty(partyP);
 
-        System.out.println(p.toString());
+//        System.out.println(p.toString());
 
     }
 }

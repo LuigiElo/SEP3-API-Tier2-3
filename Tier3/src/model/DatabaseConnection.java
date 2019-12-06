@@ -238,6 +238,7 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                     Person person = packageR.getPeople().get(0);
                     Person person1 = login(person);
                     out2.writeObject(person1);
+                    break;
                 }
                 case "getPartiesForPerson":
                 {

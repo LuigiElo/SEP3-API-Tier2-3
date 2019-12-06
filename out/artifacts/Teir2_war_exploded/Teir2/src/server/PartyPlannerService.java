@@ -27,11 +27,14 @@ public class PartyPlannerService{
    @Consumes(MediaType.APPLICATION_JSON)
     public Party createParty(Party party) throws IOException {
 
+//       System.out.println(party.toString());
+//        return null;
+
        System.out.println("This is the party i got from the user");
        System.out.println(party.toString());
-
-        Party party1 = manager.createParty(party);
-        return party1;
+       System.out.println("And this is the actual party entity");
+       Party party2 = manager.createParty(party);
+       return party2;
 
    }
 
@@ -59,11 +62,12 @@ public class PartyPlannerService{
    }
 
    @GET
-   @Path("/getPartiesForPerson")
+   @Path("/getPartiesForPerson/{personId}")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
-    public List<Party> getParties(Person person)
+    public List<Party> getParties(@PathParam("personId") int personId)
    {
+       Person person = new Person(personId, null, null, null, null,  false);
        List<Party> parties = manager.getParties(person);
        return parties;
    }
@@ -112,6 +116,13 @@ public class PartyPlannerService{
         return s;
     }
 
+    @POST
+    @Path("/changePrivacy")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 
+    public boolean setPartyPrivacy(boolean privacy, Party party) {
+        return false; //todo
+    }
 
 }
