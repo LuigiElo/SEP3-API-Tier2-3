@@ -11,10 +11,12 @@ public class MainDatabase {
 
         final int PORT = 1999;
         ServerSocket welcomeSocket= new ServerSocket(PORT);
+        DatabaseConnection connection = new DatabaseConnection();
         while (true){
             System.out.println("Waiting for a client...");
             Socket socket = welcomeSocket.accept();
-            Thread clientThread= new Thread(new DatabaseConnection(socket));
+            connection.setSocket(socket);
+            Thread clientThread= new Thread(connection);
             clientThread.start();}
 
 

@@ -3,6 +3,7 @@ package database;
 import domain.Item;
 import domain.Party;
 import domain.Person;
+import org.junit.Test;
 import org.junit.internal.runners.statements.Fail;
 
 import java.sql.Connection;
@@ -79,7 +80,16 @@ public class DatabaseAccessTest {
 
     @org.junit.Test
     public void addParticipant() {
-
+        try {
+            List<Person> people;
+            database.createParty(party);
+            database.addParticipant(person,party);
+            people = database.getParticipants(database.getParty(party.getPartyID()).getPartyID());
+            assertEquals(person,people.get(0));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("doesn't work");
+        }
 
     }
 
@@ -123,6 +133,23 @@ public class DatabaseAccessTest {
 
     @org.junit.Test
     public void removeParticipant() {
+
+        List<Person> people;
+        try {
+            database.createParty(party);
+            database.addParticipant(person,party);
+            people = database.getParticipants(database.getParty(party.getPartyID()).getPartyID());
+
+            if (people !=null) {
+                database.removeParticipant(party,person);
+                assertTrue("no people in this b*tch", people == null);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("doesn't work");
+        }
+
     }
 
     @org.junit.Test
@@ -141,5 +168,25 @@ public class DatabaseAccessTest {
             e.printStackTrace();
             fail("dunno, doesn't work");
         }
+    }
+
+    @Test
+    public void getPartiesForPerson() {
+    }
+
+    @Test
+    public void login() {
+    }
+
+    @Test
+    public void addItems() {
+    }
+
+    @Test
+    public void setPartyPrivacy() {
+    }
+
+    @Test
+    public void updatePerson() {
     }
 }

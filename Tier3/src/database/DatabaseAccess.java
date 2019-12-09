@@ -17,6 +17,7 @@ public class DatabaseAccess implements DatabaseCon {
     private final String url = "jdbc:postgresql://localhost:5432/postgres";
     private final String user = "postgres";
     private final String password = "08191";
+    private Person person2;
 
 
     public DatabaseAccess() {
@@ -197,11 +198,16 @@ public class DatabaseAccess implements DatabaseCon {
 
                 party = new Party(partyTitle, description, address, partyid, date, time, false);
             }
-
+            List<Item> items = getItems(party);
+            party.setItems(items);
+            List<Person> people = getParticipants(party.getPartyID());
+            party.setPeople(people);
+             close();
             return party;
         } catch (SQLException e) {
             System.out.println("The party could not be retrieved");
             e.printStackTrace();
+            close();
             return null;
         }
 
@@ -261,7 +267,6 @@ public class DatabaseAccess implements DatabaseCon {
         statement.setString(1, person.getUsername());
         statement.setString(2, person.getPassword());
         rs = statement.executeQuery();
-        close();
         Person person2 = null;
 
         if (rs.next()) {
@@ -427,7 +432,8 @@ public class DatabaseAccess implements DatabaseCon {
         connect();
         ResultSet rs;
         PreparedStatement statement = connection.prepareStatement
-                ("SELECT * FROM sep3.participates_in_party WHERE partyID = " + partyID + " AND isHost = false" + ";");
+                ("SELECT * FROM sep3.participates_in_party WHERE partyID = " + partyID);
+        //+ " AND isHost = false" + ";"
         rs = statement.executeQuery();
 
         List<String> participants = new ArrayList<>(100);
