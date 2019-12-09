@@ -19,12 +19,13 @@ public interface DatabaseCon extends Remote {
 
     public List<Party> getPartiesBySomething(String something) throws SQLException;
 
+    void setPartyPrivacy(boolean privacy, Party party) throws SQLException;
 
     List<Party> getPartiesForPerson(Person person);
 
     Party getParty(int partyID) throws SQLException;
 
-    public List<Person> getParticipants(String partyID) throws SQLException;
+    public List<Person> getParticipants(int partyID) throws SQLException;
 
     public List<Item> getItems(Party party) throws SQLException;
 

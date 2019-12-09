@@ -23,14 +23,21 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     private ObjectOutputStream out2;
     private ObjectInputStream in2;
 
-    public DatabaseConnection(Socket socket) throws IOException {
+    public DatabaseConnection()
+    {
+        this.database = new DatabaseAccess();
+    }
 
+    public DatabaseConnection(Socket socket) throws IOException {
 
         in2 = new ObjectInputStream(socket.getInputStream());
         out2 = new ObjectOutputStream(socket.getOutputStream());
 
-        this.database = new DatabaseAccess();
+    }
 
+    public void setSocket(Socket socket) throws IOException {
+        in2 = new ObjectInputStream(socket.getInputStream());
+        out2 = new ObjectOutputStream(socket.getOutputStream());
     }
 
     @Override
@@ -237,6 +244,7 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                 {
                     Person person = packageR.getPeople().get(0);
                     Person person1 = login(person);
+                    System.out.println(person1.getPersonID()+"!!!!!!!!!! is the id");
                     out2.writeObject(person1);
                     break;
                 }

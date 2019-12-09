@@ -3,6 +3,7 @@ package server;
 import domain.Package;
 import domain.Party;
 import domain.Person;
+import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.Pack;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -143,5 +144,16 @@ public class ModelManager {
             e.printStackTrace();
             return "fail";
         }
+    }
+
+    public boolean setPartyPrivacy(boolean privacy, Party party){
+
+        Package packageT = new Package();
+        packageT.setCommand("setPartyPrivacy");
+        party.setPrivate(privacy);
+        packageT.addParty(party);
+
+        db.setPartyPrivacy(packageT);
+        return privacy;
     }
 }

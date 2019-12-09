@@ -1,5 +1,6 @@
 package server;
 
+import domain.Item;
 import domain.Package;
 import domain.Party;
 import domain.Person;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.List;
 
 public class DatabaseConnection {
@@ -40,32 +42,12 @@ public class DatabaseConnection {
 
     }
 
-    public Party createParty(Package packageT) throws IOException {
-
-        createSocket();
-        out.writeObject(packageT);
-
-        try {
-            Party party = (Party) in.readObject();
-            socket.close();
-            return party;
-        } catch (Exception e) {
-            e.getMessage();
-            e.printStackTrace();
-            System.out.println("Something fucked uppppp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-            socket.close();
-            return null;
-        }
-
-    }
-
     public String addPerson(Package packageT) {
 
         createSocket();
         try {
-            out.writeObject(packageT);
-            String result = (String) in.readObject();
+            out.writeObject(packageT); //sending
+            String result = (String) in.readObject(); //receive
             socket.close();
             return result;
         } catch (Exception e) {
@@ -128,26 +110,11 @@ public class DatabaseConnection {
 
     }
 
-    public Person login(Package packageT) {
-        createSocket();
-        try {
-            out.writeObject(packageT);
-            Person person = (Person) in.readObject();
-            socket.close();
-            return person;
-        } catch (Exception e) {
-            e.getMessage();
-            e.printStackTrace();
-            try {
-                socket.close();
-            } catch (IOException ex) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-
+    public List<Party> getPartiesBySomething(Package packageT) {
+        return null;
     }
+
+    public void setPartyPrivacy(Package packageT) {}
 
     public List<Party> getPartiesForPerson(Package packageT) {
         createSocket();
@@ -167,6 +134,87 @@ public class DatabaseConnection {
             }
             return null;
         }
+    }
+
+    public Party getParty(Package packageT) {
+        return null;
+    }
+
+    public List<Person> getParticipants(Package packageT) {
+        return null;
+    }
+
+    public List<Item> getItems(Package packageT) {
+        return null;
+    }
+
+    public List<Person> getPeopleByName(Package packageT){
+        return null;
+    }
+
+    public String addParticipant(Package packageT) {
+        return null;
+    }
+
+    public String addItem(Package packageT) {
+        return null;
+    }
+
+    public Person createPerson(Package packageT) {
+        return null;
+    } //register
+
+    public Item createItem(Package packageT) {
+        return null;
+    }
+
+    public void updateParty(Package packageT) {}
+
+    public void updatePerson(Package packageT) {}
+
+    public void removeParticipant(Package packageT) {}
+
+    public void removeItem(Package packageT) {}
+
+    public Party createParty(Package packageT) throws IOException {
+
+        createSocket();
+        out.writeObject(packageT);
+
+        try {
+            Party party = (Party) in.readObject();
+            socket.close();
+            return party;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+            System.out.println("Something fucked uppppp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+            socket.close();
+            return null;
+        }
+
+    }
+
+    public Person login(Package packageT) {
+        createSocket();
+        try {
+            out.writeObject(packageT);
+            Person person = (Person) in.readObject();
+            socket.close();
+            return person;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+
     }
 
     public String addItems(Package packageT) {

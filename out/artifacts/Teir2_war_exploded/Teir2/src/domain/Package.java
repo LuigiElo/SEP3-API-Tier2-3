@@ -29,6 +29,7 @@ public class Package implements Serializable {
     private List<String> strings;
 
 
+
     /**
      * empthy constructor for the Package object.
      * Used in case of complex requests like assigning one item to a person. The Package should have a
@@ -49,12 +50,11 @@ public class Package implements Serializable {
      * @param parties
      * @param people
      * @param items
-     *
-     *  Constructor of the Package class. It takes a string parameter for the command.
-     *  The rest of the parameters are lists of possible objects that would summaries a request
-     *  of the client.
-     *  In the case of creating a party the Package will have the following form: a command "createParty" and a List<Party> containing
-     *  the party to be created
+*
+*  Constructor of the Package class. It takes a string parameter for the command.
+*  The rest of the parameters are lists of possible objects that would summaries a request
+*  of the client.
+*  In the case of creating a party the Package will have the following form: a command "createParty" and a List<Party> containing
      */
 
     public Package(String command, List<Party> parties, List<Person> people, List<Item> items, List<String> strings)
@@ -185,7 +185,6 @@ public class Package implements Serializable {
     {
         items.remove(item);
     }
-
 
     public List<String> getStrings() {
         return strings;

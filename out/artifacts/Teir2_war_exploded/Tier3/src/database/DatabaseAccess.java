@@ -17,6 +17,7 @@ public class DatabaseAccess implements DatabaseCon {
     private final String url = "jdbc:postgresql://localhost:5432/postgres";
     private final String user = "postgres";
     private final String password = "08191";
+    private Person person2;
 
 
     public DatabaseAccess() {
@@ -162,6 +163,7 @@ public class DatabaseAccess implements DatabaseCon {
             for (int id : ids) {
                 Party party = getParty(id);
                 parties.add(party);
+                System.out.println(party.getPartyTitle());
             }
             return parties;
         } catch (Exception e) {
@@ -196,11 +198,16 @@ public class DatabaseAccess implements DatabaseCon {
 
                 party = new Party(partyTitle, description, address, partyid, date, time, false);
             }
-
+            List<Item> items = getItems(party);
+            party.setItems(items);
+            List<Person> people = getParticipants(party.getPartyID());
+            party.setPeople(people);
+             close();
             return party;
         } catch (SQLException e) {
             System.out.println("The party could not be retrieved");
             e.printStackTrace();
+            close();
             return null;
         }
 
@@ -260,7 +267,6 @@ public class DatabaseAccess implements DatabaseCon {
         statement.setString(1, person.getUsername());
         statement.setString(2, person.getPassword());
         rs = statement.executeQuery();
-        close();
         Person person2 = null;
 
         if (rs.next()) {
@@ -362,14 +368,26 @@ public class DatabaseAccess implements DatabaseCon {
         return partyList;
     }
 
+    @Override
+    public void setPartyPrivacy(boolean privacy, Party party) throws SQLException {
+
+        connect();
+        PreparedStatement statement = connection.prepareStatement("UPDATE sep3.party_table SET isprivate = ? WHERE partyid = ?;");
+        statement.setBoolean(1, privacy);
+        statement.setInt(2, party.getPartyID());
+        statement.executeUpdate();
+        close();
+    }
+
 
     @Override
-    public List<Person> getParticipants(String partyID) throws SQLException {
+    public List<Person> getParticipants(int partyID) throws SQLException {
 
         connect();
         ResultSet rs;
         PreparedStatement statement = connection.prepareStatement
-                ("SELECT * FROM sep3.participates_in_party WHERE partyID = " + partyID + " AND isHost = false" + ";");
+                ("SELECT * FROM sep3.participates_in_party WHERE partyID = " + partyID);
+        //+ " AND isHost = false" + ";"
         rs = statement.executeQuery();
 
         List<String> participants = new ArrayList<>(100);
@@ -621,7 +639,6 @@ public class DatabaseAccess implements DatabaseCon {
         statement1.setString(5, party.getTime());
         statement1.setBoolean(6, party.isPrivate());
         rs = statement1.executeQuery();
-        close();
 
         Party party1 = null;
 
@@ -636,7 +653,9 @@ public class DatabaseAccess implements DatabaseCon {
             Boolean isPrivate = rs.getBoolean(7);
             party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate);
         }
+        close();
 
+        //only for testing
         System.out.println(party1.toString());
 
         return party1;
