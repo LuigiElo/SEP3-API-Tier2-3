@@ -42,7 +42,7 @@ public interface DatabaseCon extends Remote {
 
     void removeParticipant(Party party, Person person) throws SQLException;
 
-    void removeItem(Party party, Item item) throws SQLException;
+    String removeItem(Party party, Item item) throws SQLException;
 
     public Party createParty(Party party) throws SQLException;
 
@@ -50,4 +50,6 @@ public interface DatabaseCon extends Remote {
     Person login(Person person) throws SQLException;
 
     String addItems(Party party) throws SQLException;
+
+    String removeItems(Party party) throws SQLException;
 }

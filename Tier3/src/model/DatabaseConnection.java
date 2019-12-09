@@ -40,6 +40,11 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     }
 
     @Override
+    public String removeItems(Party party) throws SQLException {
+        return database.removeItems(party);
+    }
+
+    @Override
     public Connection connect() throws SQLException {
         return database.connect();
     }
@@ -117,8 +122,8 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     }
 
     @Override
-    public void removeItem(Party party, Item item) throws SQLException {
-        database.removeItem(party, item);
+    public String removeItem(Party party, Item item) throws SQLException {
+        return database.removeItem(party, item);
     }
 
     public Party createParty(Party party) throws SQLException {
@@ -231,7 +236,11 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                 }
                 case "removeItem":
                 {
-
+                    Party party = packageR.getParties().get(0);
+                    Item item = party.getItems().get(party.getItems().size()-1);
+                    String result = removeItem(party, item);
+                    out2.writeObject(result);
+                    break;
                 }
                 case "login":
                 {
@@ -276,9 +285,5 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
             e.printStackTrace();
             System.out.println("Hellllllllllllllo");
         }
-
     }
-
-
-
 }

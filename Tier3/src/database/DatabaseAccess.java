@@ -323,9 +323,55 @@ public class DatabaseAccess implements DatabaseCon {
             }
 
             return "success";
-        }catch (Exception e)
-        {
+        }
+        catch (Exception e) {
             System.out.println("Could not add the items");
+            e.printStackTrace();
+            return "fail";
+        }
+    }
+
+    @Override
+    public String removeItems(Party party) throws SQLException {
+        try {
+            ResultSet rs;
+            connect();
+            PreparedStatement statement = connection.prepareStatement("SELECT count(partyid) from sep3.party_has_items where partyid = ?");
+            statement.setInt(1,party.getPartyID());
+            rs = statement.executeQuery();
+            close();
+
+            int count = 0;
+            while (rs.next())
+            {
+                count = rs.getInt(1);
+            }
+
+            System.out.println(count +" !!!!!!!!!!!!!!!!!!!!!!");
+            try {
+
+                for (int i = count; i < party.getItems().size(); i++)
+                {
+                    String s = removeItem(party , party.getItem(i));
+                    if (s.equals("fail"))
+                    {
+                        return "fail";
+                    }
+                    System.out.println(s);
+                }
+
+            }
+            catch (Exception e)
+            {
+                System.out.println("The index doesn't match");
+                e.printStackTrace();
+                return "fail";
+            }
+
+            return "success";
+        }
+        catch (Exception e) {
+            System.out.println("Could not remove the items");
             e.printStackTrace();
             return "fail";
         }
@@ -598,13 +644,19 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void removeItem(Party party, Item item) throws SQLException {
+    public String removeItem(Party party, Item item) throws SQLException {
 
-        PreparedStatement statement = connection.prepareStatement
-                ("DELETE FROM sep3.party_has_items WHERE partyID = ? AND itemID = ?;");
-        statement.setInt(1, party.getPartyID());
-        statement.setInt(2, item.getItemID());
-        statement.executeQuery();
+        try {
+            PreparedStatement statement = connection.prepareStatement
+                    ("DELETE FROM sep3.party_has_items WHERE partyID = ? AND itemID = ?;");
+            statement.setInt(1, party.getPartyID());
+            statement.setInt(2, item.getItemID());
+            statement.executeQuery();
+            return "item removed";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "fucked up";
+        }
     }
 
     @Override

@@ -5,12 +5,10 @@ import domain.Package;
 import domain.Party;
 import domain.Person;
 
-import javax.net.ssl.HostnameVerifier;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.sql.SQLException;
 import java.util.List;
 
 public class DatabaseConnection {
@@ -60,9 +58,13 @@ public class DatabaseConnection {
             }
             return "fail";
         }
+    }
+
+    public String addPeople(Package packageT) {
 
 
 
+        return "";
     }
 
     public List<Person> searchPersonBySmth(Package packageT) {
@@ -76,7 +78,7 @@ public class DatabaseConnection {
         } catch (Exception e) {
             e.getMessage();
             e.printStackTrace();
-            System.out.println("The list is emphy or smth is wrong");
+            System.out.println("The list is empty or smth is wrong");
             try {
                 socket.close();
             } catch (IOException ex) {
@@ -174,7 +176,24 @@ public class DatabaseConnection {
 
     public void removeParticipant(Package packageT) {}
 
-    public void removeItem(Package packageT) {}
+    public String removeItems(Package packageT) {
+
+            try {
+                createSocket();
+                out.writeObject(packageT);
+                String result = (String) in.readObject();
+                socket.close();
+                return result;
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+
+                try {
+                    socket.close();
+                } catch (IOException ex) {
+                }
+                return "fail";
+            }
+    }
 
     public Party createParty(Package packageT) throws IOException {
 
@@ -218,6 +237,7 @@ public class DatabaseConnection {
     }
 
     public String addItems(Package packageT) {
+
         createSocket();
         try{
             out.writeObject(packageT);
