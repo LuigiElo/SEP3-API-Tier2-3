@@ -2,6 +2,7 @@ package server;
 
 
 
+import domain.BoxTier2;
 import domain.Party;
 import domain.Person;
 
@@ -123,6 +124,15 @@ public class PartyPlannerService{
 
     public boolean setPartyPrivacy(boolean privacy, Party party) {
         return false; //todo
+    }
+
+    @POST
+    @Path("/updateParty")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+
+    public void updateParty(BoxTier2 box) {
+        manager.updateParty(box);
     }
 
 }
