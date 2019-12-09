@@ -102,6 +102,7 @@ public class PartyPlannerService{
     public String addPeople(Party party)
     {
         String s ="fail";
+        s = manager.addPerson(party);
         return s;
     }
 

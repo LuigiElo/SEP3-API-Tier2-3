@@ -62,9 +62,22 @@ public class DatabaseConnection {
 
     public String addPeople(Package packageT) {
 
-
-
-        return "";
+        createSocket();
+        try {
+            out.writeObject(packageT); //sending
+            String result = (String) in.readObject(); //receive
+            socket.close();
+            return result;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return "fail";
+        }
     }
 
     public List<Person> searchPersonBySmth(Package packageT) {
@@ -198,9 +211,9 @@ public class DatabaseConnection {
     public Party createParty(Package packageT) throws IOException {
 
         createSocket();
-        out.writeObject(packageT);
 
         try {
+            out.writeObject(packageT);
             Party party = (Party) in.readObject();
             socket.close();
             return party;

@@ -37,6 +37,7 @@ public class ModelManager {
         if (box.getItemsRemoved().size()>=1) {
             Package packageT = new Package();
             packageT.setCommand("removeItem");
+
             for (int i = 0; i < box.getItemsRemoved().size(); i++) {
                 packageT.addItem(box.getItemsRemoved().get(i));
             }
@@ -50,6 +51,22 @@ public class ModelManager {
             Package packageT = new Package();
             packageT.setCommand("addPeople");
 
+            for (int i = 0; i < packageT.getPeople().size(); i++) {
+                packageT.addPerson(box.getPeopleAdded().get(i));
+            }
+            db.addPeople(packageT);
+        }
+        else {
+            System.out.println("adding people doesn't work");
+        }
+
+        if (box.getItemsRemoved().size()>=1) {
+            Package packageT = new Package();
+            packageT.setCommand("addPeople");
+
+            for (int i = 0; i < box.getPeopleRemoved().size(); i++) {
+
+            }
         }
     }
 
@@ -67,7 +84,6 @@ public class ModelManager {
         {
             System.out.println("The person could not be found");
             return null;
-
         }
         return list;
     }
@@ -78,6 +94,14 @@ public class ModelManager {
         packageT.setCommand("addLastPersonToParty");
         packageT.addParty(party);
         String result = db.addPerson(packageT);
+        return result;
+    }
+
+    public String addPeople(Party party) {
+        Package packageT = new Package();
+        packageT.setCommand("addPeople");
+        packageT.addParty(party);
+        String result = db.addPeople(packageT);
         return result;
     }
 
