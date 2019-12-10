@@ -1,7 +1,7 @@
 package model;
 
 
-import database.DatabaseAccess;
+import database.*;
 import database.DatabaseCon;
 import domain.Item;
 import domain.Package;
@@ -67,8 +67,8 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     }
 
     @Override
-    public void setPartyPrivacy(boolean privacy, Party party) throws SQLException {
-        database.setPartyPrivacy(privacy,party);
+    public String setPartyPrivacy(boolean privacy, Party party) throws SQLException {
+       return database.setPartyPrivacy(privacy,party);
     }
 
     @Override

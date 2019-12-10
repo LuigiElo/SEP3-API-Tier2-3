@@ -65,8 +65,9 @@ public class ModelManager {
             packageT.setCommand("addPeople");
 
             for (int i = 0; i < box.getPeopleRemoved().size(); i++) {
-
+                packageT.addPerson(box.getPeopleRemoved().get(i));
             }
+            db.removePeople(packageT);
         }
     }
 

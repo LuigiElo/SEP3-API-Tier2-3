@@ -415,7 +415,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void setPartyPrivacy(boolean privacy, Party party) throws SQLException {
+    public String setPartyPrivacy(boolean privacy, Party party) throws SQLException {
 
         connect();
         PreparedStatement statement = connection.prepareStatement("UPDATE sep3.party_table SET isprivate = ? WHERE partyid = ?;");
@@ -423,6 +423,13 @@ public class DatabaseAccess implements DatabaseCon {
         statement.setInt(2, party.getPartyID());
         statement.executeUpdate();
         close();
+
+        connect();
+        PreparedStatement statement1 = connection.prepareStatement("SELECT * FROM sep3.party_table WHERE partyid = ?;");
+        statement1.setInt(1, party.getPartyID());
+
+        ResultSet rs = statement1.executeQuery();
+        return "Party: " + party.toString() + " is: " + rs.getString("isPrivate");
     }
 
 
