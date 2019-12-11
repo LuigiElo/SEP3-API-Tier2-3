@@ -147,7 +147,25 @@ public class DatabaseConnection {
     }
 
     public List<Item> getItems(Package packageT) {
-        return null;
+
+        createSocket();
+        try {
+            out.writeObject(packageT);
+            List<Item> list = (List<Item>) in.readObject();
+            socket.close();
+            return list;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
+
     }
 
     public List<Person> getPeopleByName(Package packageT){

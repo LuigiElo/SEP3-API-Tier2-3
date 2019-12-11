@@ -182,8 +182,12 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                     out2.writeObject(list);
                     break;
                 }
-                case "getItems":
+                case "getItemsForParty":
                 {
+                    int partyId = packageR.getParties().get(0).getPartyID();
+                    List<Item> list = getItems(partyId);
+                    out2.writeObject(list);
+                    break;
 
                 }
                 case "getParticipants":
@@ -292,6 +296,12 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Hellllllllllllllo");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    public List<Item> getItems(int partyId) throws Exception {
+        return database.getItems(partyId);
     }
 }

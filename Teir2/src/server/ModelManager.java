@@ -1,9 +1,7 @@
 package server;
 
-import domain.BoxTier2;
+import domain.*;
 import domain.Package;
-import domain.Party;
-import domain.Person;
 import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.Pack;
 
 import java.io.IOException;
@@ -208,7 +206,21 @@ public class ModelManager {
         party.setPrivate(privacy);
         packageT.addParty(party);
 
+        //this is not very correct. In case where smth fucks up, the server will throw an exception, break, but the
+        //client will not see that because you are not returning him that,
+        //only a half way response
         db.setPartyPrivacy(packageT);
         return privacy;
+    }
+
+    public List<Item> getItems(int partyId) {
+        Package packageT = new Package();
+        packageT.setCommand("getItemsForParty");
+        Party party = new Party();
+        party.setPartyID(partyId);
+        packageT.addParty(party);
+
+        List<Item> items = db.getItems(packageT);
+        return items;
     }
 }

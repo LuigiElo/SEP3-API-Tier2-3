@@ -69,6 +69,8 @@ public class Party implements Serializable {
         this.people.add(index, person);
     }
 
+    public void setPeople(List<Person> people) {this.people = people;}
+
     public String getDate() {
         return date;
     }

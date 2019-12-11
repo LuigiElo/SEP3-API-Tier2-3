@@ -52,4 +52,6 @@ public interface DatabaseCon extends Remote {
     String addItems(Party party) throws SQLException;
 
     String removeItems(Party party) throws SQLException;
+
+    List<Item> getItems(int partyId) throws Exception;
 }

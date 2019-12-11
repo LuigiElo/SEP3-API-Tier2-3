@@ -382,6 +382,57 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
+    @Override
+    public List<Item> getItems(int partyId) throws Exception {
+
+        ResultSet rs;
+        try{
+            connect();
+            PreparedStatement statement = connection.prepareStatement
+                    ("SELECT * FROM sep3.party_has_items WHERE partyID = " + partyId + ";");
+            rs = statement.executeQuery();
+            List<Integer> itemsInParty = new ArrayList<>(100);
+
+            while (rs.next()) {
+
+                int itemID = rs.getInt(2);
+
+                itemsInParty.add(itemID);
+            }
+
+            List<Item> items = new ArrayList<>(100);
+
+            for (int i = 0; i < itemsInParty.size(); i++) {
+
+                rs = null;
+                connect();
+                statement = connection.prepareStatement
+                        ("SELECT * FROM sep3.item_table WHERE itemID = " + itemsInParty.get(i) + ";");
+                rs = statement.executeQuery();
+
+                while (rs.next()) {
+
+                    int itemID = rs.getInt(1);
+                    Double price = rs.getDouble(2);
+                    String name = rs.getString(3);
+
+                    Item item = new Item(itemID, price, name);
+                    items.add(item);
+                }
+            }
+            return items;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            close();
+            throw new Exception("Couln't get the items");
+
+        }
+
+
+
+    }
+
 
     @Override
     public List<Party> getPartiesBySomething(String something) throws SQLException {
@@ -621,7 +672,9 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void updateParty(Party party) throws SQLException {
+    public void updateParty(Party party) throws SQLException
+    {
+        //todo put in try catch, add privacy, return the Party if all gucci return null if fucked up
         PreparedStatement statement = connection.prepareStatement
                 ("UPDATE sep3.party_table SET description = ?, address = ?, date = ?, partytitle = ?, time = ? WHERE partyid = ?;");
         //set

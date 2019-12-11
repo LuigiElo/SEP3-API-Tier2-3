@@ -3,6 +3,7 @@ package server;
 
 
 import domain.BoxTier2;
+import domain.Item;
 import domain.Party;
 import domain.Person;
 
@@ -134,5 +135,16 @@ public class PartyPlannerService{
     public void updateParty(BoxTier2 box) {
         manager.updateParty(box);
     }
+
+    @GET
+    @Path("getItemsForParty/{partyId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<Item> getItemsForParty(@PathParam("partyId") int partyId)
+    {
+        List<Item> items = manager.getItems(partyId);
+        return items;
+    }
+
 
 }
