@@ -627,6 +627,7 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public Party updateParty(Party party) throws SQLException {
 
@@ -634,13 +635,14 @@ public class DatabaseAccess implements DatabaseCon {
         try {
             connect();
             PreparedStatement statement = connection.prepareStatement
-                    ("UPDATE sep3.party_table SET description = ?, address = ?, date = ?, partytitle = ?, time = ? WHERE partyid = ?;");
+                    ("UPDATE sep3.party_table SET description = ?, address = ?, date = ?, partytitle = ?, time = ?, isprivate = ? WHERE partyid = ?;");
             //set
             statement.setString(1, party.getDescription());
             statement.setString(2, party.getLocation());
             statement.setString(3, party.getDate());
             statement.setString(4, party.getPartyTitle());
             statement.setString(5, party.getTime());
+            statement.setBoolean(6, party.isPrivate());
             //where
             statement.setInt(6, party.getPartyID());
             statement.executeUpdate();
