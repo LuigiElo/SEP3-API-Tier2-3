@@ -223,7 +223,28 @@ public class DatabaseConnection {
         return null;
     }
 
-    public void updateParty(Package packageT) {}
+    public Party updateParty(Package packageT) {
+
+        createSocket();
+
+        try {
+            out.writeObject(packageT);
+            Party party = (Party) in.readObject();
+            socket.close();
+            return party;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+            System.out.println("Something fucked uppppp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
+    }
 
     public void updatePerson(Package packageT) {}
 
@@ -305,6 +326,25 @@ public class DatabaseConnection {
             } catch (IOException ex) {
             }
             return "fail";
+        }
+    }
+
+    public Party updatePartyP(Package packageT) {
+
+        createSocket();
+        try{
+            out.writeObject(packageT);
+            Party result = (Party) in.readObject();
+            socket.close();
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+            }
+            return null;
         }
     }
 }

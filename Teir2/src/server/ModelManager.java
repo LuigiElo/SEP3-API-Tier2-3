@@ -234,4 +234,13 @@ public class ModelManager {
         db.setPartyPrivacy(packageT);
         return privacy;
     }
+
+    public Party updatePartyD(Party party) {
+        Package packageT = new Package();
+        packageT.setCommand("updatePartyD");
+        packageT.addParty(party);
+
+        Party result = db.updatePartyP(packageT);
+        return result;
+    }
 }

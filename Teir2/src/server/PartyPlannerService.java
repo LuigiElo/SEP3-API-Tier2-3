@@ -6,6 +6,8 @@ import domain.BoxTier2;
 import domain.Party;
 import domain.Person;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
@@ -134,6 +136,17 @@ public class PartyPlannerService{
 
     public void updateParty(BoxTier2 box) {
         manager.updateParty(box);
+    }
+
+
+    @POST
+    @Path("/updatePartyD")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Party updatePartyD(Party party)
+    {
+        Party result = manager.updatePartyD(party);
+        return result;
     }
 
 }
