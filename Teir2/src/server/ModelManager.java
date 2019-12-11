@@ -60,9 +60,9 @@ public class ModelManager {
             System.out.println("adding people doesn't work");
         }
 
-        if (box.getItemsRemoved().size()>=1) {
+        if (box.getPeopleRemoved().size()>=1) {
             Package packageT = new Package();
-            packageT.setCommand("addPeople");
+            packageT.setCommand("removePeople");
 
             for (int i = 0; i < box.getPeopleRemoved().size(); i++) {
                 packageT.addPerson(box.getPeopleRemoved().get(i));
@@ -223,8 +223,6 @@ public class ModelManager {
             return "fail";
         }
     }
-
-
 
     public boolean setPartyPrivacy(boolean privacy, Party party){
 

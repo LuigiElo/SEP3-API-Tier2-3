@@ -124,7 +124,7 @@ public class PartyPlannerService{
     @Consumes(MediaType.APPLICATION_JSON)
 
     public boolean setPartyPrivacy(boolean privacy, Party party) {
-        return false; //todo
+        return manager.setPartyPrivacy(privacy,party);
     }
 
     @POST
