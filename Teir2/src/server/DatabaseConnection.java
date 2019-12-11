@@ -59,12 +59,47 @@ public class DatabaseConnection {
             return "fail";
         }
     }
-
+    //Maybe these should be returning List<Person>? Or are we just gonna call the getParty()
+    //after adding/removing people/items? todo
     public String addPeople(Package packageT) {
 
+        createSocket();
+        try {
+            out.writeObject(packageT); //sending
+            String result = (String) in.readObject(); //receive
+            socket.close();
+            return result;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return "fail";
+        }
+    }
+    //Maybe these should be returning List<Person>? Or are we just gonna call the getParty()
+    //after adding/removing people/items? todo
+    public String removePeople(Package packageT) {
 
-
-        return "";
+        createSocket();
+        try {
+            out.writeObject(packageT); //sending
+            String result = (String) in.readObject(); //receive
+            socket.close();
+            return result;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return "fail";
+        }
     }
 
     public List<Person> searchPersonBySmth(Package packageT) {
@@ -116,7 +151,25 @@ public class DatabaseConnection {
         return null;
     }
 
-    public void setPartyPrivacy(Package packageT) {}
+    public String setPartyPrivacy(Package packageT) {
+        createSocket();
+
+        try {
+            out.writeObject(packageT);
+            String reply = (String) in.readObject();
+            socket.close();
+            return reply;
+        }
+        catch (Exception e) {
+            try {
+                socket.close();
+            }
+            catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
+    }
 
     public List<Party> getPartiesForPerson(Package packageT) {
         createSocket();
@@ -188,7 +241,28 @@ public class DatabaseConnection {
         return null;
     }
 
-    public void updateParty(Package packageT) {}
+    public Party updateParty(Package packageT) {
+
+        createSocket();
+
+        try {
+            out.writeObject(packageT);
+            Party party = (Party) in.readObject();
+            socket.close();
+            return party;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+            System.out.println("Something fucked uppppp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
+    }
 
     public void updatePerson(Package packageT) {}
 
@@ -216,9 +290,9 @@ public class DatabaseConnection {
     public Party createParty(Package packageT) throws IOException {
 
         createSocket();
-        out.writeObject(packageT);
 
         try {
+            out.writeObject(packageT);
             Party party = (Party) in.readObject();
             socket.close();
             return party;
@@ -270,6 +344,25 @@ public class DatabaseConnection {
             } catch (IOException ex) {
             }
             return "fail";
+        }
+    }
+
+    public Party updatePartyP(Package packageT) {
+
+        createSocket();
+        try{
+            out.writeObject(packageT);
+            Party result = (Party) in.readObject();
+            socket.close();
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+            }
+            return null;
         }
     }
 }

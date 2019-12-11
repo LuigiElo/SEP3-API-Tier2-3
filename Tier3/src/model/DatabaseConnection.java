@@ -1,7 +1,7 @@
 package model;
 
 
-import database.DatabaseAccess;
+import database.*;
 import database.DatabaseCon;
 import domain.Item;
 import domain.Package;
@@ -67,8 +67,8 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     }
 
     @Override
-    public void setPartyPrivacy(boolean privacy, Party party) throws SQLException {
-        database.setPartyPrivacy(privacy,party);
+    public String setPartyPrivacy(boolean privacy, Party party) throws SQLException {
+       return database.setPartyPrivacy(privacy,party);
     }
 
     @Override
@@ -114,8 +114,8 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     }
 
     @Override
-    public void updateParty(Party party) throws SQLException {
-        database.updateParty(party);
+    public Party updateParty(Party party) throws SQLException {
+        return database.updateParty(party);
     }
 
     @Override
@@ -281,6 +281,13 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                     Party party = packageR.getParties().get(0);
                     String result = addItems(party);
                     out2.writeObject(result);
+                    break;
+                }
+                case "updatePartyD":
+                {
+                    Party party = packageR.getParties().get(0);
+                    Party party1 = database.updateParty(party);
+                    out2.writeObject(party1);
                     break;
                 }
                 default:{

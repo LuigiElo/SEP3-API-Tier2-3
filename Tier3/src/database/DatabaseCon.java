@@ -19,7 +19,7 @@ public interface DatabaseCon extends Remote {
 
     public List<Party> getPartiesBySomething(String something) throws SQLException;
 
-    void setPartyPrivacy(boolean privacy, Party party) throws SQLException;
+    String setPartyPrivacy(boolean privacy, Party party) throws SQLException;
 
     List<Party> getPartiesForPerson(Person person);
 
@@ -37,7 +37,7 @@ public interface DatabaseCon extends Remote {
     Person createPerson(Person person) throws  SQLException; //register
     Item createItem(Item item) throws  SQLException;
 
-    void updateParty(Party party) throws  SQLException;
+    Party updateParty(Party party) throws  SQLException;
     void updatePerson(Person person) throws SQLException;
 
     void removeParticipant(Party party, Person person) throws SQLException;

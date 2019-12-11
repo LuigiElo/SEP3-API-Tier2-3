@@ -3,7 +3,6 @@ package server;
 
 
 import domain.BoxTier2;
-import domain.Item;
 import domain.Party;
 import domain.Person;
 
@@ -124,7 +123,7 @@ public class PartyPlannerService{
     @Consumes(MediaType.APPLICATION_JSON)
 
     public boolean setPartyPrivacy(boolean privacy, Party party) {
-        return false; //todo
+        return manager.setPartyPrivacy(privacy,party);
     }
 
     @POST
@@ -146,5 +145,16 @@ public class PartyPlannerService{
         return items;
     }
 
+
+
+    @POST
+    @Path("/updatePartyD")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Party updatePartyD(Party party)
+    {
+        Party result = manager.updatePartyD(party);
+        return result;
+    }
 
 }

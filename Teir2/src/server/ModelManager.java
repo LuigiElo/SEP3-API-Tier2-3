@@ -1,7 +1,9 @@
 package server;
 
-import domain.*;
+import domain.BoxTier2;
 import domain.Package;
+import domain.Party;
+import domain.Person;
 import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.Pack;
 
 import java.io.IOException;
@@ -35,6 +37,7 @@ public class ModelManager {
         if (box.getItemsRemoved().size()>=1) {
             Package packageT = new Package();
             packageT.setCommand("removeItem");
+
             for (int i = 0; i < box.getItemsRemoved().size(); i++) {
                 packageT.addItem(box.getItemsRemoved().get(i));
             }
@@ -48,6 +51,23 @@ public class ModelManager {
             Package packageT = new Package();
             packageT.setCommand("addPeople");
 
+            for (int i = 0; i < packageT.getPeople().size(); i++) {
+                packageT.addPerson(box.getPeopleAdded().get(i));
+            }
+            db.addPeople(packageT);
+        }
+        else {
+            System.out.println("adding people doesn't work");
+        }
+
+        if (box.getPeopleRemoved().size()>=1) {
+            Package packageT = new Package();
+            packageT.setCommand("removePeople");
+
+            for (int i = 0; i < box.getPeopleRemoved().size(); i++) {
+                packageT.addPerson(box.getPeopleRemoved().get(i));
+            }
+            db.removePeople(packageT);
         }
     }
 
@@ -76,6 +96,14 @@ public class ModelManager {
         packageT.setCommand("addLastPersonToParty");
         packageT.addParty(party);
         String result = db.addPerson(packageT);
+        return result;
+    }
+
+    public String addPeople(Party party) {
+        Package packageT = new Package();
+        packageT.setCommand("addPeople");
+        packageT.addParty(party);
+        String result = db.addPeople(packageT);
         return result;
     }
 
@@ -222,5 +250,14 @@ public class ModelManager {
 
         List<Item> items = db.getItems(packageT);
         return items;
+    }
+
+    public Party updatePartyD(Party party) {
+        Package packageT = new Package();
+        packageT.setCommand("updatePartyD");
+        packageT.addParty(party);
+
+        Party result = db.updatePartyP(packageT);
+        return result;
     }
 }
