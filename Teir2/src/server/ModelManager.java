@@ -4,7 +4,6 @@ import domain.BoxTier2;
 import domain.Package;
 import domain.Party;
 import domain.Person;
-import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.Pack;
 
 import java.io.IOException;
 import java.nio.file.Path;
