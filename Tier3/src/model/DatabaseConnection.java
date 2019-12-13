@@ -40,16 +40,6 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
         out2 = new ObjectOutputStream(socket.getOutputStream());
     }
 
-    @Override
-    public String addItems(Party party) throws SQLException
-    {
-        return database.addItems(party);
-    }
-
-    @Override
-    public String removeItems(Party party) throws SQLException {
-        return database.removeItems(party);
-    }
 
     @Override
     public Connection connect() throws SQLException {
@@ -92,17 +82,6 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     }
 
     @Override
-    public String addParticipant(Person person, Party party) throws SQLException {
-       String string = database.addParticipant(person,party);
-       return string;
-    }
-
-    @Override
-    public String addItem(Item item, Party party) throws SQLException {
-        return database.addItem(item,party);
-    }
-
-    @Override
     public Person createPerson(Person person) throws SQLException {
         database.createPerson(person);
         return person;
@@ -123,15 +102,6 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
         database.updatePerson(person);
     }
 
-    @Override
-    public void removeParticipant(Party party, Person person) throws SQLException {
-        database.removeParticipant(party,person);
-    }
-
-    @Override
-    public String removeItem(Party party, Item item) throws SQLException {
-        return database.removeItem(party, item);
-    }
 
     public Party createParty(Party party) throws SQLException {
 
@@ -149,6 +119,30 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     public List<Party> getPartiesForPerson(Person person) {
         List<Party> parties = database.getPartiesForPerson(person);
         return parties;
+    }
+
+    public List<Item> getItems(int partyId) throws Exception {
+        return database.getItems(partyId);
+    }
+
+    @Override
+    public String addItems(List<Item> items, Party party) {
+         return database.addItems(items, party);
+    }
+
+    @Override
+    public String removeItems(List<Item> items, Party party) {
+        return database.removeItems(items, party);
+    }
+
+    @Override
+    public String addPeople(List<Person> people, Party party) {
+        return database.addPeople(people, party);
+    }
+
+    @Override
+    public String removePeople(List<Person> people, Party party) {
+        return database.removePeople(people, party);
     }
 
 
@@ -196,6 +190,10 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                 }
                 case "getParty":
                 {
+                    Party party = packageR.getParties().get(0);
+                    Party afterChanges = database.getParty(party.getPartyID());
+                    out2.writeObject(afterChanges);
+                    break;
 
                 }
                 case "getPartiesBySomething":
@@ -218,25 +216,7 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                     break;
 
                 }
-                case "addItem":
-                {
-                    Party party = packageR.getParties().get(0);
-                    Item item = party.getItems().get(party.getItems().size()-1);
-                    String result = addItem(item, party);
-                    out2.writeObject(result);
-                    break;
 
-                }
-                case "addPerson":
-                {
-                    Person person = packageR.getPeople().get(0);
-                    Party party = packageR.getParties().get(0);
-
-                     String result = addParticipant(person, party);
-                     out2.writeObject(result);
-                     break;
-
-                }
                 case "updateParty":
                 {
 
@@ -244,14 +224,6 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                 case "removeParticipant":
                 {
 
-                }
-                case "removeItem":
-                {
-                    Party party = packageR.getParties().get(0);
-                    Item item = party.getItems().get(party.getItems().size()-1);
-                    String result = removeItem(party, item);
-                    out2.writeObject(result);
-                    break;
                 }
                 case "login":
                 {
@@ -267,26 +239,48 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                     out2.writeObject(parties);
                     break;
                 }
-                case "addLastPersonToParty":
-                {
-                    Party party = packageR.getParties().get(0);
-                    Person person = party.getPerson(party.getPeople().size()-1);
-                    String result = addParticipant(person, party);
-                    out2.writeObject(result);
-                    break;
-                }
-                case "addItems":
-                {
-                    Party party = packageR.getParties().get(0);
-                    String result = addItems(party);
-                    out2.writeObject(result);
-                    break;
-                }
+
                 case "updatePartyD":
                 {
                     Party party = packageR.getParties().get(0);
                     Party party1 = database.updateParty(party);
                     out2.writeObject(party1);
+                    break;
+                }
+                case "addItems":
+                {
+                    Party party = packageR.getParties().get(0);
+                    List<Item> items = packageR.getItems();
+
+                    String result = database.addItems(items, party);
+                    out2.writeObject(result);
+                    break;
+                }
+                case "removeItems":
+                {
+                    Party party = packageR.getParties().get(0);
+                    List<Item> items = packageR.getItems();
+
+                    String result = database.removeItems(items, party);
+                    out2.writeObject(result);
+                    break;
+                }
+                case "addPeople":
+                {
+                    Party party = packageR.getParties().get(0);
+                    List<Person> people = packageR.getPeople();
+
+                    String result = database.addPeople(people, party);
+                    out2.writeObject(result);
+                    break;
+                }
+                case "removePeople":
+                {
+                    Party party = packageR.getParties().get(0);
+                    List<Person> people = packageR.getPeople();
+
+                    String result = database.removePeople(people, party);
+                    out2.writeObject(result);
                     break;
                 }
                 default:{
@@ -307,7 +301,7 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
         }
     }
 
-    public List<Item> getItems(int partyId) throws Exception {
-        return database.getItems(partyId);
-    }
+
+
+
 }

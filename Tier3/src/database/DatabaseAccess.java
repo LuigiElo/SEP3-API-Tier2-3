@@ -110,7 +110,6 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
 
-    @Override
     public String addParticipant(Person person, Party party) throws SQLException {
 
         ResultSet rs;
@@ -118,7 +117,7 @@ public class DatabaseAccess implements DatabaseCon {
 
         int personID = person.getPersonID();
         int partyID = party.getPartyID();
-        boolean isHost = person.isHost();
+        boolean isHost = false;
 
         try {
             connect();
@@ -290,97 +289,6 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
-    @Override
-    public String addItems(Party party) throws SQLException {
-        try {
-            ResultSet rs;
-            connect();
-            PreparedStatement statement = connection.prepareStatement("SELECT count(partyid) from sep3.party_has_items where partyid = ?");
-            statement.setInt(1,party.getPartyID());
-            rs = statement.executeQuery();
-            close();
-
-            int count = 0;
-            while (rs.next())
-            {
-                count = rs.getInt(1);
-            }
-
-            System.out.println(count +" !!!!!!!!!!!!!!!!!!!!!!");
-            try {
-
-                for (int i = count; i < party.getItems().size(); i++)
-                {
-                    String s = addItem(party.getItem(i), party);
-                    if (s.equals("fail"))
-                    {
-                        return "fail";
-                    }
-                    System.out.println(s);
-                }
-
-            }
-            catch (Exception e)
-            {
-                System.out.println("The index doesn't match");
-                e.printStackTrace();
-                return "fail";
-            }
-
-            return "success";
-        }
-        catch (Exception e) {
-            System.out.println("Could not add the items");
-            e.printStackTrace();
-            return "fail";
-        }
-    }
-
-    @Override
-    public String removeItems(Party party) throws SQLException {
-        try {
-            ResultSet rs;
-            connect();
-            PreparedStatement statement = connection.prepareStatement("SELECT count(partyid) from sep3.party_has_items where partyid = ?");
-            statement.setInt(1,party.getPartyID());
-            rs = statement.executeQuery();
-            close();
-
-            int count = 0;
-            while (rs.next())
-            {
-                count = rs.getInt(1);
-            }
-
-            System.out.println(count +" !!!!!!!!!!!!!!!!!!!!!!");
-            try {
-
-                for (int i = count; i < party.getItems().size(); i++)
-                {
-                    String s = removeItem(party , party.getItem(i));
-                    if (s.equals("fail"))
-                    {
-                        return "fail";
-                    }
-                    System.out.println(s);
-                }
-
-            }
-            catch (Exception e)
-            {
-                System.out.println("The index doesn't match");
-                e.printStackTrace();
-                return "fail";
-            }
-
-            return "success";
-        }
-        catch (Exception e) {
-            System.out.println("Could not remove the items");
-            e.printStackTrace();
-            return "fail";
-        }
-    }
 
     @Override
     public List<Item> getItems(int partyId) throws Exception {
@@ -432,6 +340,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     }
+
 
 
     @Override
@@ -570,7 +479,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
 
-    @Override
+
     public String addItem(Item item, Party party) throws SQLException {
         try {
 
@@ -746,17 +655,29 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
-    @Override
-    public void removeParticipant(Party party, Person person) throws SQLException {
 
-        PreparedStatement statement = connection.prepareStatement
-                ("DELETE FROM sep3.participates_in_party WHERE personID = ? AND partyID = ?;");
-        statement.setInt(1, person.getPersonID());
-        statement.setInt(2, party.getPartyID());
-        statement.executeQuery();
+    public String removeParticipant(Party party, Person person) throws SQLException {
+
+        try {
+
+            connect();
+            PreparedStatement statement = connection.prepareStatement
+                    ("DELETE FROM sep3.participates_in_party WHERE personID = ? AND partyID = ?;");
+            statement.setInt(1, person.getPersonID());
+            statement.setInt(2, party.getPartyID());
+            statement.executeQuery();
+            close();
+            return "success";
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return "fail";
+        }
+
     }
 
-    @Override
+
     public String removeItem(Party party, Item item) throws SQLException {
 
         try {
@@ -767,10 +688,10 @@ public class DatabaseAccess implements DatabaseCon {
             statement.setInt(2, item.getItemID());
             statement.executeQuery();
             close();
-            return "item removed";
+            return "success";
         } catch (SQLException e) {
             e.printStackTrace();
-            return "fucked up";
+            return "fail";
         }
     }
 
@@ -834,6 +755,98 @@ public class DatabaseAccess implements DatabaseCon {
         return party1;
 
     }
+
+
+    @Override
+    public String addItems(List<Item> items, Party party)
+    {
+        try
+        {
+            for (Item item: items)
+            {
+                String result = addItem(item, party);
+                if(result.equals("fail"))
+                {
+                    return "fail";
+                }
+            }
+            return "success";
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return "fail";
+        }
+
+    }
+
+    @Override
+    public String removeItems(List<Item> items, Party party)
+    {
+        try {
+
+            for (Item item:items)
+            {
+                String result = removeItem(party, item);
+                if(result.equals("fail"))
+                {
+                    return "fail";
+                }
+            }
+            return "success";
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return "fail";
+        }
+
+    }
+    @Override
+    public String addPeople(List<Person> people, Party party)
+    {
+        try {
+
+            for (Person person:people)
+            {
+                String result = addParticipant(person, party);
+                if(result.equals("fail"))
+                {
+                    return "fail";
+                }
+            }
+            return "success";
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return "fail";
+        }
+
+    }
+    @Override
+    public String removePeople(List<Person> people, Party party)
+    {
+        try {
+
+            for (Person person:people)
+            {
+                String result = removeParticipant(party, person);
+                if(result.equals("fail"))
+                {
+                    return "fail";
+                }
+            }
+            return "success";
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return "fail";
+        }
+    }
+
 
 
 }

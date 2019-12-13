@@ -32,26 +32,37 @@ public interface DatabaseCon extends Remote {
     public List<Person> getPeopleByName(String name) throws SQLException;
 
 
-    String addParticipant(Person person, Party party) throws  SQLException;
-    String addItem(Item item, Party party) throws  SQLException;
+//    String addParticipant(Person person, Party party) throws  SQLException;
+//    String addItem(Item item, Party party) throws  SQLException;
     Person createPerson(Person person) throws  SQLException; //register
     Item createItem(Item item) throws  SQLException;
 
     Party updateParty(Party party) throws  SQLException;
     void updatePerson(Person person) throws SQLException;
 
-    void removeParticipant(Party party, Person person) throws SQLException;
+//    void removeParticipant(Party party, Person person) throws SQLException;
 
-    String removeItem(Party party, Item item) throws SQLException;
+//    String removeItem(Party party, Item item) throws SQLException;
 
     public Party createParty(Party party) throws SQLException;
 
 
     Person login(Person person) throws SQLException;
 
-    String addItems(Party party) throws SQLException;
+//    String addItems(Party party) throws SQLException;
 
-    String removeItems(Party party) throws SQLException;
+//    String removeItems(List<Item> items, Party party) throws SQLException;
 
     List<Item> getItems(int partyId) throws Exception;
+
+    String addItems(List<Item> items, Party party);
+
+    String removeItems(List<Item> items, Party party);
+
+    String addPeople(List<Person> people, Party party);
+
+    String removePeople(List<Person> people, Party party);
+
+
+//    String addPeople(List<Person> people, Party party) throws Exception;
 }

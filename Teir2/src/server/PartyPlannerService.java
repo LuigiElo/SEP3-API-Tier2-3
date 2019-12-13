@@ -59,7 +59,9 @@ public class PartyPlannerService{
    @Consumes(MediaType.APPLICATION_JSON)
     public Person loginPerson(Person person)
    {
+       System.out.println("I am trying to log in");
        Person person1 = manager.login(person);
+       System.out.println("The person is +"+ person1.getUsername());
        return person1;
 
    }
@@ -72,6 +74,10 @@ public class PartyPlannerService{
    {
        Person person = new Person(personId, null, null, null, null,  false);
        List<Party> parties = manager.getParties(person);
+       for (Party party: parties)
+       {
+           System.out.println("one party");
+       }
        return parties;
    }
 
@@ -133,8 +139,16 @@ public class PartyPlannerService{
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
 
-    public void updateParty(BoxTier2 box) {
-        manager.updateParty(box);
+    public Party updateParty(BoxTier2 box)
+    {
+        System.out.println("I've reached the server");
+        System.out.println(box.getParty().toString());
+        for (Item item:box.getItemsAdded())
+        {
+            System.out.println(item.toString());
+        }
+        Party party = manager.updateParty(box);
+        return party;
     }
 
     @GET

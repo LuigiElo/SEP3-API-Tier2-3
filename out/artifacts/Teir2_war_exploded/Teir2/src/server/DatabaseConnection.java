@@ -61,7 +61,7 @@ public class DatabaseConnection {
     }
     //Maybe these should be returning List<Person>? Or are we just gonna call the getParty()
     //after adding/removing people/items? todo
-    public String addPeople(Package packageT) {
+    public String addPeople(Package packageT) throws Exception {
 
         createSocket();
         try {
@@ -77,12 +77,12 @@ public class DatabaseConnection {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            return "fail";
+             throw new Exception("Adding people didn't work");
         }
     }
     //Maybe these should be returning List<Person>? Or are we just gonna call the getParty()
     //after adding/removing people/items? todo
-    public String removePeople(Package packageT) {
+    public String removePeople(Package packageT) throws Exception {
 
         createSocket();
         try {
@@ -98,7 +98,7 @@ public class DatabaseConnection {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            return "fail";
+            throw new Exception("Removing people didn't work");
         }
     }
 
@@ -192,7 +192,23 @@ public class DatabaseConnection {
     }
 
     public Party getParty(Package packageT) {
-        return null;
+        createSocket();
+        try {
+            out.writeObject(packageT);
+            Party party = (Party) in.readObject();
+            socket.close();
+            return party;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
     }
 
     public List<Person> getParticipants(Package packageT) {
@@ -268,7 +284,7 @@ public class DatabaseConnection {
 
     public void removeParticipant(Package packageT) {}
 
-    public String removeItems(Package packageT) {
+    public String removeItems(Package packageT) throws Exception {
 
             try {
                 createSocket();
@@ -283,7 +299,7 @@ public class DatabaseConnection {
                     socket.close();
                 } catch (IOException ex) {
                 }
-                return "fail";
+                throw new Exception("Removing items didn't work");
             }
     }
 
@@ -328,7 +344,7 @@ public class DatabaseConnection {
 
     }
 
-    public String addItems(Package packageT) {
+    public String addItems(Package packageT) throws Exception {
 
         createSocket();
         try{
@@ -343,7 +359,7 @@ public class DatabaseConnection {
                 socket.close();
             } catch (IOException ex) {
             }
-            return "fail";
+            throw new Exception("Adding items didn't work");
         }
     }
 

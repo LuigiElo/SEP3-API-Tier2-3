@@ -17,54 +17,87 @@ public class ModelManager {
     }
 
 
-    public void updateParty(BoxTier2 box) {
+    public Party updateParty(BoxTier2 box) {
 
-        if (box.getItemsAdded().size()>=1){
-            Package packageT = new Package();
-            packageT.setCommand("addItem");
-            for (int i = 0; i < box.getItemsAdded().size(); i++) {
-                packageT.addItem(box.getItemsAdded().get(i));
-            }
+        Party party = box.getParty();
+
+        try
+        {
+            if (box.getItemsAdded().size() >=1){
+                Package packageT = new Package();
+                packageT.addParty(party);
+                packageT.setCommand("addItems");
+                for (int i = 0; i < box.getItemsAdded().size(); i++) {
+                    packageT.addItem(box.getItemsAdded().get(i));
+                }
                 db.addItems(packageT);
-        }
-        else {
-            System.out.println("adding item doesn't work");
-        }
-
-        if (box.getItemsRemoved().size()>=1) {
-            Package packageT = new Package();
-            packageT.setCommand("removeItem");
-
-            for (int i = 0; i < box.getItemsRemoved().size(); i++) {
-                packageT.addItem(box.getItemsRemoved().get(i));
             }
-            db.removeItems(packageT);
-        }
-        else {
-            System.out.println("removing item doesn't work");
-        }
-
-        if (box.getPeopleAdded().size()>=1) {
-            Package packageT = new Package();
-            packageT.setCommand("addPeople");
-
-            for (int i = 0; i < packageT.getPeople().size(); i++) {
-                packageT.addPerson(box.getPeopleAdded().get(i));
+            else {
+                System.out.println("adding item doesn't work");
             }
-            db.addPeople(packageT);
-        }
-        else {
-            System.out.println("adding people doesn't work");
-        }
 
-        if (box.getPeopleRemoved().size()>=1) {
-            Package packageT = new Package();
-            packageT.setCommand("removePeople");
+            if (box.getItemsRemoved().size()>=1) {
+                Package packageT = new Package();
+                packageT.addParty(party);
+                packageT.setCommand("removeItems");
 
-            for (int i = 0; i < box.getPeopleRemoved().size(); i++) {
-                packageT.addPerson(box.getPeopleRemoved().get(i));
+                for (int i = 0; i < box.getItemsRemoved().size(); i++) {
+                    packageT.addItem(box.getItemsRemoved().get(i));
+                }
+                db.removeItems(packageT);
             }
-            db.removePeople(packageT);
+            else {
+                System.out.println("removing item doesn't work");
+            }
+
+            if (box.getPeopleAdded().size()>=1) {
+                Package packageT = new Package();
+                packageT.addParty(party);
+                packageT.setCommand("addPeople");
+
+                for (int i = 0; i < packageT.getPeople().size(); i++) {
+                    packageT.addPerson(box.getPeopleAdded().get(i));
+                }
+                db.addPeople(packageT);
+            }
+            else {
+                System.out.println("adding people doesn't work");
+            }
+
+            if (box.getPeopleRemoved().size()>=1) {
+                Package packageT = new Package();
+                packageT.addParty(party);
+                packageT.setCommand("removePeople");
+
+                for (int i = 0; i < box.getPeopleRemoved().size(); i++) {
+                    packageT.addPerson(box.getPeopleRemoved().get(i));
+                }
+                db.removePeople(packageT);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("Something happened in the changes");
+            return null;
+        }
+
+
+
+        Package packageForesult = new Package();
+        packageForesult.setCommand("getParty");
+        packageForesult.addParty(party);
+
+        try {
+
+            Party finalResult = db.getParty(packageForesult);
+            return finalResult;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("I could not get the party after the changes");
+            return null;
         }
     }
 
@@ -96,7 +129,7 @@ public class ModelManager {
         return result;
     }
 
-    public String addPeople(Party party) {
+    public String addPeople(Party party) throws Exception {
         Package packageT = new Package();
         packageT.setCommand("addPeople");
         packageT.addParty(party);

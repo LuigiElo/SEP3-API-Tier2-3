@@ -1,6 +1,7 @@
 package domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BoxTier2 implements Serializable {
@@ -14,6 +15,11 @@ public class BoxTier2 implements Serializable {
     private List<Person> peopleRemoved;
 
     public BoxTier2() {
+
+        this.itemsRemoved = new ArrayList<>();
+        this.peopleAdded = new ArrayList<>();
+        this.peopleRemoved =  new ArrayList<>();
+
     }
 
     public BoxTier2(Party party, List<Item> itemsAdded, List<Item> itemsRemoved, List<Person> peopleAdded, List<Person> peopleRemoved) {

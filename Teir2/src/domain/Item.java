@@ -49,4 +49,13 @@ public class Item implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "ItemID=" + ItemID +
+                ", price=" + price +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
