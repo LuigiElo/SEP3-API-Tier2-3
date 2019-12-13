@@ -328,12 +328,109 @@ public class DatabaseAccess implements DatabaseCon {
             }
 
             return "success";
-        }catch (Exception e)
-        {
+        }
+        catch (Exception e) {
             System.out.println("Could not add the items");
             e.printStackTrace();
             return "fail";
         }
+    }
+
+    @Override
+    public String removeItems(Party party) throws SQLException {
+        try {
+            ResultSet rs;
+            connect();
+            PreparedStatement statement = connection.prepareStatement("SELECT count(partyid) from sep3.party_has_items where partyid = ?");
+            statement.setInt(1,party.getPartyID());
+            rs = statement.executeQuery();
+            close();
+
+            int count = 0;
+            while (rs.next())
+            {
+                count = rs.getInt(1);
+            }
+
+            System.out.println(count +" !!!!!!!!!!!!!!!!!!!!!!");
+            try {
+
+                for (int i = count; i < party.getItems().size(); i++)
+                {
+                    String s = removeItem(party , party.getItem(i));
+                    if (s.equals("fail"))
+                    {
+                        return "fail";
+                    }
+                    System.out.println(s);
+                }
+
+            }
+            catch (Exception e)
+            {
+                System.out.println("The index doesn't match");
+                e.printStackTrace();
+                return "fail";
+            }
+
+            return "success";
+        }
+        catch (Exception e) {
+            System.out.println("Could not remove the items");
+            e.printStackTrace();
+            return "fail";
+        }
+    }
+
+    @Override
+    public List<Item> getItems(int partyId) throws Exception {
+
+        ResultSet rs;
+        try{
+            connect();
+            PreparedStatement statement = connection.prepareStatement
+                    ("SELECT * FROM sep3.party_has_items WHERE partyID = " + partyId + ";");
+            rs = statement.executeQuery();
+            List<Integer> itemsInParty = new ArrayList<>(100);
+
+            while (rs.next()) {
+
+                int itemID = rs.getInt(2);
+
+                itemsInParty.add(itemID);
+            }
+
+            List<Item> items = new ArrayList<>(100);
+
+            for (int i = 0; i < itemsInParty.size(); i++) {
+
+                rs = null;
+                connect();
+                statement = connection.prepareStatement
+                        ("SELECT * FROM sep3.item_table WHERE itemID = " + itemsInParty.get(i) + ";");
+                rs = statement.executeQuery();
+
+                while (rs.next()) {
+
+                    int itemID = rs.getInt(1);
+                    Double price = rs.getDouble(2);
+                    String name = rs.getString(3);
+
+                    Item item = new Item(itemID, price, name);
+                    items.add(item);
+                }
+            }
+            return items;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            close();
+            throw new Exception("Couln't get the items");
+
+        }
+
+
+
     }
 
 
@@ -369,7 +466,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void setPartyPrivacy(boolean privacy, Party party) throws SQLException {
+    public String setPartyPrivacy(boolean privacy, Party party) throws SQLException {
 
         connect();
         PreparedStatement statement = connection.prepareStatement("UPDATE sep3.party_table SET isprivate = ? WHERE partyid = ?;");
@@ -377,6 +474,13 @@ public class DatabaseAccess implements DatabaseCon {
         statement.setInt(2, party.getPartyID());
         statement.executeUpdate();
         close();
+
+        connect();
+        PreparedStatement statement1 = connection.prepareStatement("SELECT * FROM sep3.party_table WHERE partyid = ?;");
+        statement1.setInt(1, party.getPartyID());
+
+        ResultSet rs = statement1.executeQuery();
+        return "Party: " + party.toString() + " is: " + rs.getString("isPrivate");
     }
 
 
@@ -574,18 +678,63 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
-    public void updateParty(Party party) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement
-                ("UPDATE sep3.party_table SET description = ?, address = ?, date = ?, partytitle = ?, time = ? WHERE partyid = ?;");
-        //set
-        statement.setString(1, party.getDescription());
-        statement.setString(2, party.getLocation());
-        statement.setString(3, party.getDate());
-        statement.setString(4, party.getPartyTitle());
-        statement.setString(5, party.getTime());
-        //where
-        statement.setInt(6, party.getPartyID());
+    public Party updateParty(Party party) throws SQLException {
+
+        //todo put in try catch, add privacy, return the Party if all gucci return null if fucked up
+        try {
+            System.out.println("here0");
+            connect();
+            PreparedStatement statement = connection.prepareStatement
+                    ("UPDATE sep3.party_table SET description = ?, address = ?, date = ?, partytitle = ?, time = ?, isprivate = ? WHERE partyid = ?;");
+            //set
+            statement.setString(1, party.getDescription());
+            statement.setString(2, party.getLocation());
+            statement.setString(3, party.getDate());
+            statement.setString(4, party.getPartyTitle());
+            statement.setString(5, party.getTime());
+            statement.setBoolean(6, party.isPrivate());
+            //where
+            statement.setInt(7, party.getPartyID());
+            statement.executeUpdate();
+            close();
+            System.out.println("Here1");
+
+            try {
+                connect();
+                PreparedStatement statement1 = connection.prepareStatement("SELECT * FROM sep3.party_table WHERE partyid = ?;");
+                statement1.setInt(1, party.getPartyID());
+                ResultSet rs = statement1.executeQuery();
+                close();
+                System.out.println("here2");
+
+                while (rs.next()) {
+                    int partyID = rs.getInt("partyid");
+                    String description = rs.getString("description");
+                    String address = rs.getString("address");
+                    String date = rs.getString("date");
+                    String partytitle = rs.getString("partytitle");
+                    String time = rs.getString("time");
+                    boolean isPrivate = rs.getBoolean("isprivate");
+
+                    Party party1 = new Party(partytitle,description,address,partyID,date,time,isPrivate);
+                    System.out.println("Updated and original parties are the same: " + party.equals(party1));
+                    return party1;
+                }
+            }
+            catch (Exception e) {
+                System.out.println("No update");
+                e.printStackTrace();
+                return null;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Is fucked up");
+            return null;
+        }
+        return null;
     }
 
     @Override
@@ -604,13 +753,21 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void removeItem(Party party, Item item) throws SQLException {
+    public String removeItem(Party party, Item item) throws SQLException {
 
-        PreparedStatement statement = connection.prepareStatement
-                ("DELETE FROM sep3.party_has_items WHERE partyID = ? AND itemID = ?;");
-        statement.setInt(1, party.getPartyID());
-        statement.setInt(2, item.getItemID());
-        statement.executeQuery();
+        try {
+            connect();
+            PreparedStatement statement = connection.prepareStatement
+                    ("DELETE FROM sep3.party_has_items WHERE partyID = ? AND itemID = ?;");
+            statement.setInt(1, party.getPartyID());
+            statement.setInt(2, item.getItemID());
+            statement.executeQuery();
+            close();
+            return "item removed";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "fucked up";
+        }
     }
 
     @Override
@@ -624,8 +781,20 @@ public class DatabaseAccess implements DatabaseCon {
         statement.setString(4, party.getPartyTitle());
         statement.setString(5, party.getTime());
         statement.setBoolean(6, party.isPrivate());
-        statement.execute();
+        statement.executeUpdate();
         close();
+
+//        Person host = party.getPerson(0);
+//
+//        connect();
+//        PreparedStatement statement2 = connection.prepareStatement
+//                ("INSERT INTO sep3.participates_in_party(partyid, personid, ishost) VALUES (?,?,?);");
+//        statement2.setInt(1, party.getPartyID());
+//        statement2.setInt(2, host.getPersonID());
+//        statement2.setBoolean(3, true);
+//        statement2.executeUpdate();
+//        close();
+
 
         connect();
         ResultSet rs;
@@ -654,7 +823,7 @@ public class DatabaseAccess implements DatabaseCon {
             party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate);
         }
         close();
-
+//        party1.getPeople().add(host); //adding the host to the party 'pulled' from the
         //only for testing
         System.out.println(party1.toString());
 

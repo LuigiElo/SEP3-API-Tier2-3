@@ -1,9 +1,7 @@
 package server;
 
-import domain.BoxTier2;
+import domain.*;
 import domain.Package;
-import domain.Party;
-import domain.Person;
 
 import java.io.IOException;
 import java.nio.file.Path;

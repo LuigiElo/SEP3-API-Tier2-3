@@ -684,6 +684,7 @@ public class DatabaseAccess implements DatabaseCon {
 
         //todo put in try catch, add privacy, return the Party if all gucci return null if fucked up
         try {
+            System.out.println("here0");
             connect();
             PreparedStatement statement = connection.prepareStatement
                     ("UPDATE sep3.party_table SET description = ?, address = ?, date = ?, partytitle = ?, time = ?, isprivate = ? WHERE partyid = ?;");
@@ -695,15 +696,18 @@ public class DatabaseAccess implements DatabaseCon {
             statement.setString(5, party.getTime());
             statement.setBoolean(6, party.isPrivate());
             //where
-            statement.setInt(6, party.getPartyID());
+            statement.setInt(7, party.getPartyID());
             statement.executeUpdate();
             close();
+            System.out.println("Here1");
 
             try {
                 connect();
                 PreparedStatement statement1 = connection.prepareStatement("SELECT * FROM sep3.party_table WHERE partyid = ?;");
                 statement1.setInt(1, party.getPartyID());
                 ResultSet rs = statement1.executeQuery();
+                close();
+                System.out.println("here2");
 
                 while (rs.next()) {
                     int partyID = rs.getInt("partyid");
@@ -715,11 +719,16 @@ public class DatabaseAccess implements DatabaseCon {
                     boolean isPrivate = rs.getBoolean("isprivate");
 
                     Party party1 = new Party(partytitle,description,address,partyID,date,time,isPrivate);
+                    List<Item> items = getItems(party1);
+                    List<Person> people = getParticipants(partyID);
+                    party1.setItems(items);
+                    party1.setPeople(people);
                     System.out.println("Updated and original parties are the same: " + party.equals(party1));
                     return party1;
                 }
             }
             catch (Exception e) {
+                System.out.println("No update");
                 e.printStackTrace();
                 return null;
             }
@@ -779,16 +788,16 @@ public class DatabaseAccess implements DatabaseCon {
         statement.executeUpdate();
         close();
 
-        Person host = party.getPerson(0);
-
-        connect();
-        PreparedStatement statement2 = connection.prepareStatement
-                ("INSERT INTO sep3.participates_in_party(partyid, personid, ishost) VALUES (?,?,?);");
-        statement2.setInt(1, party.getPartyID());
-        statement2.setInt(2, host.getPersonID());
-        statement2.setBoolean(3, true);
-        statement2.executeUpdate();
-        close();
+//        Person host = party.getPerson(0);
+//
+//        connect();
+//        PreparedStatement statement2 = connection.prepareStatement
+//                ("INSERT INTO sep3.participates_in_party(partyid, personid, ishost) VALUES (?,?,?);");
+//        statement2.setInt(1, party.getPartyID());
+//        statement2.setInt(2, host.getPersonID());
+//        statement2.setBoolean(3, true);
+//        statement2.executeUpdate();
+//        close();
 
 
         connect();
@@ -818,7 +827,7 @@ public class DatabaseAccess implements DatabaseCon {
             party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate);
         }
         close();
-        party1.getPeople().add(host); //adding the host to the party 'pulled' from the
+//        party1.getPeople().add(host); //adding the host to the party 'pulled' from the
         //only for testing
         System.out.println(party1.toString());
 

@@ -13,7 +13,6 @@
           <element id="library" level="project" name="javax.servlet.jsp-api" />
           <element id="library" level="project" name="JAX-RS" />
           <element id="library" level="project" name="JAX-WS-Glassfish / JAX-WS 2.2 RI / Metro 1.X / JWSDP 2.2" />
-          <element id="library" level="project" name="postgresql-42.2.8" />
         </element>
       </element>
       <element id="library" level="project" name="MyDatabase" />

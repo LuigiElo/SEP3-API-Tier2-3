@@ -8,9 +8,7 @@
           <element id="module-output" name="RegretfulTry" />
           <element id="module-output" name="Persistance" />
         </element>
-        <element id="directory" name="lib">
-          <element id="library" level="project" name="postgresql-42.2.8" />
-        </element>
+        <element id="directory" name="lib" />
       </element>
       <element id="library" level="project" name="MyDatabase" />
       <element id="library" level="project" name="gson-2.8.5" />

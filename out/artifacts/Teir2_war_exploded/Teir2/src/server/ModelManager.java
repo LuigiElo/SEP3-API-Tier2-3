@@ -1,9 +1,7 @@
 package server;
 
+import domain.*;
 import domain.Package;
-import domain.Party;
-import domain.Person;
-import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.Pack;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -19,6 +17,56 @@ public class ModelManager {
     }
 
 
+    public void updateParty(BoxTier2 box) {
+
+        if (box.getItemsAdded().size()>=1){
+            Package packageT = new Package();
+            packageT.setCommand("addItem");
+            for (int i = 0; i < box.getItemsAdded().size(); i++) {
+                packageT.addItem(box.getItemsAdded().get(i));
+            }
+                db.addItems(packageT);
+        }
+        else {
+            System.out.println("adding item doesn't work");
+        }
+
+        if (box.getItemsRemoved().size()>=1) {
+            Package packageT = new Package();
+            packageT.setCommand("removeItem");
+
+            for (int i = 0; i < box.getItemsRemoved().size(); i++) {
+                packageT.addItem(box.getItemsRemoved().get(i));
+            }
+            db.removeItems(packageT);
+        }
+        else {
+            System.out.println("removing item doesn't work");
+        }
+
+        if (box.getPeopleAdded().size()>=1) {
+            Package packageT = new Package();
+            packageT.setCommand("addPeople");
+
+            for (int i = 0; i < packageT.getPeople().size(); i++) {
+                packageT.addPerson(box.getPeopleAdded().get(i));
+            }
+            db.addPeople(packageT);
+        }
+        else {
+            System.out.println("adding people doesn't work");
+        }
+
+        if (box.getPeopleRemoved().size()>=1) {
+            Package packageT = new Package();
+            packageT.setCommand("removePeople");
+
+            for (int i = 0; i < box.getPeopleRemoved().size(); i++) {
+                packageT.addPerson(box.getPeopleRemoved().get(i));
+            }
+            db.removePeople(packageT);
+        }
+    }
 
     public List<Person> searchPersonBySomething(String smth)
     {
@@ -36,8 +84,6 @@ public class ModelManager {
             return null;
 
         }
-
-
         return list;
     }
 
@@ -47,6 +93,14 @@ public class ModelManager {
         packageT.setCommand("addLastPersonToParty");
         packageT.addParty(party);
         String result = db.addPerson(packageT);
+        return result;
+    }
+
+    public String addPeople(Party party) {
+        Package packageT = new Package();
+        packageT.setCommand("addPeople");
+        packageT.addParty(party);
+        String result = db.addPeople(packageT);
         return result;
     }
 
@@ -146,6 +200,30 @@ public class ModelManager {
         }
     }
 
+    public String removeItems(Party party) {
+
+        Package packageT = new Package();
+        packageT.setCommand("removeItems");
+
+        for (int i = 0; i < party.getItems().size(); i++) {
+            packageT.addItem(party.getItem(i));
+        }
+
+        try {
+
+            String result = db.addItems(packageT);
+            return result;
+        }
+        catch (Exception e)
+        {
+            System.out.println("We couldn't add the items");
+            e.printStackTrace();
+            return "fail";
+        }
+    }
+
+
+
     public boolean setPartyPrivacy(boolean privacy, Party party){
 
         Package packageT = new Package();
@@ -153,7 +231,30 @@ public class ModelManager {
         party.setPrivate(privacy);
         packageT.addParty(party);
 
+        //this is not very correct. In case where smth fucks up, the server will throw an exception, break, but the
+        //client will not see that because you are not returning him that,
+        //only a half way response
         db.setPartyPrivacy(packageT);
         return privacy;
+    }
+
+    public List<Item> getItems(int partyId) {
+        Package packageT = new Package();
+        packageT.setCommand("getItemsForParty");
+        Party party = new Party();
+        party.setPartyID(partyId);
+        packageT.addParty(party);
+
+        List<Item> items = db.getItems(packageT);
+        return items;
+    }
+
+    public Party updatePartyD(Party party) {
+        Package packageT = new Package();
+        packageT.setCommand("updatePartyD");
+        packageT.addParty(party);
+
+        Party result = db.updatePartyP(packageT);
+        return result;
     }
 }

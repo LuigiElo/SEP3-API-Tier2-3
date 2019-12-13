@@ -5,12 +5,10 @@ import domain.Package;
 import domain.Party;
 import domain.Person;
 
-import javax.net.ssl.HostnameVerifier;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.sql.SQLException;
 import java.util.List;
 
 public class DatabaseConnection {
@@ -60,9 +58,48 @@ public class DatabaseConnection {
             }
             return "fail";
         }
+    }
+    //Maybe these should be returning List<Person>? Or are we just gonna call the getParty()
+    //after adding/removing people/items? todo
+    public String addPeople(Package packageT) {
 
+        createSocket();
+        try {
+            out.writeObject(packageT); //sending
+            String result = (String) in.readObject(); //receive
+            socket.close();
+            return result;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return "fail";
+        }
+    }
+    //Maybe these should be returning List<Person>? Or are we just gonna call the getParty()
+    //after adding/removing people/items? todo
+    public String removePeople(Package packageT) {
 
-
+        createSocket();
+        try {
+            out.writeObject(packageT); //sending
+            String result = (String) in.readObject(); //receive
+            socket.close();
+            return result;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return "fail";
+        }
     }
 
     public List<Person> searchPersonBySmth(Package packageT) {
@@ -76,7 +113,7 @@ public class DatabaseConnection {
         } catch (Exception e) {
             e.getMessage();
             e.printStackTrace();
-            System.out.println("The list is emphy or smth is wrong");
+            System.out.println("The list is empty or smth is wrong");
             try {
                 socket.close();
             } catch (IOException ex) {
@@ -114,7 +151,25 @@ public class DatabaseConnection {
         return null;
     }
 
-    public void setPartyPrivacy(Package packageT) {}
+    public String setPartyPrivacy(Package packageT) {
+        createSocket();
+
+        try {
+            out.writeObject(packageT);
+            String reply = (String) in.readObject();
+            socket.close();
+            return reply;
+        }
+        catch (Exception e) {
+            try {
+                socket.close();
+            }
+            catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
+    }
 
     public List<Party> getPartiesForPerson(Package packageT) {
         createSocket();
@@ -145,7 +200,25 @@ public class DatabaseConnection {
     }
 
     public List<Item> getItems(Package packageT) {
-        return null;
+
+        createSocket();
+        try {
+            out.writeObject(packageT);
+            List<Item> list = (List<Item>) in.readObject();
+            socket.close();
+            return list;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
+
     }
 
     public List<Person> getPeopleByName(Package packageT){
@@ -168,20 +241,58 @@ public class DatabaseConnection {
         return null;
     }
 
-    public void updateParty(Package packageT) {}
+    public Party updateParty(Package packageT) {
+
+        createSocket();
+
+        try {
+            out.writeObject(packageT);
+            Party party = (Party) in.readObject();
+            socket.close();
+            return party;
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+            System.out.println("Something fucked uppppp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
+    }
 
     public void updatePerson(Package packageT) {}
 
     public void removeParticipant(Package packageT) {}
 
-    public void removeItem(Package packageT) {}
+    public String removeItems(Package packageT) {
+
+            try {
+                createSocket();
+                out.writeObject(packageT);
+                String result = (String) in.readObject();
+                socket.close();
+                return result;
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+
+                try {
+                    socket.close();
+                } catch (IOException ex) {
+                }
+                return "fail";
+            }
+    }
 
     public Party createParty(Package packageT) throws IOException {
 
         createSocket();
-        out.writeObject(packageT);
 
         try {
+            out.writeObject(packageT);
             Party party = (Party) in.readObject();
             socket.close();
             return party;
@@ -218,6 +329,7 @@ public class DatabaseConnection {
     }
 
     public String addItems(Package packageT) {
+
         createSocket();
         try{
             out.writeObject(packageT);
@@ -232,6 +344,25 @@ public class DatabaseConnection {
             } catch (IOException ex) {
             }
             return "fail";
+        }
+    }
+
+    public Party updatePartyP(Package packageT) {
+
+        createSocket();
+        try{
+            out.writeObject(packageT);
+            Party result = (Party) in.readObject();
+            socket.close();
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+            }
+            return null;
         }
     }
 }

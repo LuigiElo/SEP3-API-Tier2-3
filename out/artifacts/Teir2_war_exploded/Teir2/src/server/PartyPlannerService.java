@@ -2,8 +2,11 @@ package server;
 
 
 
+import domain.BoxTier2;
+import domain.Item;
 import domain.Party;
 import domain.Person;
+
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -122,7 +125,38 @@ public class PartyPlannerService{
     @Consumes(MediaType.APPLICATION_JSON)
 
     public boolean setPartyPrivacy(boolean privacy, Party party) {
-        return false; //todo
+        return manager.setPartyPrivacy(privacy,party);
+    }
+
+    @POST
+    @Path("/updateParty")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+
+    public void updateParty(BoxTier2 box) {
+        manager.updateParty(box);
+    }
+
+    @GET
+    @Path("getItemsForParty/{partyId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<Item> getItemsForParty(@PathParam("partyId") int partyId)
+    {
+        List<Item> items = manager.getItems(partyId);
+        return items;
+    }
+
+    @POST
+    @Path("/updatePartyD")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Party updatePartyD(Party party)
+    {
+        System.out.println("I've reached here!!!!!!!!!!!!!!!!!!!!!!!!!1111");
+        System.out.println(party.toString());
+        Party result = manager.updatePartyD(party);
+        return result;
     }
 
 }
