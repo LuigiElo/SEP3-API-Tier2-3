@@ -14,16 +14,16 @@ public class Party implements Serializable {
     private String date;
     private String time;
     private boolean isPrivate;
-
+    private String playlistURL; //null by default
+    private Person host;
 
     private List<Item> items;
     private List<Person> people;
 
     public Party() {
-
     }
 
-    public Party(String partyTitle, String description, String location, int partyID, String date, String time, boolean isPrivate) {
+    public Party(String partyTitle, String description, String location, int partyID, String date, String time, boolean isPrivate, Person host) {
         this.partyTitle = partyTitle;
         this.description = description;
         this.location = location;
@@ -33,6 +33,8 @@ public class Party implements Serializable {
         this.isPrivate = isPrivate;
         items = new ArrayList<>(100);
         people = new ArrayList<>(100);
+        playlistURL = null;
+        this.host = host;
     }
 
     public String getPartyTitle() {
@@ -123,6 +125,21 @@ public class Party implements Serializable {
         this.items = items;
     }
 
+    public String getPlaylistURL() {
+        return playlistURL;
+    }
+
+    public void setPlaylistURL(String playlistURL) {
+        this.playlistURL = playlistURL;
+    }
+
+    public Person getHost() {
+        return host;
+    }
+
+    public void setHost(Person host) {
+        this.host = host;
+    }
 
     @Override
     public String toString() {

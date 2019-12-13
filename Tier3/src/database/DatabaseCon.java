@@ -31,6 +31,9 @@ public interface DatabaseCon extends Remote {
 
     public List<Person> getPeopleByName(String name) throws SQLException;
 
+    public Party getHost(Party party) throws SQLException;
+
+    public Person getPersonByID(int personID) throws SQLException;
 
     String addParticipant(Person person, Party party) throws  SQLException;
     String addItem(Item item, Party party) throws  SQLException;
