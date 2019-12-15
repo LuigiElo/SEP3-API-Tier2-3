@@ -55,7 +55,7 @@ public class ModelManager {
                 packageT.addParty(party);
                 packageT.setCommand("addPeople");
 
-                for (int i = 0; i < packageT.getPeople().size(); i++) {
+                for (int i = 0; i < box.getPeopleAdded().size(); i++) {
                     packageT.addPerson(box.getPeopleAdded().get(i));
                 }
                 db.addPeople(packageT);

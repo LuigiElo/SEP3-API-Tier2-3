@@ -115,6 +115,9 @@ public class DatabaseAccess implements DatabaseCon {
 
         ResultSet rs;
         String result = "";
+        System.out.println("I am now trying to add one person");
+        System.out.println("The person has the id " +person.getPersonID());
+        System.out.println("The party has the id "+ party.getPartyID());
 
         int personID = person.getPersonID();
         int partyID = party.getPartyID();
@@ -123,12 +126,13 @@ public class DatabaseAccess implements DatabaseCon {
         try {
             connect();
 
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO sep3.participates_in_party VALUES(?,?,?);");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO sep3.participates_in_party(partyid, personid, ishost) VALUES(?,?,?);");
             statement.setInt(1, partyID);
             statement.setInt(2, personID);
             statement.setBoolean(3, isHost);
 
             statement.executeUpdate();
+            System.out.println("The statement for add participants has supposly been executed");
             return "success";
         } catch (SQLException e) {
             System.out.println("The person could not be added");
@@ -871,20 +875,32 @@ public class DatabaseAccess implements DatabaseCon {
     @Override
     public String addPeople(List<Person> people, Party party)
     {
+        System.out.println("In the method to add people");
         try {
 
-            for (Person person:people)
-            {
-                String result = addParticipant(person, party);
+           for (int i = 0; i< people.size(); i++)
+           {
+               System.out.println("In the for loop for adding people");
+                String result = addParticipant(people.get(i), party);
                 if(result.equals("fail"))
                 {
                     return "fail";
                 }
-            }
+           }
+//            for (Person person:people)
+//            {
+//                System.out.println("In the for loop for adding people");
+//                String result = addParticipant(person, party);
+//                if(result.equals("fail"))
+//                {
+//                    return "fail";
+//                }
+//            }
             return "success";
         }
         catch (Exception e)
         {
+            System.out.println("Got an exception in add people");
             e.printStackTrace();
             return "fail";
         }

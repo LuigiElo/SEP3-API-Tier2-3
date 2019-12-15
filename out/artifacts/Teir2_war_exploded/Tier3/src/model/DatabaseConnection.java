@@ -278,8 +278,10 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                 }
                 case "addPeople":
                 {
+                    System.out.println("!!!!!11111");
                     Party party = packageR.getParties().get(0);
                     List<Person> people = packageR.getPeople();
+                    System.out.println(people.size()+ "is the size of people to be added");
 
                     String result = database.addPeople(people, party);
                     out2.writeObject(result);

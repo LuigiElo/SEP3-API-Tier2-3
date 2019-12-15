@@ -67,6 +67,7 @@ public class DatabaseConnection {
         try {
             out.writeObject(packageT); //sending
             String result = (String) in.readObject(); //receive
+            System.out.println(result + "is the result of adding people");
             socket.close();
             return result;
         } catch (Exception e) {
