@@ -4,18 +4,18 @@ import java.io.Serializable;
 
 public class Item implements Serializable {
 
-    private int ItemID;
+    private int itemId;
     private double price;
     private String name;
 
-    public Item(int itemID, double price, String name) {
-        this.ItemID = itemID;
+    public Item(int itemId, double price, String name) {
+        this.itemId = itemId;
         this.price = price;
         this.name = name;
     }
 
     public Item(double price, String name) {
-        ItemID = 0;
+        itemId = 0;
         this.price = price;
         this.name = name;
     }
@@ -26,12 +26,12 @@ public class Item implements Serializable {
     }
 
 
-    public int getItemID() {
-        return ItemID;
+    public int getitemId() {
+        return itemId;
     }
 
-    public void setItemID(int itemID) {
-        ItemID = itemID;
+    public void setitemId(int itemId) {
+        itemId = itemId;
     }
 
     public double getPrice() {
@@ -48,5 +48,14 @@ public class Item implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "itemId=" + itemId +
+                ", price=" + price +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

@@ -140,6 +140,8 @@ public class DatabaseAccess implements DatabaseCon {
 
     @Override
     public List<Party> getPartiesForPerson(Person person) {
+
+        System.out.println("I am here in the getPartiesForPerson method");
         ResultSet rs;
         List<Party> parties = new ArrayList<Party>();
 
@@ -158,9 +160,8 @@ public class DatabaseAccess implements DatabaseCon {
                 ids.add(partyID);
 
             }
-
-
             for (int id : ids) {
+                System.out.println("get party");
                 Party party = getParty(id);
                 parties.add(party);
                 System.out.println(party.getPartyTitle());
@@ -186,7 +187,7 @@ public class DatabaseAccess implements DatabaseCon {
             rs = statement.executeQuery();
 
             Party party = null;
-            if(rs.next()) {
+            while (rs.next()) {
 
 
                 int partyid = rs.getInt("partyid");
@@ -197,13 +198,15 @@ public class DatabaseAccess implements DatabaseCon {
                 String time = rs.getString("time");
                 boolean isPrivate = rs.getBoolean("isprivate");
                 String playlistURL = rs.getString("playlisturl");
-
-                party = new Party(partyTitle, description, address, partyid, date, time, isPrivate, getHost(getParty(partyID)).getHost());
+                System.out.println("test123");
+                party = new Party(partyTitle, description, address, partyid, date, time, isPrivate, null);
 
                 if (playlistURL != null) {
+                    System.out.println("fuckyou");
                     party.setPlaylistURL(playlistURL);
                 }
             }
+
             List<Item> items = getItems(party);
             party.setItems(items);
             List<Person> people = getParticipants(party.getPartyID());
@@ -266,6 +269,7 @@ public class DatabaseAccess implements DatabaseCon {
         statement.setInt(1, party.getPartyID());
         rs = statement.executeQuery();
         List<Party> partyWithHost = new ArrayList<>();
+
         do {
             int partyID = rs.getInt("partyid");
             int personID = rs.getInt("personid");
@@ -554,7 +558,7 @@ public class DatabaseAccess implements DatabaseCon {
             PreparedStatement statement = connection.prepareStatement
                     ("INSERT INTO sep3.party_has_items(partyid, itemid) VALUES (?,?);");
             statement.setInt(1, party.getPartyID());
-            statement.setInt(2, item1.getItemID());
+            statement.setInt(2, item1.getitemId());
             statement.execute();
             close();
             return "success";
@@ -568,7 +572,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     private Item getItem(Item item) throws SQLException {
-        try {
+
             System.out.println("2");
             ResultSet resultSet;
             connect();
@@ -600,17 +604,8 @@ public class DatabaseAccess implements DatabaseCon {
                 System.out.println("10");
                 throw  new SQLException("The item could not be retrieved");
             }
-            else return item1;
+            return item1;
 
-        }
-        catch (Exception e)
-        {
-            System.out.println("11");
-            System.out.println("The item could not be retrieved");
-            e.printStackTrace();
-            throw new SQLException("The item could not be retrieved");
-
-        }
     }
 
     @Override
@@ -628,11 +623,11 @@ public class DatabaseAccess implements DatabaseCon {
                 connect();
                 System.out.println("12");
                 PreparedStatement statement2 = connection.prepareStatement
-                        ("INSERT INTO sep3.item_table(price, name) VALUES (?,?);");
+                        ("INSERT INTO sep3.item_table(price, name) VALUES (?,?)");
                 statement2.setDouble(1, item.getPrice());
                 statement2.setString(2, item.getName());
                 System.out.println("13");
-                statement2.execute();
+                statement2.executeUpdate();
                 System.out.println("hello");
                 close();
                 System.out.println("14");
@@ -691,12 +686,12 @@ public class DatabaseAccess implements DatabaseCon {
                     String time = rs.getString("time");
                     boolean isPrivate = rs.getBoolean("isprivate");
 
-                    Party party1 = new Party(partytitle,description,address,partyID,date,time,isPrivate);
+                    Party party1 = new Party(partytitle,description,address,partyID,date,time,isPrivate,getHost(party).getHost());
                     List<Item> items = getItems(party1);
                     List<Person> people = getParticipants(partyID);
                     party1.setItems(items);
                     party1.setPeople(people);
-                    Party party1 = new Party(partytitle,description,address,partyID,date,time,isPrivate,getHost(party).getHost());
+
                     System.out.println("Updated and original parties are the same: " + party.equals(party1));
                     return party1;
                 }
@@ -750,7 +745,7 @@ public class DatabaseAccess implements DatabaseCon {
             PreparedStatement statement = connection.prepareStatement
                     ("DELETE FROM sep3.party_has_items WHERE partyID = ? AND itemID = ?;");
             statement.setInt(1, party.getPartyID());
-            statement.setInt(2, item.getItemID());
+            statement.setInt(2, item.getitemId());
             statement.executeQuery();
             close();
             return "success";
@@ -775,16 +770,6 @@ public class DatabaseAccess implements DatabaseCon {
         statement.executeUpdate();
         close();
 
-        Person host = party.getHost();
-
-        connect();
-        PreparedStatement statement2 = connection.prepareStatement
-                ("INSERT INTO sep3.participates_in_party(partyid, personid, ishost) VALUES (?,?,?);");
-        statement2.setInt(1, party.getPartyID());
-        statement2.setInt(2, host.getPersonID());
-        statement2.setBoolean(3, true);
-        statement2.executeUpdate();
-        close();
 
 
         connect();
@@ -811,9 +796,23 @@ public class DatabaseAccess implements DatabaseCon {
             String partyTitle = rs.getString(5);
             String time = rs.getString(6);
             Boolean isPrivate = rs.getBoolean(7);
-            party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate, getHost(party).getHost());
+            party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate, null);
         }
         close();
+
+
+        Person host = party.getHost();
+
+        connect();
+        PreparedStatement statement2 = connection.prepareStatement
+                ("INSERT INTO sep3.participates_in_party(partyid, personid, ishost) VALUES (?,?,?);");
+        statement2.setInt(1, party1.getPartyID());
+        statement2.setInt(2, host.getPersonID());
+        statement2.setBoolean(3, true);
+        statement2.executeUpdate();
+        close();
+
+        party1.setHost(party.getHost());
 
         //only for testing
         System.out.println(party1.toString());

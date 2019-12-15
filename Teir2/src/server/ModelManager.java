@@ -74,6 +74,10 @@ public class ModelManager {
                 }
                 db.removePeople(packageT);
             }
+            else
+            {
+                System.out.println("removing people doesn't work");
+            }
         }
         catch (Exception e)
         {

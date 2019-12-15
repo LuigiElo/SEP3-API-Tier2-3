@@ -78,20 +78,20 @@ public class DatabaseAccessTest {
         }
     }
 
-    @org.junit.Test
-    public void addParticipant() {
-        try {
-            List<Person> people;
-            database.createParty(party);
-            database.addParticipant(person,party);
-            people = database.getParticipants(database.getParty(party.getPartyID()).getPartyID());
-            assertEquals(person,people.get(0));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            fail("doesn't work");
-        }
-
-    }
+//    @org.junit.Test
+//    public void addParticipant() {
+//        try {
+//            List<Person> people;
+//            database.createParty(party);
+//            database.addParticipant(person,party);
+//            people = database.getParticipants(database.getParty(party.getPartyID()).getPartyID());
+//            assertEquals(person,people.get(0));
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            fail("doesn't work");
+//        }
+//
+//    }
 
     @org.junit.Test
     public void addItem() {
@@ -108,49 +108,49 @@ public class DatabaseAccessTest {
         }
     }
 
-    @org.junit.Test
-    public void createItem() {
-        try {
-            database.createParty(party);
-
-            Item testItem = new Item(1,1.0,"name");
-            Item item = new Item(0,1.0, "name");
-
-            database.createItem(item);
-            database.addItem(item,party);
-            assertEquals(database.getItems(party).get(0),testItem);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            fail("doesn't work");
-        }
-    }
+//    @org.junit.Test
+//    public void createItem() {
+//        try {
+//            database.createParty(party);
+//
+//            Item testItem = new Item(1,1.0,"name");
+//            Item item = new Item(0,1.0, "name");
+//
+//            database.createItem(item);
+//            database.addItem(item,party);
+//            assertEquals(database.getItems(party).get(0),testItem);
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            fail("doesn't work");
+//        }
+//    }
 
     @org.junit.Test
     public void updateParty() {
         fail("Not implemented yet. Sod off");
     }
 
-    @org.junit.Test
-    public void removeParticipant() {
-
-        List<Person> people;
-        try {
-            database.createParty(party);
-            database.addParticipant(person,party);
-            people = database.getParticipants(database.getParty(party.getPartyID()).getPartyID());
-
-            if (people !=null) {
-                database.removeParticipant(party,person);
-                assertTrue("no people in this b*tch", people == null);
-
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            fail("doesn't work");
-        }
-
-    }
+//    @org.junit.Test
+//    public void removeParticipant() {
+//
+//        List<Person> people;
+//        try {
+//            database.createParty(party);
+//            database.addParticipant(person,party);
+//            people = database.getParticipants(database.getParty(party.getPartyID()).getPartyID());
+//
+//            if (people !=null) {
+//                database.removeParticipant(party,person);
+//                assertTrue("no people in this b*tch", people == null);
+//
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            fail("doesn't work");
+//        }
+//
+//    }
 
     @org.junit.Test
     public void removeItem() {

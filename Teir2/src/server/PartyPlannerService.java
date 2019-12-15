@@ -94,10 +94,10 @@ public class PartyPlannerService{
        }
 
     @GET
-    @Path("/searchPerson")
+    @Path("/searchPerson/{smth}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<Person> searchPerson(String smth)
+    public List<Person> searchPerson(@PathParam("smth") String smth)
     {
         List<Person> people = manager.searchPersonBySomething(smth);
         return people;
@@ -145,7 +145,14 @@ public class PartyPlannerService{
         System.out.println(box.getParty().toString());
         for (Item item:box.getItemsAdded())
         {
+            System.out.println("Item");
             System.out.println(item.toString());
+        }
+
+        for (Person person:box.getPeopleAdded())
+        {
+            System.out.println("Person");
+            System.out.println(person.toString());
         }
         Party party = manager.updateParty(box);
         return party;

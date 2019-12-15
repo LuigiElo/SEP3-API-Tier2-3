@@ -82,6 +82,17 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
     }
 
     @Override
+    public Party getHost(Party party) throws SQLException {
+        return database.getHost(party);
+    }
+
+    @Override
+    public Person getPersonByID(int personID) throws SQLException {
+        return getPersonByID(personID);
+    }
+
+
+    @Override
     public Person createPerson(Person person) throws SQLException {
         database.createPerson(person);
         return person;
