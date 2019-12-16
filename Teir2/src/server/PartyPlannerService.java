@@ -192,11 +192,15 @@ public class PartyPlannerService{
    @Path("/answerInvite")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
-   public String answerInvite(Invitation invitation)
+   public Invitation answerInvite(Invitation invitation)
    {
        String result = manager.answerInvitation(invitation);
        System.out.println("Result of the answer:" + result);
-       return result;
+       if (result.equals("success"))
+       {
+           return invitation;
+       }
+       else return null;
    }
 
 }

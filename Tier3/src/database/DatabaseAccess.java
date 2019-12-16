@@ -990,7 +990,7 @@ public class DatabaseAccess implements DatabaseCon {
 
         try {
             connect();
-            PreparedStatement statement = connection.prepareStatement("SELECT partyid, status FROM sep3.invitations WHERE personid =? ;");
+            PreparedStatement statement = connection.prepareStatement("SELECT partyid, status FROM sep3.invitations WHERE personid =? AND status = 'pending';");
             statement.setInt(1,personID);
             rs = statement.executeQuery();
             close();
