@@ -332,14 +332,13 @@ public class DatabaseAccess implements DatabaseCon {
         statement.setInt(1, personID);
         rs = statement.executeQuery();
         Person person = new Person();
-
-        while(rs.next())
+        while (rs.next())
         {
-            int ID = rs.getInt("personID");
-            String name = rs.getString("name");
-            String email = rs.getString("email");
-            String password = rs.getString("password");
-            String username = rs.getString("username");
+            int ID = rs.getInt(1);
+            String name = rs.getString(2);
+            String email = rs.getString(3);
+            String password = rs.getString(4);
+            String username = rs.getString(5);
 
 
             person = new Person(ID,name,username,email,null,false);
@@ -1015,6 +1014,47 @@ public class DatabaseAccess implements DatabaseCon {
             System.out.println("Could not get notifications");
             return null;
         }
+    }
+
+    @Override
+    public String acceptInvite(Invitation invitation) {
+
+        try{
+            connect();
+            PreparedStatement statement = connection.prepareStatement("UPDATE sep3.invitations SET status = 'accepted' WHERE partyid = ? AND personid = ?;");
+            statement.setInt(1,invitation.getParty().getPartyID());
+            statement.setInt(2,invitation.getPersonId());
+            statement.executeUpdate();
+            close();
+
+            Person person = new Person();
+            person.setPersonID(invitation.getPersonId());
+            addParticipant(person, invitation.getParty());
+            return "success";
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "fail";
+        }
+
+    }
+
+    @Override
+    public String declineInvite(Invitation invitation) {
+        try{
+            connect();
+            PreparedStatement statement = connection.prepareStatement("UPDATE sep3.invitations SET status = 'declined' WHERE partyid = ? AND personid = ?;");
+            statement.setInt(1,invitation.getParty().getPartyID());
+            statement.setInt(2,invitation.getPersonId());
+            statement.executeUpdate();
+            close();
+            return "success";
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "fail";
+        }
+
     }
 
     private void makeInvitation(Person person, Party party) throws Exception {

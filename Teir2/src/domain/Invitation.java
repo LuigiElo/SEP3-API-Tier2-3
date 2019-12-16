@@ -1,6 +1,8 @@
 package domain;
 
-public class Invitation
+import java.io.Serializable;
+
+public class Invitation implements Serializable
 {
     private int personId;
     private Party party;

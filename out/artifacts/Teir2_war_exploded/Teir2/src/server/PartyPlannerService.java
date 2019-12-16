@@ -188,4 +188,15 @@ public class PartyPlannerService{
        return invitations;
    }
 
+   @POST
+   @Path("/answerInvite")
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+   public String answerInvite(Invitation invitation)
+   {
+       String result = manager.answerInvitation(invitation);
+       System.out.println("Result of the answer:" + result);
+       return result;
+   }
+
 }

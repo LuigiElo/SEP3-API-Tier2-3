@@ -164,6 +164,16 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
         return database.getInvitations(personID);
     }
 
+    @Override
+    public String acceptInvite(Invitation invitation) {
+        return database.acceptInvite(invitation);
+    }
+
+    @Override
+    public String declineInvite(Invitation invitation) {
+        return database.declineInvite(invitation);
+    }
+
 
     @Override
     public void run() {
@@ -320,6 +330,22 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
 
                     List<Invitation> invitations = database.getInvitations(personID);
                     out2.writeObject(invitations);
+                    break;
+                }
+                case "acceptInvite":
+                {
+                    Invitation invitation = packageR.getInvitation();
+
+                    String result = database.acceptInvite(invitation);
+                    out2.writeObject(result);
+                    break;
+                }
+                case "declineInvite":
+                {
+                    Invitation invitation = packageR.getInvitation();
+
+                    String result = database.declineInvite(invitation);
+                    out2.writeObject(result);
                     break;
                 }
                 default:{

@@ -307,4 +307,22 @@ public class ModelManager {
         List<Invitation> invitations = db.getInvitations(packageT);
         return invitations;
     }
+
+    public String answerInvitation(Invitation invitation) {
+        Package packageT = new Package();
+        packageT.setInvitation(invitation);
+
+        String result;
+        if (invitation.getStatus().equals("accepted"))
+        {
+            packageT.setCommand("acceptInvite");
+            result = db.answerInvite(packageT);
+        }
+        else
+        {
+            packageT.setCommand("declineInvite");
+            result = db.answerInvite(packageT);
+        }
+        return result;
+    }
 }

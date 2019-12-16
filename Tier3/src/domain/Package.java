@@ -29,6 +29,10 @@ public class Package implements Serializable {
     private List<String> strings;
 
 
+    private Invitation invitation;
+
+
+
     /**
      * empthy constructor for the Package object.
      * Used in case of complex requests like assigning one item to a person. The Package should have a
@@ -41,6 +45,7 @@ public class Package implements Serializable {
         this.people = new ArrayList<Person>();
         this.items = new ArrayList<Item>();
         this.strings = new ArrayList<String>();
+        this.invitation = null;
     }
 
 
@@ -54,7 +59,6 @@ public class Package implements Serializable {
      *  The rest of the parameters are lists of possible objects that would summaries a request
      *  of the client.
      *  In the case of creating a party the Package will have the following form: a command "createParty" and a List<Party> containing
-     *  the party to be created
      */
 
     public Package(String command, List<Party> parties, List<Person> people, List<Item> items, List<String> strings)
@@ -186,7 +190,6 @@ public class Package implements Serializable {
         items.remove(item);
     }
 
-
     public List<String> getStrings() {
         return strings;
     }
@@ -205,4 +208,13 @@ public class Package implements Serializable {
     {
         strings.remove(string);
     }
+
+    public Invitation getInvitation() {
+        return invitation;
+    }
+
+    public void setInvitation(Invitation invitation) {
+        this.invitation = invitation;
+    }
+
 }
