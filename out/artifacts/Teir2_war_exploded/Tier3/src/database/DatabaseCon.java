@@ -1,6 +1,7 @@
 package database;
 
 
+import domain.Invitation;
 import domain.Item;
 import domain.Party;
 import domain.Person;
@@ -67,6 +68,8 @@ public interface DatabaseCon extends Remote {
     String removePeople(List<Person> people, Party party);
 
     String makeInvitations(List<Person> people, Party party);
+
+    List<Invitation> getInvitations(int personID);
 
 
 //    String addPeople(List<Person> people, Party party) throws Exception;

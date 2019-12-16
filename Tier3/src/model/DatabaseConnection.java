@@ -159,6 +159,11 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
         return database.makeInvitations(people, party);
     }
 
+    @Override
+    public List<Invitation> getInvitations(int personID) {
+        return database.getInvitations(personID);
+    }
+
 
     @Override
     public void run() {
@@ -313,8 +318,8 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                     Person person = packageR.getPeople().get(0);
                     int personID = person.getPersonID();
 
-//                    List<Invitation> invitations = database.getInvitations(personID);
-//                    out2.writeObject(invitations);
+                    List<Invitation> invitations = database.getInvitations(personID);
+                    out2.writeObject(invitations);
                     break;
                 }
                 default:{

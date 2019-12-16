@@ -3,10 +3,8 @@ package model;
 
 import database.*;
 import database.DatabaseCon;
-import domain.Item;
+import domain.*;
 import domain.Package;
-import domain.Party;
-import domain.Person;
 
 import java.io.*;
 import java.net.Socket;
@@ -161,6 +159,11 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
         return database.makeInvitations(people, party);
     }
 
+    @Override
+    public List<Invitation> getInvitations(int personID) {
+        return database.getInvitations(personID);
+    }
+
 
     @Override
     public void run() {
@@ -308,6 +311,15 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
 
                     String result = database.makeInvitations(people, party);
                     out2.writeObject(result);
+                    break;
+                }
+                case "getInvitations":
+                {
+                    Person person = packageR.getPeople().get(0);
+                    int personID = person.getPersonID();
+
+                    List<Invitation> invitations = database.getInvitations(personID);
+                    out2.writeObject(invitations);
                     break;
                 }
                 default:{

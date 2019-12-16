@@ -2,10 +2,7 @@ package server;
 
 
 
-import domain.BoxTier2;
-import domain.Item;
-import domain.Party;
-import domain.Person;
+import domain.*;
 
 
 import javax.ws.rs.*;
@@ -179,5 +176,16 @@ public class PartyPlannerService{
         Party result = manager.updatePartyD(party);
         return result;
     }
+
+   @GET
+   @Path("/getNotifications/{personID}")
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+   public List<Invitation> getInvitations(@PathParam("personID") int personID)
+   {
+       System.out.println("I am attemting to get my notifications");
+       List<Invitation> invitations = manager.getInvitations(personID);
+       return invitations;
+   }
 
 }

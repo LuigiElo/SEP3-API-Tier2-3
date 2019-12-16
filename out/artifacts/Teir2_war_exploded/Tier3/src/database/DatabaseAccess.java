@@ -1,6 +1,7 @@
 package database;
 
 
+import domain.Invitation;
 import domain.Item;
 import domain.Party;
 import domain.Person;
@@ -215,6 +216,7 @@ public class DatabaseAccess implements DatabaseCon {
             party.setItems(items);
             List<Person> people = getParticipants(party.getPartyID());
             party.setPeople(people);
+            party.setHost(getHostForParty(party));
              close();
             return party;
         } catch (SQLException e) {
@@ -262,6 +264,35 @@ public class DatabaseAccess implements DatabaseCon {
             return null;
         }
 
+
+    }
+
+    private Person getHostForParty(Party party)
+    {
+        ResultSet rs;
+        Person person = new Person();
+        try
+        {
+            connect();
+            PreparedStatement statement = connection.prepareStatement("SELECT personid FROM sep3.participates_in_party WHERE partyid = ? AND ishost = true;");
+            statement.setInt(1, party.getPartyID());
+            rs = statement.executeQuery();
+
+            while (rs.next())
+            {
+                int personID = rs.getInt(1);
+                person = getPersonByID(personID);
+            }
+            return person;
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("helll");
+        }
+
+       return null;
 
     }
 
@@ -944,6 +975,39 @@ public class DatabaseAccess implements DatabaseCon {
             }
         }
         return "success";
+    }
+
+    @Override
+    public List<Invitation> getInvitations(int personID) {
+        ResultSet rs;
+        List<Invitation> invitations = new ArrayList<>();
+
+        try {
+            connect();
+            PreparedStatement statement = connection.prepareStatement("SELECT partyid, status FROM sep3.invitations WHERE personid =? ;");
+            statement.setInt(1,personID);
+            rs = statement.executeQuery();
+            close();
+
+            while (rs.next())
+            {
+                int partyId = rs.getInt(1);
+                String status = rs.getString(2);
+
+                Party party = getParty(partyId);
+
+                Invitation invitation = new Invitation(personID, party, status);
+                invitations.add(invitation);
+            }
+            //might want to null this if bugs appear
+            return invitations;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("Could not get notifications");
+            return null;
+        }
     }
 
     private void makeInvitation(Person person, Party party) throws Exception {

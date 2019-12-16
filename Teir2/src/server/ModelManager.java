@@ -1,6 +1,7 @@
 package server;
 
 import domain.*;
+import domain.Invitation;
 import domain.Package;
 
 import javax.ws.rs.PathParam;

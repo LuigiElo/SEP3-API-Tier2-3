@@ -1,8 +1,10 @@
 package server;
 
 import domain.*;
+import domain.Invitation;
 import domain.Package;
 
+import javax.ws.rs.PathParam;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -293,5 +295,16 @@ public class ModelManager {
 
         Party result = db.updatePartyP(packageT);
         return result;
+    }
+
+    public List<Invitation> getInvitations(int personID) {
+        Package packageT = new Package();
+        Person person = new Person();
+        person.setPersonID(personID);
+        packageT.addPerson(person);
+        packageT.setCommand("getInvitations");
+
+        List<Invitation> invitations = db.getInvitations(packageT);
+        return invitations;
     }
 }

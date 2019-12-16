@@ -1,6 +1,7 @@
 package database;
 
 
+import domain.Invitation;
 import domain.Item;
 import domain.Party;
 import domain.Person;
@@ -974,6 +975,39 @@ public class DatabaseAccess implements DatabaseCon {
             }
         }
         return "success";
+    }
+
+    @Override
+    public List<Invitation> getInvitations(int personID) {
+        ResultSet rs;
+        List<Invitation> invitations = new ArrayList<>();
+
+        try {
+            connect();
+            PreparedStatement statement = connection.prepareStatement("SELECT partyid, status FROM sep3.invitations WHERE personid =? ;");
+            statement.setInt(1,personID);
+            rs = statement.executeQuery();
+            close();
+
+            while (rs.next())
+            {
+                int partyId = rs.getInt(1);
+                String status = rs.getString(2);
+
+                Party party = getParty(partyId);
+
+                Invitation invitation = new Invitation(personID, party, status);
+                invitations.add(invitation);
+            }
+            //might want to null this if bugs appear
+            return invitations;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("Could not get notifications");
+            return null;
+        }
     }
 
     private void makeInvitation(Person person, Party party) throws Exception {
