@@ -331,14 +331,21 @@ public class DatabaseAccess implements DatabaseCon {
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM sep3.person_table WHERE personid = ?;");
         statement.setInt(1, personID);
         rs = statement.executeQuery();
+        Person person = new Person();
 
-        int ID = rs.getInt("personID");
-        String name = rs.getString("name");
-        String email = rs.getString("email");
-        String username = rs.getString("username");
+        while(rs.next())
+        {
+            int ID = rs.getInt("personID");
+            String name = rs.getString("name");
+            String email = rs.getString("email");
+            String password = rs.getString("password");
+            String username = rs.getString("username");
 
 
-        Person person = new Person(ID,name,username,email,null,false);
+            person = new Person(ID,name,username,email,null,false);
+        }
+
+
         return person;
     }
 
