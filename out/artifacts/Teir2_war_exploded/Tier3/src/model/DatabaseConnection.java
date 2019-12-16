@@ -156,6 +156,11 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
         return database.removePeople(people, party);
     }
 
+    @Override
+    public String makeInvitations(List<Person> people, Party party) {
+        return database.makeInvitations(people, party);
+    }
+
 
     @Override
     public void run() {
@@ -293,6 +298,15 @@ public class DatabaseConnection implements Runnable, DatabaseCon {
                     List<Person> people = packageR.getPeople();
 
                     String result = database.removePeople(people, party);
+                    out2.writeObject(result);
+                    break;
+                }
+                case "makeInvitation":
+                {
+                    Party party = packageR.getParties().get(0);
+                    List<Person> people = packageR.getPeople();
+
+                    String result = database.makeInvitations(people, party);
                     out2.writeObject(result);
                     break;
                 }

@@ -215,6 +215,7 @@ public class DatabaseAccess implements DatabaseCon {
             party.setItems(items);
             List<Person> people = getParticipants(party.getPartyID());
             party.setPeople(people);
+            party.setHost(getHostForParty(party));
              close();
             return party;
         } catch (SQLException e) {
@@ -262,6 +263,35 @@ public class DatabaseAccess implements DatabaseCon {
             return null;
         }
 
+
+    }
+
+    private Person getHostForParty(Party party)
+    {
+        ResultSet rs;
+        Person person = new Person();
+        try
+        {
+            connect();
+            PreparedStatement statement = connection.prepareStatement("SELECT personid FROM sep3.participates_in_party WHERE partyid = ? AND ishost = true;");
+            statement.setInt(1, party.getPartyID());
+            rs = statement.executeQuery();
+
+            while (rs.next())
+            {
+                int personID = rs.getInt(1);
+                person = getPersonByID(personID);
+            }
+            return person;
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("helll");
+        }
+
+       return null;
 
     }
 
@@ -928,6 +958,44 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
+    @Override
+    public String makeInvitations(List<Person> people, Party party) {
+
+        for (Person person:people)
+        {
+            try
+            {
+                makeInvitation(person, party);
+            }
+            catch (Exception e)
+            {
+                System.out.println("I couldn't make this invitation for p :" + person.getName());
+                return "fail";
+            }
+        }
+        return "success";
+    }
+
+    private void makeInvitation(Person person, Party party) throws Exception {
+        try
+        {
+         connect();
+         PreparedStatement statement = connection.prepareStatement
+                 ("INSERT INTO sep3.invitations(partyid, personid, status) VALUES (?,?,?);");
+         statement.setInt(1,party.getPartyID());
+         statement.setInt(2, person.getPersonID());
+         statement.setString(3, "pending");
+
+         statement.executeUpdate();
+         close();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Catch block for make invitation");
+            throw new Exception("I couldn't make this invitation");
+
+        }
+    }
 
 
 }

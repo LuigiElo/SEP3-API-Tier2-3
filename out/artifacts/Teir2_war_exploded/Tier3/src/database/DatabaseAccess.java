@@ -928,6 +928,44 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
+    @Override
+    public String makeInvitations(List<Person> people, Party party) {
+
+        for (Person person:people)
+        {
+            try
+            {
+                makeInvitation(person, party);
+            }
+            catch (Exception e)
+            {
+                System.out.println("I couldn't make this invitation for p :" + person.getName());
+                return "fail";
+            }
+        }
+        return "success";
+    }
+
+    private void makeInvitation(Person person, Party party) throws Exception {
+        try
+        {
+         connect();
+         PreparedStatement statement = connection.prepareStatement
+                 ("INSERT INTO sep3.invitations(partyid, personid, status) VALUES (?,?,?);");
+         statement.setInt(1,party.getPartyID());
+         statement.setInt(2, person.getPersonID());
+         statement.setString(3, "pending");
+
+         statement.executeUpdate();
+         close();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Catch block for make invitation");
+            throw new Exception("I couldn't make this invitation");
+
+        }
+    }
 
 
 }

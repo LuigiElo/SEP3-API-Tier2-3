@@ -1,9 +1,7 @@
 package server;
 
-import domain.Item;
+import domain.*;
 import domain.Package;
-import domain.Party;
-import domain.Person;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -370,6 +368,25 @@ public class DatabaseConnection {
         try{
             out.writeObject(packageT);
             Party result = (Party) in.readObject();
+            socket.close();
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+            }
+            return null;
+        }
+    }
+
+    public List<Invitation> getInvitations(Package packageT)
+    {
+        createSocket();
+        try{
+            out.writeObject(packageT);
+            List<Invitation> result = (List<Invitation>) in.readObject();
             socket.close();
             return result;
         } catch (Exception e) {

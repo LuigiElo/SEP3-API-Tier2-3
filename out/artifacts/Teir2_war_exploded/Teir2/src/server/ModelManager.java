@@ -53,7 +53,7 @@ public class ModelManager {
             if (box.getPeopleAdded().size()>=1) {
                 Package packageT = new Package();
                 packageT.addParty(party);
-                packageT.setCommand("addPeople");
+                packageT.setCommand("makeInvitation");
 
                 for (int i = 0; i < box.getPeopleAdded().size(); i++) {
                     packageT.addPerson(box.getPeopleAdded().get(i));

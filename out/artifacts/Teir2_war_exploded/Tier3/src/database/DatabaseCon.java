@@ -66,6 +66,8 @@ public interface DatabaseCon extends Remote {
 
     String removePeople(List<Person> people, Party party);
 
+    String makeInvitations(List<Person> people, Party party);
+
 
 //    String addPeople(List<Person> people, Party party) throws Exception;
 }

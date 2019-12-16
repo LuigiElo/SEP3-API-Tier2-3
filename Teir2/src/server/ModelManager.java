@@ -3,6 +3,7 @@ package server;
 import domain.*;
 import domain.Package;
 
+import javax.ws.rs.PathParam;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class ModelManager {
             if (box.getPeopleAdded().size()>=1) {
                 Package packageT = new Package();
                 packageT.addParty(party);
-                packageT.setCommand("addPeople");
+                packageT.setCommand("makeInvitation");
 
                 for (int i = 0; i < box.getPeopleAdded().size(); i++) {
                     packageT.addPerson(box.getPeopleAdded().get(i));
@@ -293,5 +294,16 @@ public class ModelManager {
 
         Party result = db.updatePartyP(packageT);
         return result;
+    }
+
+    public List<Invitation> getInvitations(int personID) {
+        Package packageT = new Package();
+        Person person = new Person();
+        person.setPersonID(personID);
+        packageT.addPerson(person);
+        packageT.setCommand("getInvitations");
+
+        List<Invitation> invitations = db.getInvitations(packageT);
+        return invitations;
     }
 }
