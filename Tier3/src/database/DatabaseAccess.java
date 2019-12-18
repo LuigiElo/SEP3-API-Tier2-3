@@ -691,12 +691,11 @@ public class DatabaseAccess implements DatabaseCon {
                     String time = rs.getString("time");
                     boolean isPrivate = rs.getBoolean("isprivate");
 
-                    Party party1 = new Party(partytitle,description,address,partyID,date,time,isPrivate);
+                    Party party1 = new Party(partytitle,description,address,partyID,date,time,isPrivate,getHost(party).getHost());
                     List<Item> items = getItems(party1);
                     List<Person> people = getParticipants(partyID);
                     party1.setItems(items);
                     party1.setPeople(people);
-                    Party party1 = new Party(partytitle,description,address,partyID,date,time,isPrivate,getHost(party).getHost());
                     System.out.println("Updated and original parties are the same: " + party.equals(party1));
                     return party1;
                 }
