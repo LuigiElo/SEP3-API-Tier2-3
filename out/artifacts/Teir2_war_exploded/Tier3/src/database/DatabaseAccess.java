@@ -61,7 +61,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public Person createPerson(Person person) throws SQLException {
+    public synchronized Person createPerson(Person person) throws SQLException {
         ResultSet rs;
         Person person1 = null;
         try {
@@ -112,7 +112,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
 
-    public String addParticipant(Person person, Party party) throws SQLException {
+    public synchronized String addParticipant(Person person, Party party) throws SQLException {
 
         ResultSet rs;
         String result = "";
@@ -144,7 +144,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public List<Party> getPartiesForPerson(Person person) {
+    public synchronized List<Party> getPartiesForPerson(Person person) {
 
         System.out.println("I am here in the getPartiesForPerson method");
         ResultSet rs;
@@ -181,7 +181,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public Party getParty(int partyID) throws SQLException {
+    public synchronized Party getParty(int partyID) throws SQLException {
 
         connect();
         ResultSet rs;
@@ -230,7 +230,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public List<Person> getPeopleByName(String smth) throws SQLException {
+    public synchronized List<Person> getPeopleByName(String smth) throws SQLException {
 
         ResultSet rs;
         List<Person> people = new ArrayList<Person>();
@@ -267,7 +267,7 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
-    private Person getHostForParty(Party party)
+    private synchronized Person getHostForParty(Party party)
     {
         ResultSet rs;
         Person person = new Person();
@@ -297,7 +297,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public Party getHost(Party party) throws SQLException {
+    public synchronized Party getHost(Party party) throws SQLException {
         ResultSet rs;
         connect();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM sep3.participates_in_party WHERE partyid = ? AND ishost = true;");
@@ -325,7 +325,7 @@ public class DatabaseAccess implements DatabaseCon {
        specific party
     */
     @Override
-    public Person getPersonByID(int personID) throws SQLException {
+    public synchronized Person getPersonByID(int personID) throws SQLException {
         ResultSet rs;
         connect();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM sep3.person_table WHERE personid = ?;");
@@ -350,7 +350,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public Person login(Person person) throws SQLException {
+    public synchronized Person login(Person person) throws SQLException {
         //Roxy is usually right... (Except when it comes to Anne Hathaway vs Scarlett Johansson)
 
         ResultSet rs;
@@ -387,7 +387,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public List<Item> getItems(int partyId) throws Exception {
+    public synchronized List<Item> getItems(int partyId) throws Exception {
 
         ResultSet rs;
         try{
@@ -440,7 +440,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public List<Party> getPartiesBySomething(String something) throws SQLException {
+    public synchronized List<Party> getPartiesBySomething(String something) throws SQLException {
 
         List<Party> partyList = new ArrayList<>(100);
 
@@ -483,7 +483,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public String setPartyPrivacy(boolean privacy, Party party) throws SQLException {
+    public synchronized String setPartyPrivacy(boolean privacy, Party party) throws SQLException {
 
         connect();
         PreparedStatement statement = connection.prepareStatement("UPDATE sep3.party_table SET isprivate = ? WHERE partyid = ?;");
@@ -502,7 +502,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public List<Person> getParticipants(int partyID) throws SQLException {
+    public synchronized List<Person> getParticipants(int partyID) throws SQLException {
 
         connect();
         ResultSet rs;
@@ -548,7 +548,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public List<Item> getItems(Party party) throws SQLException {
+    public synchronized List<Item> getItems(Party party) throws SQLException {
 
         connect();
         ResultSet rs;
@@ -590,7 +590,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
 
-    public String addItem(Item item, Party party) throws SQLException {
+    public synchronized String addItem(Item item, Party party) throws SQLException {
         try {
 
             Item item1 = createItem(item);
@@ -650,7 +650,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public Item createItem(Item item) throws SQLException {
+    public synchronized Item createItem(Item item) throws SQLException {
 
         Item item1 = null;
         try {
@@ -664,7 +664,7 @@ public class DatabaseAccess implements DatabaseCon {
                 connect();
                 System.out.println("12");
                 PreparedStatement statement2 = connection.prepareStatement
-                        ("INSERT INTO sep3.item_table(price, name) VALUES (?,?)");
+                        ("INSERT INTO sep3.item_table(price, name) VALUES (?,?);");
                 statement2.setDouble(1, item.getPrice());
                 statement2.setString(2, item.getName());
                 System.out.println("13");
@@ -690,7 +690,7 @@ public class DatabaseAccess implements DatabaseCon {
 
     @SuppressWarnings("DuplicatedCode")
     @Override
-    public Party updateParty(Party party) throws SQLException {
+    public synchronized Party updateParty(Party party) throws SQLException {
 
         //todo put in try catch, add privacy, return the Party if all gucci return null if fucked up
         try {
@@ -752,12 +752,12 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void updatePerson(Person person) throws SQLException {
+    public synchronized void updatePerson(Person person) throws SQLException {
 
     }
 
 
-    public String removeParticipant(Party party, Person person) throws SQLException {
+    public synchronized String removeParticipant(Party party, Person person) throws SQLException {
 
         try {
 
@@ -779,7 +779,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
 
-    public String removeItem(Party party, Item item) throws SQLException {
+    public synchronized String removeItem(Party party, Item item) throws SQLException {
 
         try {
             connect();
@@ -797,7 +797,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public Party createParty(Party party) throws SQLException {
+    public synchronized Party createParty(Party party) throws SQLException {
         connect();
         PreparedStatement statement = connection.prepareStatement
                 ("INSERT INTO sep3.party_table(description, address, date, partytitle, time, isprivate, playlisturl) VALUES (?,?,?,?,?,?,?)");
@@ -864,7 +864,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public String addItems(List<Item> items, Party party)
+    public synchronized String addItems(List<Item> items, Party party)
     {
         try
         {
@@ -888,7 +888,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public String removeItems(List<Item> items, Party party)
+    public synchronized String removeItems(List<Item> items, Party party)
     {
         try {
 
@@ -910,7 +910,7 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
     @Override
-    public String addPeople(List<Person> people, Party party)
+    public synchronized String addPeople(List<Person> people, Party party)
     {
         System.out.println("In the method to add people");
         try {
@@ -944,7 +944,7 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
     @Override
-    public String removePeople(List<Person> people, Party party)
+    public synchronized String removePeople(List<Person> people, Party party)
     {
         try {
 
@@ -966,7 +966,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public String makeInvitations(List<Person> people, Party party) {
+    public synchronized String makeInvitations(List<Person> people, Party party) {
 
         for (Person person:people)
         {
@@ -984,13 +984,13 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public List<Invitation> getInvitations(int personID) {
+    public synchronized List<Invitation> getInvitations(int personID) {
         ResultSet rs;
         List<Invitation> invitations = new ArrayList<>();
 
         try {
             connect();
-            PreparedStatement statement = connection.prepareStatement("SELECT partyid, status FROM sep3.invitations WHERE personid =? ;");
+            PreparedStatement statement = connection.prepareStatement("SELECT partyid, status FROM sep3.invitations WHERE personid =? AND status = 'pending';");
             statement.setInt(1,personID);
             rs = statement.executeQuery();
             close();
@@ -1017,7 +1017,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public String acceptInvite(Invitation invitation) {
+    public  synchronized String acceptInvite(Invitation invitation) {
 
         try{
             connect();
@@ -1040,7 +1040,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public String declineInvite(Invitation invitation) {
+    public synchronized String declineInvite(Invitation invitation) {
         try{
             connect();
             PreparedStatement statement = connection.prepareStatement("UPDATE sep3.invitations SET status = 'declined' WHERE partyid = ? AND personid = ?;");
@@ -1057,7 +1057,7 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
-    private void makeInvitation(Person person, Party party) throws Exception {
+    private synchronized void makeInvitation(Person person, Party party) throws Exception {
         try
         {
          connect();

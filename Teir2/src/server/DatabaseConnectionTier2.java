@@ -9,21 +9,40 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
 
-public class DatabaseConnection {
+/**
+ * Java class used in transmitting information and commands to another component of the system through
+ * Sockets(using a TCP protocol), for execution and receiving the result of the action;
+ */
 
+public class DatabaseConnectionTier2 {
+
+    /***
+     * Instances used in defining and creating the Socket connection;
+     */
     private final int PORT = 1999;
     private final String HOST = "localHost";
 
-
+    /**
+     * Instances relevant in the transitions of information (sending and receiving);
+     * Initially there are set to null to be initialized with new parameters each time there is a need of
+     * sending and receiving information
+     */
     private Socket socket;
     private ObjectInputStream in = null;
     private ObjectOutputStream out = null;
 
-    public DatabaseConnection()
+    /**
+     * Empty constructor
+     */
+    public DatabaseConnectionTier2()
     {
 
     }
 
+    /***
+     * Creates a new Socket connection and prepares the ObjectOutputStream and  ObjectInputStream
+     * for incoming data that needs to be sent or received;
+     */
     private void createSocket()
     {
         try {
@@ -38,7 +57,8 @@ public class DatabaseConnection {
 
     }
 
-    public String addPerson(Package packageT) {
+
+    public synchronized String addPerson(Package packageT) {
 
         createSocket();
         try {
@@ -57,9 +77,22 @@ public class DatabaseConnection {
             return "fail";
         }
     }
-    //Maybe these should be returning List<Person>? Or are we just gonna call the getParty()
-    //after adding/removing people/items? todo
-    public String addPeople(Package packageT) throws Exception {
+
+
+    /**
+     * Calls createSockets() in preparation to sending a Package command;
+     * Sends out the package using the ObjectOutputStream variable;
+     * The method waits for the result (String) which it received using the ObjectInputStream variable;
+     * The socket connection is closed and the result is being returned.
+     *
+     * In the event the procedure fails an exception is being catch.
+     * In this variable the method throws an Exception saying "Adding people didn't work";
+     *
+     * @param packageT
+     * @return String
+     * @throws Exception
+     */
+    public synchronized String addPeople(Package packageT) throws Exception {
 
         createSocket();
         try {
@@ -79,9 +112,21 @@ public class DatabaseConnection {
              throw new Exception("Adding people didn't work");
         }
     }
-    //Maybe these should be returning List<Person>? Or are we just gonna call the getParty()
-    //after adding/removing people/items? todo
-    public String removePeople(Package packageT) throws Exception {
+
+
+    /**
+     * Calls createSockets() in preparation to sending a Package command;
+     * Sends out the package using the ObjectOutputStream variable;
+     * The method waits for the result (String) which it received using the ObjectInputStream variable;
+     * The socket connection is closed and the result is being returned.
+     *
+     * In the event the procedure fails an exception is being catch.
+     * In this variable the method throws an Exception saying "Removing people didn't work";
+     * @param packageT
+     * @return String
+     * @throws Exception
+     */
+    public synchronized String removePeople(Package packageT) throws Exception {
 
         createSocket();
         try {
@@ -101,7 +146,18 @@ public class DatabaseConnection {
         }
     }
 
-    public List<Person> searchPersonBySmth(Package packageT) {
+    /**
+     * Calls createSockets() in preparation to sending a Package command;
+     * Sends out the package using the ObjectOutputStream variable;
+     * The method waits for the result List<Person> which it received using the ObjectInputStream variable;
+     * The socket connection is closed and the result is being returned.
+     *
+     * In the event the procedure fails an exception is being catch.
+     * In this variable the method returns null;
+     * @param packageT
+     * @return List<Person></Person>
+     */
+    public synchronized List<Person> searchPersonBySmth(Package packageT) {
 
         createSocket();
         try{
@@ -123,7 +179,19 @@ public class DatabaseConnection {
 
     }
 
-    public Person registerPerson(Package packageT) {
+    /**
+     * Calls createSockets() in preparation to sending a Package command;
+     * Sends out the package using the ObjectOutputStream variable;
+     * The method waits for the result (Person object with persistence only generated data)
+     * which it received using the ObjectInputStream variable;
+     * The socket connection is closed and the result is being returned.
+     *
+     * In the event the procedure fails an exception is being catch.
+     * In this variable the method returns null;
+     * @param packageT
+     * @return Person
+     */
+    public synchronized Person registerPerson(Package packageT) {
 
         createSocket();
         try {
@@ -146,11 +214,11 @@ public class DatabaseConnection {
 
     }
 
-    public List<Party> getPartiesBySomething(Package packageT) {
+    public synchronized List<Party> getPartiesBySomething(Package packageT) {
         return null;
     }
 
-    public String setPartyPrivacy(Package packageT) {
+    public synchronized String setPartyPrivacy(Package packageT) {
         createSocket();
 
         try {
@@ -170,7 +238,18 @@ public class DatabaseConnection {
         }
     }
 
-    public List<Party> getPartiesForPerson(Package packageT) {
+    /**
+     * Calls createSockets() in preparation to sending a Package command;
+     * Sends out the package using the ObjectOutputStream variable;
+     * The method waits for the result List<Party> which it received using the ObjectInputStream variable;
+     * The socket connection is closed and the result is being returned.
+     *
+     * In the event the procedure fails an exception is being catch.
+     * In this variable the method returns null;
+     * @param packageT
+     * @return List<Party></Party>
+     */
+    public synchronized List<Party> getPartiesForPerson(Package packageT) {
         createSocket();
         try {
             out.writeObject(packageT);
@@ -190,7 +269,7 @@ public class DatabaseConnection {
         }
     }
 
-    public Party getParty(Package packageT) {
+    public synchronized Party getParty(Package packageT) {
         createSocket();
         try {
             out.writeObject(packageT);
@@ -210,11 +289,11 @@ public class DatabaseConnection {
         }
     }
 
-    public List<Person> getParticipants(Package packageT) {
+    public synchronized List<Person> getParticipants(Package packageT) {
         return null;
     }
 
-    public List<Item> getItems(Package packageT) {
+    public synchronized List<Item> getItems(Package packageT) {
 
         createSocket();
         try {
@@ -256,7 +335,19 @@ public class DatabaseConnection {
         return null;
     }
 
-    public Party updateParty(Package packageT) {
+
+    /**
+     * Calls createSockets() in preparation to sending a Package command;
+     * Sends out the package using the ObjectOutputStream variable;
+     * The method waits for the result Party which it received using the ObjectInputStream variable;
+     * The socket connection is closed and the result is being returned.
+     *
+     * In the event the procedure fails an exception is being catch.
+     * In this variable the method closes the socket connection and returns null;
+     * @param packageT
+     * @return Party
+     */
+    public synchronized Party updateParty(Package packageT) {
 
         createSocket();
 
@@ -268,8 +359,6 @@ public class DatabaseConnection {
         } catch (Exception e) {
             e.getMessage();
             e.printStackTrace();
-            System.out.println("Something fucked uppppp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
             try {
                 socket.close();
             } catch (IOException ex) {
@@ -281,9 +370,9 @@ public class DatabaseConnection {
 
     public void updatePerson(Package packageT) {}
 
-    public void removeParticipant(Package packageT) {}
+    public synchronized void removeParticipant(Package packageT) {}
 
-    public String removeItems(Package packageT) throws Exception {
+    public synchronized String removeItems(Package packageT) throws Exception {
 
             try {
                 createSocket();
@@ -302,7 +391,20 @@ public class DatabaseConnection {
             }
     }
 
-    public Party createParty(Package packageT) throws IOException {
+    /**
+     * Calls createSockets() in preparation to sending a Package command;
+     * Sends out the package using the ObjectOutputStream variable;
+     * The method waits for the result Party which it received using the ObjectInputStream variable;
+     * The socket connection is closed and the result is being returned.
+     *
+     * In the event the procedure fails an exception is being catch.
+     * In this variable the method closes the socket connection and returns null;
+     *
+     * @param packageT
+     * @return
+     * @throws IOException
+     */
+    public synchronized Party createParty(Package packageT) throws IOException {
 
         createSocket();
 
@@ -322,7 +424,18 @@ public class DatabaseConnection {
 
     }
 
-    public Person login(Package packageT) {
+    /**
+     * Calls createSockets() in preparation to sending a Package command;
+     * Sends out the package using the ObjectOutputStream variable;
+     * The method waits for the result Person which it received using the ObjectInputStream variable;
+     * The socket connection is closed and the result is being returned.
+     *
+     * In the event the procedure fails an exception is being catch.
+     * In this variable the method closes the socket connection and returns null;
+     * @param packageT
+     * @return Person
+     */
+    public synchronized Person login(Package packageT) {
         createSocket();
         try {
             out.writeObject(packageT);
@@ -343,7 +456,19 @@ public class DatabaseConnection {
 
     }
 
-    public String addItems(Package packageT) throws Exception {
+    /**
+     * Calls createSockets() in preparation to sending a Package command;
+     * Sends out the package using the ObjectOutputStream variable;
+     * The method waits for the result String which it received using the ObjectInputStream variable;
+     * The socket connection is closed and the result is being returned.
+     *
+     * In the event the procedure fails an exception is being catch.
+     * In this variable the method closes the socket connection and returns null;
+     * @param packageT
+     * @return String
+     * @throws Exception
+     */
+    public synchronized String addItems(Package packageT) throws Exception {
 
         createSocket();
         try{
@@ -362,7 +487,18 @@ public class DatabaseConnection {
         }
     }
 
-    public Party updatePartyP(Package packageT) {
+    /**
+     * Calls createSockets() in preparation to sending a Package command;
+     * Sends out the package using the ObjectOutputStream variable;
+     * The method waits for the result Party which it received using the ObjectInputStream variable;
+     * The socket connection is closed and the result is being returned.
+     *
+     * In the event the procedure fails an exception is being catch.
+     * In this variable the method closes the socket connection and returns null;
+     * @param packageT
+     * @return Party
+     */
+    public synchronized Party updatePartyP(Package packageT) {
 
         createSocket();
         try{
@@ -381,7 +517,18 @@ public class DatabaseConnection {
         }
     }
 
-    public List<Invitation> getInvitations(Package packageT)
+    /**
+     * Calls createSockets() in preparation to sending a Package command;
+     * Sends out the package using the ObjectOutputStream variable;
+     * The method waits for the result Party which it received using the ObjectInputStream variable;
+     * The socket connection is closed and the result is being returned.
+     *
+     * In the event the procedure fails an exception is being catch.
+     * In this variable the method closes the socket connection and returns null;
+     * @param packageT
+     * @return List<Invitation></Invitation>
+     */
+    public synchronized List<Invitation> getInvitations(Package packageT)
     {
         createSocket();
         try{
@@ -400,7 +547,18 @@ public class DatabaseConnection {
         }
     }
 
-    public String answerInvite(Package packageT) {
+    /**
+     * Calls createSockets() in preparation to sending a Package command;
+     * Sends out the package using the ObjectOutputStream variable;
+     * The method waits for the result String which it received using the ObjectInputStream variable;
+     * The socket connection is closed and the result is being returned.
+     *
+     * In the event the procedure fails an exception is being catch.
+     * In this variable the method closes the socket connection and returns null;
+     * @param packageT
+     * @return
+     */
+    public synchronized String answerInvite(Package packageT) {
 
         createSocket();
         try{

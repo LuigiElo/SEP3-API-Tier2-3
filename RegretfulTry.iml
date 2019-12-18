@@ -29,7 +29,6 @@
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 4.1.2" level="application_server_libraries" />
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 4.1.2 - RESTful Web Service" level="application_server_libraries" />
     <orderEntry type="library" name="MyDatabase" level="project" />
-    <orderEntry type="module" module-name="Persistance" />
     <orderEntry type="library" name="gson-2.8.5" level="project" />
     <orderEntry type="library" name="jackson-core-2.2.3" level="project" />
     <orderEntry type="library" name="jackson-databind-2.10.1" level="project" />
