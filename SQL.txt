@@ -1,13 +1,9 @@
-DROP SCHEMA sep3 CASCADE ;
-CREATE SCHEMA Sep3;
-SET SCHEMA 'sep3';
-
 create table item_table
 (
     itemid serial not null
         constraint item_table_pk
             primary key,
-    price  float,
+    price  double precision,
     name   varchar
 );
 
@@ -52,8 +48,13 @@ create table party_table
     address     varchar,
     date        varchar,
     partytitle  varchar,
-    time        varchar
+    time        varchar,
+    isprivate   boolean,
+    playlisturl varchar
 );
+
+alter table party_table
+    owner to postgres;
 
 create unique index party_table_partyid_uindex
     on party_table (partyid);
@@ -87,5 +88,19 @@ create table participates_in_party
 );
 
 alter table participates_in_party
+    owner to postgres;
+
+create table invitations
+(
+    partyid  integer not null
+        constraint participates_in_party_party_table_partyid_fk
+            references party_table,
+    personid integer not null
+        constraint participates_in_party_person_table_personid_fk
+            references person_table,
+    status   varchar
+);
+
+alter table invitations
     owner to postgres;
 

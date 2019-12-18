@@ -29,6 +29,9 @@ public class Package implements Serializable {
     private List<String> strings;
 
 
+    private Invitation invitation;
+
+
 
     /**
      * empthy constructor for the Package object.
@@ -42,6 +45,7 @@ public class Package implements Serializable {
         this.people = new ArrayList<Person>();
         this.items = new ArrayList<Item>();
         this.strings = new ArrayList<String>();
+        this.invitation = null;
     }
 
 
@@ -204,4 +208,13 @@ public class Package implements Serializable {
     {
         strings.remove(string);
     }
+
+    public Invitation getInvitation() {
+        return invitation;
+    }
+
+    public void setInvitation(Invitation invitation) {
+        this.invitation = invitation;
+    }
+
 }

@@ -13,7 +13,7 @@ public class Test {
         PartyPlannerService service = new PartyPlannerService();
 
         System.out.println("ssss");
-        Party newParty = new Party("PartyTitle", "TestForDatabase", "VIAUniversity", 1, "24-11-2019", "9:34", false);
+        //Party newParty = new Party("PartyTitle", "TestForDatabase", "VIAUniversity", 1, "24-11-2019", "9:34", false);
 //        Party s = service.createParty(newParty);
 //        System.out.println(s.toString());
 
@@ -55,7 +55,7 @@ public class Test {
 
         //-------Privacy of party added
 
-        Party partyP = new Party("TestParty", "TestForDatabase2", "VIA UNI", 10,"29/11/2019", "12:00", true);
+       // Party partyP = new Party("TestParty", "TestForDatabase2", "VIA UNI", 10,"29/11/2019", "12:00", true);
 //        Party p = service.createParty(partyP);
 
 //        System.out.println(p.toString());

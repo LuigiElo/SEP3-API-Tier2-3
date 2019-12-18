@@ -1,6 +1,7 @@
 package database;
 
 
+import domain.Invitation;
 import domain.Item;
 import domain.Party;
 import domain.Person;
@@ -31,6 +32,9 @@ public interface DatabaseCon extends Remote {
 
     public List<Person> getPeopleByName(String name) throws SQLException;
 
+    public Party getHost(Party party) throws SQLException;
+
+    public Person getPersonByID(int personID) throws SQLException;
 
 //    String addParticipant(Person person, Party party) throws  SQLException;
 //    String addItem(Item item, Party party) throws  SQLException;
@@ -62,6 +66,14 @@ public interface DatabaseCon extends Remote {
     String addPeople(List<Person> people, Party party);
 
     String removePeople(List<Person> people, Party party);
+
+    String makeInvitations(List<Person> people, Party party);
+
+    List<Invitation> getInvitations(int personID);
+
+    String acceptInvite(Invitation invitation);
+
+    String declineInvite(Invitation invitation);
 
 
 //    String addPeople(List<Person> people, Party party) throws Exception;

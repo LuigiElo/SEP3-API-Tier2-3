@@ -1,6 +1,5 @@
 package server;
 
-import domain.Party;
 import domain.Person;
 
 import java.io.IOException;

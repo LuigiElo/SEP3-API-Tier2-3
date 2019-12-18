@@ -27,6 +27,7 @@ public class Package implements Serializable {
     private List<Person> people;
     private List<Item> items;
     private List<String> strings;
+    private Invitation invitation;
 
 
 
@@ -42,6 +43,7 @@ public class Package implements Serializable {
         this.people = new ArrayList<Person>();
         this.items = new ArrayList<Item>();
         this.strings = new ArrayList<String>();
+        this.invitation = null;
     }
 
 
@@ -85,7 +87,7 @@ public class Package implements Serializable {
     }
 
 
-    /**Getter for the List<Party> instance
+    /**Getter for the List<Party> variable
      * @return parties;
      */
     public List<Party> getParties() {
@@ -93,7 +95,7 @@ public class Package implements Serializable {
     }
 
     /**
-     * Setter for the List<Party> instance
+     * Setter for the List<Party> variable
      * @param parties
      */
     public void setParties(List<Party> parties) {
@@ -101,7 +103,7 @@ public class Package implements Serializable {
     }
 
     /**
-     * Getter for the List<Person> instance
+     * Getter for the List<Person> variable
      * @return people
      */
     public List<Person> getPeople() {
@@ -109,7 +111,7 @@ public class Package implements Serializable {
     }
 
     /**
-     * Setter for the List<Person> instance
+     * Setter for the List<Person> variable
      * @param people
      */
     public void setPeople(List<Person> people) {
@@ -117,7 +119,7 @@ public class Package implements Serializable {
     }
 
     /**
-     * Setter for the List<Item> instance
+     * Setter for the List<Item> variable
      * @return items
      */
     public List<Item> getItems() {
@@ -125,7 +127,7 @@ public class Package implements Serializable {
     }
 
     /**
-     * Setter for the List<Item> instance
+     * Setter for the List<Item> variable
      * @param items
      */
     public void setItems(List<Item> items) {
@@ -163,10 +165,7 @@ public class Package implements Serializable {
      * Method that removes a person object from the List<Person>
      * @param person
      */
-    public void removePerson(Person person)
-    {
-        people.remove(person);
-
+    public void removePerson(Person person) { people.remove(person);
     }
 
     /**
@@ -186,22 +185,55 @@ public class Package implements Serializable {
         items.remove(item);
     }
 
+    /**
+     *Getter for the List<String></> variable
+     * @return
+     */
     public List<String> getStrings() {
         return strings;
     }
 
+    /**
+     *Setter for the List<String></String> variable
+     * @param strings
+     */
     public void setStrings(List<String> strings)
     {
         this.strings = strings;
     }
 
+    /**
+     *Adds a string object to the List<String></String>
+     * @param string
+     */
     public void addString(String string)
     {
         strings.add(string);
     }
 
+    /**
+     *Removes a string object from the List<String></String>
+     * @param string
+     */
     public void removeString(String string)
     {
         strings.remove(string);
     }
+
+    /**
+     *Getter for the invitation variable
+     * @return invitation
+     */
+    public Invitation getInvitation() {
+        return invitation;
+    }
+
+    /**
+     *Setter for the invitation variable
+     * @param invitation
+     */
+    public void setInvitation(Invitation invitation) {
+        this.invitation = invitation;
+    }
+
 }

@@ -1,6 +1,7 @@
 package database;
 
 
+import domain.Invitation;
 import domain.Item;
 import domain.Party;
 import domain.Person;
@@ -60,7 +61,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public Person createPerson(Person person) throws SQLException {
+    public synchronized Person createPerson(Person person) throws SQLException {
         ResultSet rs;
         Person person1 = null;
         try {
@@ -110,10 +111,14 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
 
-    public String addParticipant(Person person, Party party) throws SQLException {
+
+    public synchronized String addParticipant(Person person, Party party) throws SQLException {
 
         ResultSet rs;
         String result = "";
+        System.out.println("I am now trying to add one person");
+        System.out.println("The person has the id " +person.getPersonID());
+        System.out.println("The party has the id "+ party.getPartyID());
 
         int personID = person.getPersonID();
         int partyID = party.getPartyID();
@@ -122,12 +127,13 @@ public class DatabaseAccess implements DatabaseCon {
         try {
             connect();
 
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO sep3.participates_in_party VALUES(?,?,?);");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO sep3.participates_in_party(partyid, personid, ishost) VALUES(?,?,?);");
             statement.setInt(1, partyID);
             statement.setInt(2, personID);
             statement.setBoolean(3, isHost);
 
             statement.executeUpdate();
+            System.out.println("The statement for add participants has supposly been executed");
             return "success";
         } catch (SQLException e) {
             System.out.println("The person could not be added");
@@ -138,7 +144,9 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public List<Party> getPartiesForPerson(Person person) {
+    public synchronized List<Party> getPartiesForPerson(Person person) {
+
+        System.out.println("I am here in the getPartiesForPerson method");
         ResultSet rs;
         List<Party> parties = new ArrayList<Party>();
 
@@ -157,9 +165,8 @@ public class DatabaseAccess implements DatabaseCon {
                 ids.add(partyID);
 
             }
-
-
             for (int id : ids) {
+                System.out.println("get party");
                 Party party = getParty(id);
                 parties.add(party);
                 System.out.println(party.getPartyTitle());
@@ -174,7 +181,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public Party getParty(int partyID) throws SQLException {
+    public synchronized Party getParty(int partyID) throws SQLException {
 
         connect();
         ResultSet rs;
@@ -185,22 +192,31 @@ public class DatabaseAccess implements DatabaseCon {
             rs = statement.executeQuery();
 
             Party party = null;
-            if(rs.next()) {
+            while (rs.next()) {
 
 
-                int partyid = rs.getInt(1);
-                String description = rs.getString(2);
-                String address = rs.getString(3);
-                String date = rs.getString(4);
-                String partyTitle = rs.getString(5);
-                String time = rs.getString(6);
+                int partyid = rs.getInt("partyid");
+                String description = rs.getString("description");
+                String address = rs.getString("address");
+                String date = rs.getString("date");
+                String partyTitle = rs.getString("partytitle");
+                String time = rs.getString("time");
+                boolean isPrivate = rs.getBoolean("isprivate");
+                String playlistURL = rs.getString("playlisturl");
+                System.out.println("test123");
+                party = new Party(partyTitle, description, address, partyid, date, time, isPrivate, null);
 
-                party = new Party(partyTitle, description, address, partyid, date, time, false);
+                if (playlistURL != null) {
+                    System.out.println("fuckyou");
+                    party.setPlaylistURL(playlistURL);
+                }
             }
+
             List<Item> items = getItems(party);
             party.setItems(items);
             List<Person> people = getParticipants(party.getPartyID());
             party.setPeople(people);
+            party.setHost(getHostForParty(party));
              close();
             return party;
         } catch (SQLException e) {
@@ -214,7 +230,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public List<Person> getPeopleByName(String smth) throws SQLException {
+    public synchronized List<Person> getPeopleByName(String smth) throws SQLException {
 
         ResultSet rs;
         List<Person> people = new ArrayList<Person>();
@@ -251,10 +267,90 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
+    private synchronized Person getHostForParty(Party party)
+    {
+        ResultSet rs;
+        Person person = new Person();
+        try
+        {
+            connect();
+            PreparedStatement statement = connection.prepareStatement("SELECT personid FROM sep3.participates_in_party WHERE partyid = ? AND ishost = true;");
+            statement.setInt(1, party.getPartyID());
+            rs = statement.executeQuery();
+
+            while (rs.next())
+            {
+                int personID = rs.getInt(1);
+                person = getPersonByID(personID);
+            }
+            return person;
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("helll");
+        }
+
+       return null;
+
+    }
 
     @Override
+    public synchronized Party getHost(Party party) throws SQLException {
+        ResultSet rs;
+        connect();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM sep3.participates_in_party WHERE partyid = ? AND ishost = true;");
+        statement.setInt(1, party.getPartyID());
+        rs = statement.executeQuery();
+        List<Party> partyWithHost = new ArrayList<>();
 
-    public Person login(Person person) throws SQLException {
+        do {
+            int partyID = rs.getInt("partyid");
+            int personID = rs.getInt("personid");
+
+            Party party1 = getParty(partyID);
+            party1.setHost(getPersonByID(personID));
+            partyWithHost.add(party1);
+        }
+        while (rs.next());
+
+        return party;
+    }
+
+    /*
+       host is false by default. HAS TO BE CHANGED
+       this whole method was only made to be used in the getHost()
+       which determines and assigns the host value to it's value for
+       specific party
+    */
+    @Override
+    public synchronized Person getPersonByID(int personID) throws SQLException {
+        ResultSet rs;
+        connect();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM sep3.person_table WHERE personid = ?;");
+        statement.setInt(1, personID);
+        rs = statement.executeQuery();
+        Person person = new Person();
+        while (rs.next())
+        {
+            int ID = rs.getInt(1);
+            String name = rs.getString(2);
+            String email = rs.getString(3);
+            String password = rs.getString(4);
+            String username = rs.getString(5);
+
+
+            person = new Person(ID,name,username,email,null,false);
+        }
+
+
+        return person;
+    }
+
+
+    @Override
+    public synchronized Person login(Person person) throws SQLException {
         //Roxy is usually right... (Except when it comes to Anne Hathaway vs Scarlett Johansson)
 
         ResultSet rs;
@@ -291,7 +387,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public List<Item> getItems(int partyId) throws Exception {
+    public synchronized List<Item> getItems(int partyId) throws Exception {
 
         ResultSet rs;
         try{
@@ -344,7 +440,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public List<Party> getPartiesBySomething(String something) throws SQLException {
+    public synchronized List<Party> getPartiesBySomething(String something) throws SQLException {
 
         List<Party> partyList = new ArrayList<>(100);
 
@@ -352,12 +448,22 @@ public class DatabaseAccess implements DatabaseCon {
         ResultSet rs;
 
         PreparedStatement statement1 = connection.prepareStatement
-                ("SELECT * FROM sep3.party_table WHERE description = "
-                        + something + " OR address = " + something + " OR date = "
-                        + something + " OR partytitle = " + something + " OR time = "
-                        + something + ";");
+                ("SELECT * FROM sep3.party_table WHERE description = ? OR address = ? OR date = ? OR partytitle = ? OR time = ? ;");
+        statement1.setString(1,something);
+        statement1.setString(2,something);
+        statement1.setString(3,something);
+        statement1.setString(4,something);
+        statement1.setString(5,something);
         rs = statement1.executeQuery();
 
+        close();
+
+
+        connect();
+        ResultSet rs2;
+        PreparedStatement statement2 = connection.prepareStatement
+                ("SELECT * FROM sep3.participates_in_party WHERE partyid = ? AND ishost = true;");
+        rs2 = statement2.executeQuery();
         close();
 
         while (rs.next()) {
@@ -367,15 +473,17 @@ public class DatabaseAccess implements DatabaseCon {
             String date = rs.getString(4);
             String partyTitle = rs.getString(5);
             String time = rs.getString(6);
+            boolean isPrivate = rs.getBoolean("isprivate");
+            String playlistURL = rs.getString("playlisturl");
 
-            Party party1 = new Party(partyTitle, description, address, partyID, date, time, false);
+            Party party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate, getHost(getParty(partyID)).getHost());
             partyList.add(party1);
         }
         return partyList;
     }
 
     @Override
-    public String setPartyPrivacy(boolean privacy, Party party) throws SQLException {
+    public synchronized String setPartyPrivacy(boolean privacy, Party party) throws SQLException {
 
         connect();
         PreparedStatement statement = connection.prepareStatement("UPDATE sep3.party_table SET isprivate = ? WHERE partyid = ?;");
@@ -394,7 +502,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public List<Person> getParticipants(int partyID) throws SQLException {
+    public synchronized List<Person> getParticipants(int partyID) throws SQLException {
 
         connect();
         ResultSet rs;
@@ -430,6 +538,8 @@ public class DatabaseAccess implements DatabaseCon {
                 String password = rs.getString(4);
                 String username = rs.getString(5);
 
+
+
                 Person person = new Person(personID, name, email, password, username, false);
                 people.add(person);
             }
@@ -438,7 +548,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public List<Item> getItems(Party party) throws SQLException {
+    public synchronized List<Item> getItems(Party party) throws SQLException {
 
         connect();
         ResultSet rs;
@@ -480,7 +590,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
 
-    public String addItem(Item item, Party party) throws SQLException {
+    public synchronized String addItem(Item item, Party party) throws SQLException {
         try {
 
             Item item1 = createItem(item);
@@ -489,7 +599,7 @@ public class DatabaseAccess implements DatabaseCon {
             PreparedStatement statement = connection.prepareStatement
                     ("INSERT INTO sep3.party_has_items(partyid, itemid) VALUES (?,?);");
             statement.setInt(1, party.getPartyID());
-            statement.setInt(2, item1.getItemID());
+            statement.setInt(2, item1.getitemId());
             statement.execute();
             close();
             return "success";
@@ -503,7 +613,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     private Item getItem(Item item) throws SQLException {
-        try {
+
             System.out.println("2");
             ResultSet resultSet;
             connect();
@@ -535,21 +645,12 @@ public class DatabaseAccess implements DatabaseCon {
                 System.out.println("10");
                 throw  new SQLException("The item could not be retrieved");
             }
-            else return item1;
+            return item1;
 
-        }
-        catch (Exception e)
-        {
-            System.out.println("11");
-            System.out.println("The item could not be retrieved");
-            e.printStackTrace();
-            throw new SQLException("The item could not be retrieved");
-
-        }
     }
 
     @Override
-    public Item createItem(Item item) throws SQLException {
+    public synchronized Item createItem(Item item) throws SQLException {
 
         Item item1 = null;
         try {
@@ -567,7 +668,7 @@ public class DatabaseAccess implements DatabaseCon {
                 statement2.setDouble(1, item.getPrice());
                 statement2.setString(2, item.getName());
                 System.out.println("13");
-                statement2.execute();
+                statement2.executeUpdate();
                 System.out.println("hello");
                 close();
                 System.out.println("14");
@@ -589,14 +690,13 @@ public class DatabaseAccess implements DatabaseCon {
 
     @SuppressWarnings("DuplicatedCode")
     @Override
-    public Party updateParty(Party party) throws SQLException {
+    public synchronized Party updateParty(Party party) throws SQLException {
 
         //todo put in try catch, add privacy, return the Party if all gucci return null if fucked up
         try {
-            System.out.println("here0");
             connect();
             PreparedStatement statement = connection.prepareStatement
-                    ("UPDATE sep3.party_table SET description = ?, address = ?, date = ?, partytitle = ?, time = ?, isprivate = ? WHERE partyid = ?;");
+                    ("UPDATE sep3.party_table SET description = ?, address = ?, date = ?, partytitle = ?, time = ?, isprivate = ?, playlisturl = ? WHERE partyid = ?;");
             //set
             statement.setString(1, party.getDescription());
             statement.setString(2, party.getLocation());
@@ -604,11 +704,11 @@ public class DatabaseAccess implements DatabaseCon {
             statement.setString(4, party.getPartyTitle());
             statement.setString(5, party.getTime());
             statement.setBoolean(6, party.isPrivate());
+            statement.setString(7, party.getPlaylistURL());
             //where
-            statement.setInt(7, party.getPartyID());
+            statement.setInt(8, party.getPartyID());
             statement.executeUpdate();
             close();
-            System.out.println("Here1");
 
             try {
                 connect();
@@ -627,11 +727,12 @@ public class DatabaseAccess implements DatabaseCon {
                     String time = rs.getString("time");
                     boolean isPrivate = rs.getBoolean("isprivate");
 
-                    Party party1 = new Party(partytitle,description,address,partyID,date,time,isPrivate);
+                    Party party1 = new Party(partytitle,description,address,partyID,date,time,isPrivate,party.getHost());
                     List<Item> items = getItems(party1);
                     List<Person> people = getParticipants(partyID);
                     party1.setItems(items);
                     party1.setPeople(people);
+
                     System.out.println("Updated and original parties are the same: " + party.equals(party1));
                     return party1;
                 }
@@ -651,12 +752,12 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public void updatePerson(Person person) throws SQLException {
+    public synchronized void updatePerson(Person person) throws SQLException {
 
     }
 
 
-    public String removeParticipant(Party party, Person person) throws SQLException {
+    public synchronized String removeParticipant(Party party, Person person) throws SQLException {
 
         try {
 
@@ -678,14 +779,14 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
 
-    public String removeItem(Party party, Item item) throws SQLException {
+    public synchronized String removeItem(Party party, Item item) throws SQLException {
 
         try {
             connect();
             PreparedStatement statement = connection.prepareStatement
                     ("DELETE FROM sep3.party_has_items WHERE partyID = ? AND itemID = ?;");
             statement.setInt(1, party.getPartyID());
-            statement.setInt(2, item.getItemID());
+            statement.setInt(2, item.getitemId());
             statement.executeQuery();
             close();
             return "success";
@@ -696,29 +797,20 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public Party createParty(Party party) throws SQLException {
+    public synchronized Party createParty(Party party) throws SQLException {
         connect();
         PreparedStatement statement = connection.prepareStatement
-                ("INSERT INTO sep3.party_table(description, address, date, partytitle, time, isprivate ) VALUES (?,?,?,?,?,?)");
+                ("INSERT INTO sep3.party_table(description, address, date, partytitle, time, isprivate, playlisturl) VALUES (?,?,?,?,?,?,?)");
         statement.setString(1, party.getDescription());
         statement.setString(2, party.getLocation()); //address
         statement.setString(3, party.getDate());
         statement.setString(4, party.getPartyTitle());
         statement.setString(5, party.getTime());
         statement.setBoolean(6, party.isPrivate());
+        statement.setString(7, party.getPlaylistURL());
         statement.executeUpdate();
         close();
 
-//        Person host = party.getPerson(0);
-//
-//        connect();
-//        PreparedStatement statement2 = connection.prepareStatement
-//                ("INSERT INTO sep3.participates_in_party(partyid, personid, ishost) VALUES (?,?,?);");
-//        statement2.setInt(1, party.getPartyID());
-//        statement2.setInt(2, host.getPersonID());
-//        statement2.setBoolean(3, true);
-//        statement2.executeUpdate();
-//        close();
 
 
         connect();
@@ -745,10 +837,24 @@ public class DatabaseAccess implements DatabaseCon {
             String partyTitle = rs.getString(5);
             String time = rs.getString(6);
             Boolean isPrivate = rs.getBoolean(7);
-            party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate);
+            party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate, null);
         }
         close();
-//        party1.getPeople().add(host); //adding the host to the party 'pulled' from the
+
+
+        Person host = party.getHost();
+
+        connect();
+        PreparedStatement statement2 = connection.prepareStatement
+                ("INSERT INTO sep3.participates_in_party(partyid, personid, ishost) VALUES (?,?,?);");
+        statement2.setInt(1, party1.getPartyID());
+        statement2.setInt(2, host.getPersonID());
+        statement2.setBoolean(3, true);
+        statement2.executeUpdate();
+        close();
+
+        party1.setHost(party.getHost());
+
         //only for testing
         System.out.println(party1.toString());
 
@@ -758,7 +864,7 @@ public class DatabaseAccess implements DatabaseCon {
 
 
     @Override
-    public String addItems(List<Item> items, Party party)
+    public synchronized String addItems(List<Item> items, Party party)
     {
         try
         {
@@ -782,7 +888,7 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
     @Override
-    public String removeItems(List<Item> items, Party party)
+    public synchronized String removeItems(List<Item> items, Party party)
     {
         try {
 
@@ -804,29 +910,41 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
     @Override
-    public String addPeople(List<Person> people, Party party)
+    public synchronized String addPeople(List<Person> people, Party party)
     {
+        System.out.println("In the method to add people");
         try {
 
-            for (Person person:people)
-            {
-                String result = addParticipant(person, party);
+           for (int i = 0; i< people.size(); i++)
+           {
+               System.out.println("In the for loop for adding people");
+                String result = addParticipant(people.get(i), party);
                 if(result.equals("fail"))
                 {
                     return "fail";
                 }
-            }
+           }
+//            for (Person person:people)
+//            {
+//                System.out.println("In the for loop for adding people");
+//                String result = addParticipant(person, party);
+//                if(result.equals("fail"))
+//                {
+//                    return "fail";
+//                }
+//            }
             return "success";
         }
         catch (Exception e)
         {
+            System.out.println("Got an exception in add people");
             e.printStackTrace();
             return "fail";
         }
 
     }
     @Override
-    public String removePeople(List<Person> people, Party party)
+    public synchronized String removePeople(List<Person> people, Party party)
     {
         try {
 
@@ -847,6 +965,118 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
+    @Override
+    public synchronized String makeInvitations(List<Person> people, Party party) {
+
+        for (Person person:people)
+        {
+            try
+            {
+                makeInvitation(person, party);
+            }
+            catch (Exception e)
+            {
+                System.out.println("I couldn't make this invitation for p :" + person.getName());
+                return "fail";
+            }
+        }
+        return "success";
+    }
+
+    @Override
+    public synchronized List<Invitation> getInvitations(int personID) {
+        ResultSet rs;
+        List<Invitation> invitations = new ArrayList<>();
+
+        try {
+            connect();
+            PreparedStatement statement = connection.prepareStatement("SELECT partyid, status FROM sep3.invitations WHERE personid =? AND status = 'pending';");
+            statement.setInt(1,personID);
+            rs = statement.executeQuery();
+            close();
+
+            while (rs.next())
+            {
+                int partyId = rs.getInt(1);
+                String status = rs.getString(2);
+
+                Party party = getParty(partyId);
+
+                Invitation invitation = new Invitation(personID, party, status);
+                invitations.add(invitation);
+            }
+            //might want to null this if bugs appear
+            return invitations;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("Could not get notifications");
+            return null;
+        }
+    }
+
+    @Override
+    public  synchronized String acceptInvite(Invitation invitation) {
+
+        try{
+            connect();
+            PreparedStatement statement = connection.prepareStatement("UPDATE sep3.invitations SET status = 'accepted' WHERE partyid = ? AND personid = ?;");
+            statement.setInt(1,invitation.getParty().getPartyID());
+            statement.setInt(2,invitation.getPersonId());
+            statement.executeUpdate();
+            close();
+
+            Person person = new Person();
+            person.setPersonID(invitation.getPersonId());
+            addParticipant(person, invitation.getParty());
+            return "success";
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "fail";
+        }
+
+    }
+
+    @Override
+    public synchronized String declineInvite(Invitation invitation) {
+        try{
+            connect();
+            PreparedStatement statement = connection.prepareStatement("UPDATE sep3.invitations SET status = 'declined' WHERE partyid = ? AND personid = ?;");
+            statement.setInt(1,invitation.getParty().getPartyID());
+            statement.setInt(2,invitation.getPersonId());
+            statement.executeUpdate();
+            close();
+            return "success";
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "fail";
+        }
+
+    }
+
+    private synchronized void makeInvitation(Person person, Party party) throws Exception {
+        try
+        {
+         connect();
+         PreparedStatement statement = connection.prepareStatement
+                 ("INSERT INTO sep3.invitations(partyid, personid, status) VALUES (?,?,?);");
+         statement.setInt(1,party.getPartyID());
+         statement.setInt(2, person.getPersonID());
+         statement.setString(3, "pending");
+
+         statement.executeUpdate();
+         close();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Catch block for make invitation");
+            throw new Exception("I couldn't make this invitation");
+
+        }
+    }
 
 
 }
