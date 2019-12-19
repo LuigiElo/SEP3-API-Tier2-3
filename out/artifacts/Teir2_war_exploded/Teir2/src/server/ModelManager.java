@@ -14,7 +14,7 @@ import java.util.List;
  * readable for the rest of the system (Package) so that it can perform the correct command, or the action intended,
  * according to the respectful client wishes;
  */
-public class ModelManager {
+public class ModelManager implements IModelManager {
 
     /**
      * Instance of a DatabaseConnectionTier2 object used in transmitting the command Package to Tier 3 for execution;
@@ -23,7 +23,7 @@ public class ModelManager {
 
     /**
      * Constructor for the ModelManager object;
-     * Initializes the DatabaseConnectionTier2 object instance;
+     * Initializes the DatabaseConnectionTier2 object variable;
      */
     public ModelManager() {
         this.db = new DatabaseConnectionTier2();
@@ -38,6 +38,9 @@ public class ModelManager {
      * -remove people
      * For each of the procedures a Package object is created with a respectable command and the needed objects
      * needed for the execution of the procedure are set;
+     * In case of add people an invitation will be created instead;
+     *
+     * If the case one of the procedures fails (result is an Exception thrown) the method will return null;
      *
      * Lastly the method attempt to retrieve the modified Party using the same set of actions;
      *
@@ -127,8 +130,8 @@ public class ModelManager {
      *  A Package object is being created with the command "searchPBySmth" and the parameter is
      *  being added/attached to the Package;
      *
-     *  It then refers to the DatabaseConnectionTier2 instance that transmits the Package command for execution.
-     *  The result received by the ModelManager through the  DatabaseConnectionTier2 instance is either a List<Person></>
+     *  It then refers to the DatabaseConnectionTier2 variable that transmits the Package command for execution.
+     *  The result received by the ModelManager through the  DatabaseConnectionTier2 variable is either a List<Person></>
      *  or null if the procedure a) failed and was aborted or b) no match was found
      *
      * @param smth
@@ -164,8 +167,8 @@ public class ModelManager {
      *  A Package object is being created with the command "addPeople" and the parameter is
      *  being added/attached to the Package;
      *
-     *  It then refers to the DatabaseConnectionTier2 instance that transmits the Package command for execution.
-     *  The result received by the ModelManager through the  DatabaseConnectionTier2 instance is either a String "success"
+     *  It then refers to the DatabaseConnectionTier2 variable that transmits the Package command for execution.
+     *  The result received by the ModelManager through the  DatabaseConnectionTier2 variable is either a String "success"
      *  or a String "fail" if the procedure failed and was aborted at some point
      * @param party
      * @return String
@@ -186,8 +189,8 @@ public class ModelManager {
      *  A Package object is being created with the command "createParty" and the parameter is
      *  being added/attached to the Package;
      *
-     *  It then refers to the DatabaseConnectionTier2 instance that transmits the Package command for execution.
-     *  The result received by the ModelManager through the  DatabaseConnectionTier2 instance is either a Party
+     *  It then refers to the DatabaseConnectionTier2 variable that transmits the Package command for execution.
+     *  The result received by the ModelManager through the  DatabaseConnectionTier2 variable is either a Party
      *  object (with persistence only generated data) or null if the procedure failed and was aborted at some point
      * @param party
      * @return Party
@@ -211,8 +214,8 @@ public class ModelManager {
      *  A Package object is being created with the command "registerPerson" and the parameter is
      *  being added/attached to the Package;
      *
-     *  It then refers to the DatabaseConnectionTier2 instance that transmits the Package command for execution.
-     *  The result received by the ModelManager through the  DatabaseConnectionTier2 instance is either a Person
+     *  It then refers to the DatabaseConnectionTier2 variable that transmits the Package command for execution.
+     *  The result received by the ModelManager through the  DatabaseConnectionTier2 variable is either a Person
      *  object (with persistence only generated data) or null if the procedure failed and was aborted at some point
      * @param person
      * @return Person
@@ -241,8 +244,8 @@ public class ModelManager {
      *  A Package object is being created with the command "login" and the parameter is
      *  being added/attached to the Package;
      *
-     *  It then refers to the DatabaseConnectionTier2 instance that transmits the Package command for execution.
-     *  The result received by the ModelManager through the  DatabaseConnectionTier2 instance is either a Person
+     *  It then refers to the DatabaseConnectionTier2 variable that transmits the Package command for execution.
+     *  The result received by the ModelManager through the  DatabaseConnectionTier2 variable is either a Person
      *  object (with persistence only generated data) or null if a)the procedure failed and was aborted at some point
      *  b) the credentials provided by the parameter don't match with those from the system
      * @param person
@@ -274,8 +277,8 @@ public class ModelManager {
      *  A Package object is being created with the command "getPartiesForPerson" and the parameter is
      *  being added/attached to the Package;
      *
-     *  It then refers to the DatabaseConnectionTier2 instance that transmits the Package command for execution.
-     *  The result received by the ModelManager through the  DatabaseConnectionTier2 instance is either a
+     *  It then refers to the DatabaseConnectionTier2 variable that transmits the Package command for execution.
+     *  The result received by the ModelManager through the  DatabaseConnectionTier2 variable is either a
      *  List<Person></Person> object (with persistence only generated data) or null if the procedure failed and was aborted at some point
      * @param person
      * @return
@@ -370,8 +373,8 @@ public class ModelManager {
      *  A Package object is being created with the command "updatePartyD" and the parameter is
      *  being added/attached to the Package;
      *
-     *  It then refers to the DatabaseConnectionTier2 instance that transmits the Package command for execution.
-     *  The result received by the ModelManager through the  DatabaseConnectionTier2 instance is either a Party
+     *  It then refers to the DatabaseConnectionTier2 variable that transmits the Package command for execution.
+     *  The result received by the ModelManager through the  DatabaseConnectionTier2 variable is either a Party
      *  object or null if the procedure failed and was aborted at some point
      * @param party
      * @return
@@ -392,8 +395,8 @@ public class ModelManager {
      *  A Package object is being created with the command "getInvitations" and the parameter is
      *  being added/attached to the Package;
      *
-     *  It then refers to the DatabaseConnectionTier2 instance that transmits the Package command for execution.
-     *  The result received by the ModelManager through the  DatabaseConnectionTier2 instance is either a
+     *  It then refers to the DatabaseConnectionTier2 variable that transmits the Package command for execution.
+     *  The result received by the ModelManager through the  DatabaseConnectionTier2 variable is either a
      *  List<Inviatation></> object or null if the procedure failed and was aborted at some point
      * @param personID
      * @return List<Inviatation></Inviatation>
@@ -417,8 +420,8 @@ public class ModelManager {
      *  If the Invitation parameter status is "accepted", the Package command is set to "acceptInvite",
      *  and "declineInvite" otherwise;
      *
-     *  It then refers to the DatabaseConnectionTier2 instance that transmits the Package command for execution.
-     *  The result received by the ModelManager through the  DatabaseConnectionTier2 instance is either a
+     *  It then refers to the DatabaseConnectionTier2 variable that transmits the Package command for execution.
+     *  The result received by the ModelManager through the  DatabaseConnectionTier2 variable is either a
      *  String "success"  or a String "fail" if the procedure failed and was aborted at some point
      * @param invitation
      * @return

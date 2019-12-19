@@ -14,7 +14,7 @@ import java.util.List;
  * readable for the rest of the system (Package) so that it can perform the correct command, or the action intended,
  * according to the respectful client wishes;
  */
-public class ModelManager implements IModelManager {
+public class ModelManager {
 
     /**
      * Instance of a DatabaseConnectionTier2 object used in transmitting the command Package to Tier 3 for execution;

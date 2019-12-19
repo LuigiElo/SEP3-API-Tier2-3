@@ -10,26 +10,37 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ *Java class responsible to connecting to the database component of the system and executing
+ *the commands.
+ * It makes use of a JDBC connection via a PreparedStatement to execute the procedures
+ */
 public class DatabaseAccess implements DatabaseCon {
-
+    /**
+     * Property; Defines the connection to the database through which the command are being
+     * executed
+     */
     Connection connection;
-
+    /**
+     * Properties; Define the characteristics of the connection;
+     * It is advised that before the use of the system a database is created using the
+     * available SQL.txt file and the followings are completed with valid postgres user
+     * information
+     */
     private final String url = "jdbc:postgresql://localhost:5432/postgres";
     private final String user = "postgres";
     private final String password = "08191";
-    private Person person2;
 
+    /**
+     *Empty constructor for the DatabaseAccess object
+     */
+    public DatabaseAccess() { }
 
-    public DatabaseAccess() {
-        try {
-            connection = DriverManager.getConnection(url, user, password);
-            System.out.println("Connected to the PostgreSQL server successfully.");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * Method that enables the connection to the database;
+     * @return connection
+     * @throws SQLException
+     */
     @Override
     public Connection connect() throws SQLException {
         try {
@@ -59,7 +70,19 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
-
+    /**
+     * Method used to create a new instance of a person in the Database;
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * After insertion the method retrieves in similar steps the Person object obtained
+     * after the database insertion (with only persistence data generated)
+     * @param person
+     * @return Person
+     * @throws SQLException
+     */
     @Override
     public synchronized Person createPerson(Person person) throws SQLException {
         ResultSet rs;
@@ -111,7 +134,21 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
 
-
+    /**
+     * Method used to add a Person (user) as participant in a Party in the database with mathing
+     * characteristics to the Party parameter
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * IF the command has been executed with no issues the method will return "success" and "fail"
+     * otherwise
+     * @param person
+     * @param party
+     * @return
+     * @throws SQLException
+     */
     public synchronized String addParticipant(Person person, Party party) throws SQLException {
 
         ResultSet rs;
@@ -133,6 +170,7 @@ public class DatabaseAccess implements DatabaseCon {
             statement.setBoolean(3, isHost);
 
             statement.executeUpdate();
+            close();
             System.out.println("The statement for add participants has supposly been executed");
             return "success";
         } catch (SQLException e) {
@@ -142,7 +180,18 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
-
+    /**
+     *Method used to retrieve the list of parties in which th user described by the parameter
+     * participates in
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * The result is either a List<Party></> or null if the procedure resulted in an Exception due to failure
+     * @param person
+     * @return List<Party></Party>
+     */
     @Override
     public synchronized List<Party> getPartiesForPerson(Person person) {
 
@@ -180,16 +229,31 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
+    /**
+     * Method used to retrieve a Party by it's unique id from the database. Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * The result is either a Party, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     * @param partyID
+     * @return
+     * @throws SQLException
+     */
     @Override
     public synchronized Party getParty(int partyID) throws SQLException {
 
-        connect();
+
         ResultSet rs;
         try {
+            connect();
             PreparedStatement statement = connection.prepareStatement
                     ("SELECT * FROM sep3.party_table WHERE partyID = ?;");
             statement.setInt(1, partyID);
             rs = statement.executeQuery();
+            close();
 
             Party party = null;
             while (rs.next()) {
@@ -217,7 +281,6 @@ public class DatabaseAccess implements DatabaseCon {
             List<Person> people = getParticipants(party.getPartyID());
             party.setPeople(people);
             party.setHost(getHostForParty(party));
-             close();
             return party;
         } catch (SQLException e) {
             System.out.println("The party could not be retrieved");
@@ -228,7 +291,21 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
-
+    /**
+     *Method used to retrieve a List<Person> (users) matching the criteria defined by the parameter.
+     *
+     *Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * The result is either a List<Person>, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     * @param smth
+     * @return List<Person>
+     * @throws SQLException
+     */
     @Override
     public synchronized List<Person> getPeopleByName(String smth) throws SQLException {
 
@@ -267,6 +344,20 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
+    /**
+     * Method used to retrieve a Person object that is hosting the Party given as parameter;
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * The result is either a Person, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     *
+     * @param party
+     * @return
+     */
     private synchronized Person getHostForParty(Party party)
     {
         ResultSet rs;
@@ -277,6 +368,7 @@ public class DatabaseAccess implements DatabaseCon {
             PreparedStatement statement = connection.prepareStatement("SELECT personid FROM sep3.participates_in_party WHERE partyid = ? AND ishost = true;");
             statement.setInt(1, party.getPartyID());
             rs = statement.executeQuery();
+            close();
 
             while (rs.next())
             {
@@ -295,35 +387,50 @@ public class DatabaseAccess implements DatabaseCon {
        return null;
 
     }
+//
+//    /**
+//     *
+//     * @param party
+//     * @return
+//     * @throws SQLException
+//     */
+//    @Override
+//    public synchronized Party getHost(Party party) throws SQLException {
+//        ResultSet rs;
+//        connect();
+//        PreparedStatement statement = connection.prepareStatement("SELECT * FROM sep3.participates_in_party WHERE partyid = ? AND ishost = true;");
+//        statement.setInt(1, party.getPartyID());
+//        rs = statement.executeQuery();
+//        close();
+//        List<Party> partyWithHost = new ArrayList<>();
+//
+//        do {
+//            int partyID = rs.getInt("partyid");
+//            int personID = rs.getInt("personid");
+//
+//            Party party1 = getParty(partyID);
+//            party1.setHost(getPersonByID(personID));
+//            partyWithHost.add(party1);
+//        }
+//        while (rs.next());
+//
+//        return party;
+//    }
 
-    @Override
-    public synchronized Party getHost(Party party) throws SQLException {
-        ResultSet rs;
-        connect();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM sep3.participates_in_party WHERE partyid = ? AND ishost = true;");
-        statement.setInt(1, party.getPartyID());
-        rs = statement.executeQuery();
-        List<Party> partyWithHost = new ArrayList<>();
-
-        do {
-            int partyID = rs.getInt("partyid");
-            int personID = rs.getInt("personid");
-
-            Party party1 = getParty(partyID);
-            party1.setHost(getPersonByID(personID));
-            partyWithHost.add(party1);
-        }
-        while (rs.next());
-
-        return party;
-    }
-
-    /*
-       host is false by default. HAS TO BE CHANGED
-       this whole method was only made to be used in the getHost()
-       which determines and assigns the host value to it's value for
-       specific party
-    */
+    /**
+     * Method used to retrieve the user (Person object) matching with the id given as parameter
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * The result is either a Person, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     * @param personID
+     * @return
+     * @throws SQLException
+     */
     @Override
     public synchronized Person getPersonByID(int personID) throws SQLException {
         ResultSet rs;
@@ -331,6 +438,7 @@ public class DatabaseAccess implements DatabaseCon {
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM sep3.person_table WHERE personid = ?;");
         statement.setInt(1, personID);
         rs = statement.executeQuery();
+        close();
         Person person = new Person();
         while (rs.next())
         {
@@ -348,7 +456,22 @@ public class DatabaseAccess implements DatabaseCon {
         return person;
     }
 
-
+    /**
+     * Method used to retrieve a user(Person object) if the credentials (name and username) for
+     * the Person object given as parameter match an instance of a person from the database
+     *
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * The result is either a Person, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     * @param person
+     * @return
+     * @throws SQLException
+     */
     @Override
     public synchronized Person login(Person person) throws SQLException {
         //Roxy is usually right... (Except when it comes to Anne Hathaway vs Scarlett Johansson)
@@ -362,6 +485,7 @@ public class DatabaseAccess implements DatabaseCon {
         statement.setString(1, person.getUsername());
         statement.setString(2, person.getPassword());
         rs = statement.executeQuery();
+        close();
         Person person2 = null;
 
         if (rs.next()) {
@@ -385,7 +509,21 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
-
+    /**
+     * Method used to retrieve the List<Item> variable of a party given its unique id as parameter;
+     *
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * The result is either a List<Item>, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     * @param partyId
+     * @return List<Item></Item>
+     * @throws Exception
+     */
     @Override
     public synchronized List<Item> getItems(int partyId) throws Exception {
 
@@ -396,6 +534,7 @@ public class DatabaseAccess implements DatabaseCon {
                     ("SELECT * FROM sep3.party_has_items WHERE partyID = " + partyId + ";");
             rs = statement.executeQuery();
             List<Integer> itemsInParty = new ArrayList<>(100);
+            close();
 
             while (rs.next()) {
 
@@ -413,6 +552,7 @@ public class DatabaseAccess implements DatabaseCon {
                 statement = connection.prepareStatement
                         ("SELECT * FROM sep3.item_table WHERE itemID = " + itemsInParty.get(i) + ";");
                 rs = statement.executeQuery();
+                close();
 
                 while (rs.next()) {
 
@@ -438,7 +578,22 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
 
-
+    /**
+     * Method used to retrieve a List<Party> matching the criteria defined by the parameter;
+     *
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     *
+     * The result is either a List<Party>, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     * @param something
+     * @return
+     * @throws SQLException
+     */
     @Override
     public synchronized List<Party> getPartiesBySomething(String something) throws SQLException {
 
@@ -476,12 +631,27 @@ public class DatabaseAccess implements DatabaseCon {
             boolean isPrivate = rs.getBoolean("isprivate");
             String playlistURL = rs.getString("playlisturl");
 
-            Party party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate, getHost(getParty(partyID)).getHost());
+            Party party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate, getHostForParty(getParty(partyID)));
             partyList.add(party1);
         }
         return partyList;
     }
 
+    /**
+     *Method used to change the privacy variable of the Party given as parameter in the system;
+     *Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * IF the command has been executed with no issues the method will return "success" and "fail"
+     * otherwise
+     * @param privacy
+     * @param party
+     * @return String
+     * @throws SQLException
+     */
     @Override
     public synchronized String setPartyPrivacy(boolean privacy, Party party) throws SQLException {
 
@@ -495,12 +665,29 @@ public class DatabaseAccess implements DatabaseCon {
         connect();
         PreparedStatement statement1 = connection.prepareStatement("SELECT * FROM sep3.party_table WHERE partyid = ?;");
         statement1.setInt(1, party.getPartyID());
-
         ResultSet rs = statement1.executeQuery();
+        close();
         return "Party: " + party.toString() + " is: " + rs.getString("isPrivate");
     }
 
 
+    /**
+     *Method used to retrieve a List<Person> that are participating the party specified through
+     * it's unique id as parameter;
+     *
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     *
+     * The result is either a List<Person>, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     * @param partyID
+     * @return List<Person>
+     * @throws SQLException
+     */
     @Override
     public synchronized List<Person> getParticipants(int partyID) throws SQLException {
 
@@ -510,6 +697,7 @@ public class DatabaseAccess implements DatabaseCon {
                 ("SELECT * FROM sep3.participates_in_party WHERE partyID = " + partyID);
         //+ " AND isHost = false" + ";"
         rs = statement.executeQuery();
+        close();
 
         List<String> participants = new ArrayList<>(100);
 
@@ -529,6 +717,7 @@ public class DatabaseAccess implements DatabaseCon {
             statement = connection.prepareStatement
                     ("SELECT * FROM sep3.person_table WHERE personID = " + participants.get(i) + ";");
             rs = statement.executeQuery();
+            close();
 
             while (rs.next()) {
 
@@ -547,6 +736,22 @@ public class DatabaseAccess implements DatabaseCon {
         return people;
     }
 
+    /**
+     * Method used to retrieve the items for a Party from the system
+     *
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     *
+     * The result is either a List<Item>, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     * @param party
+     * @return List<Item>
+     * @throws SQLException
+     */
     @Override
     public synchronized List<Item> getItems(Party party) throws SQLException {
 
@@ -555,6 +760,7 @@ public class DatabaseAccess implements DatabaseCon {
         PreparedStatement statement = connection.prepareStatement
                 ("SELECT * FROM sep3.party_has_items WHERE partyID = " + party.getPartyID() + ";");
         rs = statement.executeQuery();
+        close();
 
         List<String> itemsInParty = new ArrayList<>(100);
 
@@ -574,6 +780,7 @@ public class DatabaseAccess implements DatabaseCon {
             statement = connection.prepareStatement
                     ("SELECT * FROM sep3.item_table WHERE itemID = " + itemsInParty.get(i) + ";");
             rs = statement.executeQuery();
+            close();
 
             while (rs.next()) {
 
@@ -589,7 +796,26 @@ public class DatabaseAccess implements DatabaseCon {
     }
 
 
-
+    /**
+     * Method used to add an item to a Party;
+     * The method verifies first if another instance of the same item, matching in name and price does exists
+     * in the system;
+     *
+     * If yes, the item is then added to the party, if not it is created in tha system and then added;
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     *
+     * IF the command has been executed with no issues the method will return "success" and "fail"
+     * otherwise
+     * @param item
+     * @param party
+     * @return String
+     * @throws SQLException
+     */
     public synchronized String addItem(Item item, Party party) throws SQLException {
         try {
 
@@ -612,6 +838,22 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
+    /**
+     * Method that retrieves an item from the system if there is in the system an instance of an
+     * Item matching in name and price.
+     *
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * If the match exists the result is the Item obtained by mapping through the Result Set, and an
+     * Exception in case negative
+     * @param item
+     * @return Item
+     * @throws SQLException
+     */
     private Item getItem(Item item) throws SQLException {
 
             System.out.println("2");
@@ -649,6 +891,21 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
+    /**
+     * Method used to create an Item or retrieve it from the database if it already exists;
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     *
+     * The result is either a Item, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     * @param item
+     * @return Item
+     * @throws SQLException
+     */
     @Override
     public synchronized Item createItem(Item item) throws SQLException {
 
@@ -688,11 +945,25 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
+    /**
+     * Method used to modify the static characteristics of the Party given as parameter in the system;
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     *
+     * The result is either the updated Party, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     * @param party
+     * @return Party
+     * @throws SQLException
+     */
     @SuppressWarnings("DuplicatedCode")
     @Override
     public synchronized Party updateParty(Party party) throws SQLException {
 
-        //todo put in try catch, add privacy, return the Party if all gucci return null if fucked up
         try {
             connect();
             PreparedStatement statement = connection.prepareStatement
@@ -756,7 +1027,22 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
-
+    /**
+     * Method used to remove a user (Person) as a participant from the party parameter in the system;
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     *
+     * IF the command has been executed with no issues the method will return "success" and "fail"
+     * otherwise
+     * @param party
+     * @param person
+     * @return String
+     * @throws SQLException
+     */
     public synchronized String removeParticipant(Party party, Person person) throws SQLException {
 
         try {
@@ -778,7 +1064,22 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
-
+    /**
+     * Method used to remove an Item from a Party in the system identified through the parameter
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     *
+     * IF the command has been executed with no issues the method will return "success" and "fail"
+     * otherwise
+     * @param party
+     * @param item
+     * @return Item
+     * @throws SQLException
+     */
     public synchronized String removeItem(Party party, Item item) throws SQLException {
 
         try {
@@ -796,6 +1097,23 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
+    /**
+     * Method used to create a new instance of a Party in the database system. It included the static
+     * information of the party as well as it's host
+     *
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     *
+     * The result is either the new created Party, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     * @param party
+     * @return Party
+     * @throws SQLException
+     */
     @Override
     public synchronized Party createParty(Party party) throws SQLException {
         connect();
@@ -825,6 +1143,7 @@ public class DatabaseAccess implements DatabaseCon {
         statement1.setString(5, party.getTime());
         statement1.setBoolean(6, party.isPrivate());
         rs = statement1.executeQuery();
+        close();
 
         Party party1 = null;
 
@@ -839,7 +1158,6 @@ public class DatabaseAccess implements DatabaseCon {
             Boolean isPrivate = rs.getBoolean(7);
             party1 = new Party(partyTitle, description, address, partyID, date, time, isPrivate, null);
         }
-        close();
 
 
         Person host = party.getHost();
@@ -855,14 +1173,19 @@ public class DatabaseAccess implements DatabaseCon {
 
         party1.setHost(party.getHost());
 
-        //only for testing
-        System.out.println(party1.toString());
-
         return party1;
 
     }
 
-
+    /**
+     * Method used to add a List<Item> to the Party given as parameter in the database;
+     * It calls successively the method addItem for all objects in the list
+     * If one add fails the method returns "fail" and aborts the procedure and "success" in the opposite
+     * case;
+     * @param items
+     * @param party
+     * @return String
+     */
     @Override
     public synchronized String addItems(List<Item> items, Party party)
     {
@@ -887,6 +1210,15 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
+    /**
+     * Method used to remove a List<Item> to the Party given as parameter in the database;
+     * It calls successively the method removeItem for all objects in the list
+     * If one add fails the method returns "fail" and aborts the procedure and "success" in the opposite
+     * case;
+     * @param items
+     * @param party
+     * @return String
+     */
     @Override
     public synchronized String removeItems(List<Item> items, Party party)
     {
@@ -909,6 +1241,16 @@ public class DatabaseAccess implements DatabaseCon {
         }
 
     }
+
+    /**
+     * Method used to add a List<Person> to the Party given as parameter in the database;
+     * It calls successively the method addParticipant for all objects in the list
+     * If one add fails the method returns "fail" and aborts the procedure and "success" in the opposite
+     * case;
+     * @param people
+     * @param party
+     * @return
+     */
     @Override
     public synchronized String addPeople(List<Person> people, Party party)
     {
@@ -924,15 +1266,6 @@ public class DatabaseAccess implements DatabaseCon {
                     return "fail";
                 }
            }
-//            for (Person person:people)
-//            {
-//                System.out.println("In the for loop for adding people");
-//                String result = addParticipant(person, party);
-//                if(result.equals("fail"))
-//                {
-//                    return "fail";
-//                }
-//            }
             return "success";
         }
         catch (Exception e)
@@ -943,6 +1276,16 @@ public class DatabaseAccess implements DatabaseCon {
         }
 
     }
+
+    /**
+     * Method used to remove a List<Person> to the Party given as parameter in the database;
+     * It calls successively the method removeParticipant for all objects in the list
+     * If one add fails the method returns "fail" and aborts the procedure and "success" in the opposite
+     * case;
+     * @param people
+     * @param party
+     * @return
+     */
     @Override
     public synchronized String removePeople(List<Person> people, Party party)
     {
@@ -965,6 +1308,15 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
+    /***
+     * Method used to create an invitation to each instance of a Person (user) in the List<Person> given as
+     * parameter for the party object given as parameter from the system;
+     * It calls successively the method makeInvitation for all objects in the list
+     * If one add fails the method returns "fail" and aborts the procedure and "success" in the opposite
+     * @param people
+     * @param party
+     * @return String
+     */
     @Override
     public synchronized String makeInvitations(List<Person> people, Party party) {
 
@@ -983,6 +1335,21 @@ public class DatabaseAccess implements DatabaseCon {
         return "success";
     }
 
+    /***
+     * Method used to retrieve the invitations meant for a specific user specified through
+     * the personID parameter
+     *
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * The result is either a List<Invitation>, mapped from the ResultSet of the PreparedStatement
+     * or null if the procedure resulted in an Exception due to failure
+     * @param personID
+     * @return List<Invitation>
+     */
     @Override
     public synchronized List<Invitation> getInvitations(int personID) {
         ResultSet rs;
@@ -1005,7 +1372,6 @@ public class DatabaseAccess implements DatabaseCon {
                 Invitation invitation = new Invitation(personID, party, status);
                 invitations.add(invitation);
             }
-            //might want to null this if bugs appear
             return invitations;
         }
         catch (Exception e)
@@ -1016,6 +1382,20 @@ public class DatabaseAccess implements DatabaseCon {
         }
     }
 
+    /***
+     * Method used to change the status of an invitation to "accepted"
+     *
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * IF the command has been executed with no issues the method will return "success" and "fail"
+     * otherwise
+     * @param invitation
+     * @return String
+     */
     @Override
     public  synchronized String acceptInvite(Invitation invitation) {
 
@@ -1039,6 +1419,20 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
+    /**
+     * Method used to change the status of an invitation to "declined"
+     *
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * IF the command has been executed with no issues the method will return "success" and "fail"
+     * otherwise
+     * @param invitation
+     * @return
+     */
     @Override
     public synchronized String declineInvite(Invitation invitation) {
         try{
@@ -1057,6 +1451,20 @@ public class DatabaseAccess implements DatabaseCon {
 
     }
 
+    /**
+     * Method used to create an invitation for a specific Person given as parameter in the system
+     * to a specific Party in the database;
+     * Procedure:
+     *
+     * Enables the connection to the database;
+     * Sends the command in SQL format;
+     * Closes the connection;
+     *
+     * If the procedure fails the method throws an Exception
+     * @param person
+     * @param party
+     * @throws Exception
+     */
     private synchronized void makeInvitation(Person person, Party party) throws Exception {
         try
         {

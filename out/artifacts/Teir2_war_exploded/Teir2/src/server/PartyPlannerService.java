@@ -19,14 +19,14 @@ import java.util.List;
 public class PartyPlannerService{
 
 /**
- * An instance of a ModelManager object;
+ * An variable of a ModelManager object;
  * Used to redirect the command that needs to be executed and retrive the result of the action;
  * */
     private ModelManager manager;
 
     /**
      * Constructor of the partyPlannerService object;
-     * Initializes an instance of the ModelManager class
+     * Initializes an variable of the ModelManager class
      * */
     public PartyPlannerService() {
 

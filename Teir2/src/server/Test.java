@@ -15,23 +15,25 @@ public class Test {
         //Party newParty = new Party("PartyTitle", "TestForDatabase", "VIAUniversity", 1, "24-11-2019", "9:34", false);
 //        Party s = service.createParty(newParty);
 //        System.out.println(s.toString());
+        //--------Party created
 
         Person person1 = new Person(7, "Roxana Spiridon", "RizerSpiner", "rizer@spiri.com", "cucucyda", false);
 //        Person person11 = service.registerPerson(person1);
 //        System.out.println(person11.getPassword());
+        //----- Register person
 //        newParty.getPeople().add(person1);
 //        String re = service.addPerson(newParty);
 //        System.out.println(re);
-
+//        ----- Add Person to the Party
 //        Person person = service.loginPerson(person1);
 //        System.out.println(person.getEmail());
-//
+//        ----- Login Person
 //        List<Party> parties = service.getParties(person1);
 //        for (Party party: parties)
 //        {
 //            System.out.println(parties.toString());
 //        }
-
+//        ---- Get Parties for User(Person)
 
 //        List<Person> people = service.searchPerson("rizer@spiri.com");
 //        for (Person person:people)
@@ -39,7 +41,7 @@ public class Test {
 //            System.out.println(person.getUsername());
 //        }
 //        System.out.println("sssssssss");
-
+//        ----- Search person
 
 //        Item item1 = new Item(23, "Chips");
 //        newParty.getItems().add(item1);
@@ -50,11 +52,11 @@ public class Test {
 //        newParty.getItems().add(item11);
 //        String sr =service.addItems(newParty);
 //        System.out.println(sr);
-
-
-        //-------Privacy of party added
-
-       // Party partyP = new Party("TestParty", "TestForDatabase2", "VIA UNI", 10,"29/11/2019", "12:00", true);
+//        ----- Add Items to a Party
+//
+//
+//        -------Privacy of party added
+//        Party partyP = new Party("TestParty", "TestForDatabase2", "VIA UNI", 10,"29/11/2019", "12:00", true);
 //        Party p = service.createParty(partyP);
 
 //        System.out.println(p.toString());
