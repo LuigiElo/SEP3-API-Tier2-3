@@ -51,7 +51,6 @@ public class DatabaseConnectionTier2 {
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("The socket has not been created");
         }
 
 
@@ -98,7 +97,6 @@ public class DatabaseConnectionTier2 {
         try {
             out.writeObject(packageT); //sending
             String result = (String) in.readObject(); //receive
-            System.out.println(result + "is the result of adding people");
             socket.close();
             return result;
         } catch (Exception e) {
@@ -168,7 +166,6 @@ public class DatabaseConnectionTier2 {
         } catch (Exception e) {
             e.getMessage();
             e.printStackTrace();
-            System.out.println("The list is empty or smth is wrong");
             try {
                 socket.close();
             } catch (IOException ex) {
@@ -416,7 +413,6 @@ public class DatabaseConnectionTier2 {
         } catch (Exception e) {
             e.getMessage();
             e.printStackTrace();
-            System.out.println("Something fucked uppppp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
             socket.close();
             return null;

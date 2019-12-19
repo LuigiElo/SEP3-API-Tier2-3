@@ -52,9 +52,7 @@ public class PartyPlannerService{
    @Consumes(MediaType.APPLICATION_JSON)
     public Party createParty(Party party) throws IOException {
 
-       System.out.println("This is the party i got from the user");
-       System.out.println(party.toString());
-       System.out.println("And this is the actual party entity");
+
        Party party2 = manager.createParty(party);
        return party2;
 
@@ -79,8 +77,7 @@ public class PartyPlannerService{
    @Consumes(MediaType.APPLICATION_JSON)
     public Person registerPerson(Person person)
    {
-       System.out.println("This is the person i got from the client");
-       System.out.println(person.toString());
+
        Person person1 = manager.registerPerson(person);
        return person1;
    }
@@ -105,9 +102,9 @@ public class PartyPlannerService{
    @Consumes(MediaType.APPLICATION_JSON)
     public Person loginPerson(Person person)
    {
-       System.out.println("I am trying to log in");
+
        Person person1 = manager.login(person);
-       System.out.println("The person is +"+ person1.getUsername());
+
        return person1;
 
    }
@@ -133,10 +130,7 @@ public class PartyPlannerService{
    {
        Person person = new Person(personId, null, null, null, null,  false);
        List<Party> parties = manager.getParties(person);
-       for (Party party: parties)
-       {
-           System.out.println("one party");
-       }
+
        return parties;
    }
 
@@ -211,19 +205,7 @@ public class PartyPlannerService{
 
     public Party updateParty(BoxTier2 box)
     {
-        System.out.println("I've reached the server");
-        System.out.println(box.getParty().toString());
-        for (Item item:box.getItemsAdded())
-        {
-            System.out.println("Item");
-            System.out.println(item.toString());
-        }
 
-        for (Person person:box.getPeopleAdded())
-        {
-            System.out.println("Person");
-            System.out.println(person.toString());
-        }
         Party party = manager.updateParty(box);
         return party;
     }
@@ -271,8 +253,8 @@ public class PartyPlannerService{
     @Consumes(MediaType.APPLICATION_JSON)
     public Party updatePartyD(Party party)
     {
-        System.out.println("I've reached here!!!!!!!!!!!!!!!!!!!!!!!!!1111");
-        System.out.println(party.toString());
+
+
         Party result = manager.updatePartyD(party);
         return result;
     }
@@ -295,7 +277,7 @@ public class PartyPlannerService{
    @Consumes(MediaType.APPLICATION_JSON)
    public List<Invitation> getInvitations(@PathParam("personID") int personID)
    {
-       System.out.println("I am attemting to get my notifications");
+
        List<Invitation> invitations = manager.getInvitations(personID);
        return invitations;
    }

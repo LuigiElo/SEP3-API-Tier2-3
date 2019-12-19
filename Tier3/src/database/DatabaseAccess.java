@@ -47,8 +47,7 @@ public class DatabaseAccess implements DatabaseCon {
             connection = DriverManager.getConnection(url, user, password);
             System.out.println("Connected to the PostgreSQL server successfully.");
         } catch (SQLException e) {
-
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
         return connection;
@@ -65,7 +64,6 @@ public class DatabaseAccess implements DatabaseCon {
             connection = null;
 
         } catch (SQLException e) {
-            System.out.println("No closing this one bitch");
             e.printStackTrace();
         }
     }
@@ -98,7 +96,6 @@ public class DatabaseAccess implements DatabaseCon {
             statement.executeUpdate();
             close();
         } catch (SQLException e) {
-            System.out.println("The person did not get created");
             e.printStackTrace();
             return null;
         }
@@ -121,13 +118,11 @@ public class DatabaseAccess implements DatabaseCon {
                 String password = rs.getString(4);
                 String username = rs.getString(5);
                 person1 = new Person(personID, name, username, email, password, false);
-                System.out.println(personID);
 
             }
 
             return person1;
         } catch (SQLException e) {
-            System.out.println("The person could not be retrieved");
             e.printStackTrace();
             return null;
         }
@@ -153,9 +148,7 @@ public class DatabaseAccess implements DatabaseCon {
 
         ResultSet rs;
         String result = "";
-        System.out.println("I am now trying to add one person");
-        System.out.println("The person has the id " +person.getPersonID());
-        System.out.println("The party has the id "+ party.getPartyID());
+
 
         int personID = person.getPersonID();
         int partyID = party.getPartyID();
@@ -171,10 +164,8 @@ public class DatabaseAccess implements DatabaseCon {
 
             statement.executeUpdate();
             close();
-            System.out.println("The statement for add participants has supposly been executed");
             return "success";
         } catch (SQLException e) {
-            System.out.println("The person could not be added");
             e.printStackTrace();
             return "fail";
         }
@@ -195,7 +186,6 @@ public class DatabaseAccess implements DatabaseCon {
     @Override
     public synchronized List<Party> getPartiesForPerson(Person person) {
 
-        System.out.println("I am here in the getPartiesForPerson method");
         ResultSet rs;
         List<Party> parties = new ArrayList<Party>();
 
@@ -215,14 +205,11 @@ public class DatabaseAccess implements DatabaseCon {
 
             }
             for (int id : ids) {
-                System.out.println("get party");
                 Party party = getParty(id);
                 parties.add(party);
-                System.out.println(party.getPartyTitle());
             }
             return parties;
         } catch (Exception e) {
-            System.out.println("The list of parties could not be retrieved");
             e.printStackTrace();
             return null;
         }
@@ -267,11 +254,9 @@ public class DatabaseAccess implements DatabaseCon {
                 String time = rs.getString("time");
                 boolean isPrivate = rs.getBoolean("isprivate");
                 String playlistURL = rs.getString("playlisturl");
-                System.out.println("test123");
                 party = new Party(partyTitle, description, address, partyid, date, time, isPrivate, null);
 
                 if (playlistURL != null) {
-                    System.out.println("fuckyou");
                     party.setPlaylistURL(playlistURL);
                 }
             }
@@ -283,7 +268,6 @@ public class DatabaseAccess implements DatabaseCon {
             party.setHost(getHostForParty(party));
             return party;
         } catch (SQLException e) {
-            System.out.println("The party could not be retrieved");
             e.printStackTrace();
             close();
             return null;
@@ -329,14 +313,12 @@ public class DatabaseAccess implements DatabaseCon {
                 String username = rs.getString(5);
 
                 Person person = new Person(personId, name, username, email, null, false);
-                System.out.println(person.getUsername() +" " + person.getEmail());
                 people.add(person);
             }
 
             return people;
 
         } catch (Exception e) {
-            System.out.println("The search could not be executed");
             e.printStackTrace();
             return null;
         }
@@ -381,7 +363,6 @@ public class DatabaseAccess implements DatabaseCon {
         catch (Exception e)
         {
             e.printStackTrace();
-            System.out.println("helll");
         }
 
        return null;
@@ -503,8 +484,6 @@ public class DatabaseAccess implements DatabaseCon {
 
             return person2;
         } else {
-            System.out.println("User doesn't exist");
-            System.out.println("No parties for you my friend... Yet?");
             return null;
         }
     }
@@ -831,7 +810,6 @@ public class DatabaseAccess implements DatabaseCon {
             return "success";
         }catch (Exception e)
         {
-            System.out.println("Could not add item");
             e.printStackTrace();
             return "fail";
         }
@@ -856,7 +834,7 @@ public class DatabaseAccess implements DatabaseCon {
      */
     private Item getItem(Item item) throws SQLException {
 
-            System.out.println("2");
+
             ResultSet resultSet;
             connect();
             PreparedStatement statement = connection.prepareStatement("SELECT * from sep3.item_table WHERE price = ? AND name = ?");
@@ -865,26 +843,26 @@ public class DatabaseAccess implements DatabaseCon {
             resultSet = statement.executeQuery();
             close();
 
-            System.out.println("3");
+
             Item item1 = null;
             while (resultSet.next())
             {
-                System.out.println("4");
+
                 int id = resultSet.getInt(1);
-                System.out.println("5");
+
                 double price=  resultSet.getDouble(2);
-                System.out.println("6");
+
                 String name = resultSet.getString(3);
-                System.out.println("7");
+
 
                 item1 = new Item(id, price, name);
-                System.out.println("8");
+
 
             }
-            System.out.println("9");
+
             if (item1==null)
             {
-                System.out.println("10");
+
                 throw  new SQLException("The item could not be retrieved");
             }
             return item1;
@@ -911,34 +889,24 @@ public class DatabaseAccess implements DatabaseCon {
 
         Item item1 = null;
         try {
-            System.out.println("1");
              item1 = getItem(item);
-            System.out.println("1'a");
              return item1;
         }catch (SQLException e)
         {
             try {
                 connect();
-                System.out.println("12");
                 PreparedStatement statement2 = connection.prepareStatement
                         ("INSERT INTO sep3.item_table(price, name) VALUES (?,?);");
                 statement2.setDouble(1, item.getPrice());
                 statement2.setString(2, item.getName());
-                System.out.println("13");
                 statement2.executeUpdate();
-                System.out.println("hello");
                 close();
-                System.out.println("14");
                 item1 = getItem(item);
-                System.out.println("15");
                 return item1;
             }
             catch (Exception ex)
             {
-                System.out.println("16");
-                System.out.println("The important exception");
                 e.printStackTrace();
-                System.out.println("The item could not be created either");
                 return null;
             }
         }
@@ -987,7 +955,6 @@ public class DatabaseAccess implements DatabaseCon {
                 statement1.setInt(1, party.getPartyID());
                 ResultSet rs = statement1.executeQuery();
                 close();
-                System.out.println("here2");
 
                 while (rs.next()) {
                     int partyID = rs.getInt("partyid");
@@ -1004,19 +971,16 @@ public class DatabaseAccess implements DatabaseCon {
                     party1.setItems(items);
                     party1.setPeople(people);
 
-                    System.out.println("Updated and original parties are the same: " + party.equals(party1));
                     return party1;
                 }
             }
             catch (Exception e) {
-                System.out.println("No update");
                 e.printStackTrace();
                 return null;
             }
         }
         catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Is fucked up");
             return null;
         }
         return null;
@@ -1254,12 +1218,12 @@ public class DatabaseAccess implements DatabaseCon {
     @Override
     public synchronized String addPeople(List<Person> people, Party party)
     {
-        System.out.println("In the method to add people");
+
         try {
 
            for (int i = 0; i< people.size(); i++)
            {
-               System.out.println("In the for loop for adding people");
+
                 String result = addParticipant(people.get(i), party);
                 if(result.equals("fail"))
                 {
@@ -1270,7 +1234,7 @@ public class DatabaseAccess implements DatabaseCon {
         }
         catch (Exception e)
         {
-            System.out.println("Got an exception in add people");
+
             e.printStackTrace();
             return "fail";
         }
@@ -1328,7 +1292,6 @@ public class DatabaseAccess implements DatabaseCon {
             }
             catch (Exception e)
             {
-                System.out.println("I couldn't make this invitation for p :" + person.getName());
                 return "fail";
             }
         }
@@ -1377,7 +1340,6 @@ public class DatabaseAccess implements DatabaseCon {
         catch (Exception e)
         {
             e.printStackTrace();
-            System.out.println("Could not get notifications");
             return null;
         }
     }
@@ -1480,7 +1442,6 @@ public class DatabaseAccess implements DatabaseCon {
         }
         catch (Exception e)
         {
-            System.out.println("Catch block for make invitation");
             throw new Exception("I couldn't make this invitation");
 
         }

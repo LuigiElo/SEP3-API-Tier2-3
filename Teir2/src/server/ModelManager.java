@@ -61,7 +61,6 @@ public class ModelManager {
                 }
                 db.addItems(packageT);
             } else {
-                System.out.println("adding item doesn't work");
             }
 
             if (box.getItemsRemoved().size() >= 1) {
@@ -74,7 +73,6 @@ public class ModelManager {
                 }
                 db.removeItems(packageT);
             } else {
-                System.out.println("removing item doesn't work");
             }
 
             if (box.getPeopleAdded().size() >= 1) {
@@ -87,7 +85,6 @@ public class ModelManager {
                 }
                 db.addPeople(packageT);
             } else {
-                System.out.println("adding people doesn't work");
             }
 
             if (box.getPeopleRemoved().size() >= 1) {
@@ -100,11 +97,9 @@ public class ModelManager {
                 }
                 db.removePeople(packageT);
             } else {
-                System.out.println("removing people doesn't work");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Something happened in the changes");
             return null;
         }
 
@@ -119,7 +114,6 @@ public class ModelManager {
             return finalResult;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("I could not get the party after the changes");
             return null;
         }
     }
@@ -146,7 +140,6 @@ public class ModelManager {
         try {
             list = db.searchPersonBySmth(packageT);
         } catch (Exception e) {
-            System.out.println("The person could not be found");
             return null;
 
         }
@@ -230,7 +223,6 @@ public class ModelManager {
             Person person1 = db.registerPerson(packageT);
             return person1;
         } catch (Exception e) {
-            System.out.println("The registration failed");
             e.printStackTrace();
             return null;
         }
@@ -263,7 +255,6 @@ public class ModelManager {
             return person1;
 
         } catch (Exception e) {
-            System.out.println("The login failed");
             e.printStackTrace();
             return null;
         }
@@ -294,7 +285,6 @@ public class ModelManager {
             return list;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("The parties could not be found");
             return null;
 
         }
@@ -314,7 +304,6 @@ public class ModelManager {
             String result = db.addItems(packageT);
             return result;
         } catch (Exception e) {
-            System.out.println("We couldn't add the items");
             e.printStackTrace();
             return "fail";
         }
@@ -334,7 +323,6 @@ public class ModelManager {
             String result = db.addItems(packageT);
             return result;
         } catch (Exception e) {
-            System.out.println("We couldn't add the items");
             e.printStackTrace();
             return "fail";
         }
@@ -348,7 +336,7 @@ public class ModelManager {
         party.setPrivate(privacy);
         packageT.addParty(party);
 
-        //this is not very correct. In case where smth fucks up, the server will throw an exception, break, but the
+        //this is not very correct. In case where smth screws up, the server will throw an exception, break, but the
         //client will not see that because you are not returning him that,
         //only a half way response
         db.setPartyPrivacy(packageT);
