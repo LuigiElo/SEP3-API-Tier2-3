@@ -471,7 +471,7 @@ public class DatabaseConnectionTier2 {
     public synchronized String addItems(Package packageT) throws Exception {
 
         createSocket();
-        try{
+        try {
             out.writeObject(packageT);
             String result = (String) in.readObject();
             socket.close();
