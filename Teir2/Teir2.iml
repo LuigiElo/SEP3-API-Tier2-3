@@ -29,7 +29,6 @@
     <orderEntry type="library" name="javax.servlet.jsp-api" level="project" />
     <orderEntry type="library" name="JAX-RS" level="project" />
     <orderEntry type="library" name="JAX-WS-Glassfish / JAX-WS 2.2 RI / Metro 1.X / JWSDP 2.2" level="project" />
-    <orderEntry type="library" name="javax.ws.rs-api-2.1.11" level="project" />
     <orderEntry type="library" name="postgresql-42.2.8" level="project" />
   </component>
 </module>
